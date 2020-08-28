@@ -80,7 +80,7 @@ class MainSlider extends Component {
     };
 
     async getCity() {
-        const city = 'Hermosillo, Sonora, Mexico';
+        const city = '';
         let cityInfo = getStorageValue(StorageKeys.cityInfo);
 
         if (!cityInfo){
