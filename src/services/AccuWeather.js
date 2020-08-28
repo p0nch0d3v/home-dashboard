@@ -11,12 +11,13 @@ let defaultParams = {
     metric: true
 };
 
-export async function getCityKey(search){
+export async function getCityInfo(search){
     let cityKey = await axios({
         method: 'GET',
         url: `${baseUrl}/locations/v1/cities/search`,
         params: Object.assign({q: search}, defaultParams)
-    }).then(r => { return r.data[0].Key; });
+    }).then(r => { return r.data[0]; })
+    .catch(e => { console.warn(e); return null; });
     return cityKey;
 }
 
@@ -25,7 +26,8 @@ export async function getCurrentConditions(cityKey){
         method: 'GET',
         url: `${baseUrl}/currentconditions/v1/${cityKey}`,
         params: Object.assign({}, defaultParams)
-    }).then(r => { return r.data[0]; });    
+    }).then(r => { return r.data[0]; })
+    .catch(e => { console.warn(e); return null; });
     return conditions;
 }
 
@@ -34,7 +36,8 @@ export async function getForecastHourly12(cityKey){
         method: 'GET',
         url: `${baseUrl}/forecasts/v1/hourly/12hour/${cityKey}`,
         params: Object.assign({}, defaultParams)
-    }).then(r => { return r.data; });
+    }).then(r => { return r.data; })
+    .catch(e => { console.warn(e); return null; });
     return forecast;
 }
 
@@ -43,7 +46,8 @@ export async function getForecaseDaily5(cityKey){
         method: 'GET',
         url: `${baseUrl}/forecasts/v1/daily/5day/${cityKey}`,
         params: Object.assign({}, defaultParams)
-    }).then(r => { return r.data.DailyForecasts; });
+    }).then(r => { return r.data.DailyForecasts; })
+    .catch(e => { console.warn(e); return null; });
     return forecast;
 }
 

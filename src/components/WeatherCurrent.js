@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WeatherCurrent(props){
+export default function WeatherCurrent(props){
     return(
         <div>
             <div>{props.weather.text}</div>
@@ -10,5 +10,3 @@ function WeatherCurrent(props){
         </div>
     );
 }
-
-export default WeatherCurrent;

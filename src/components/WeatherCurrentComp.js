@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-function WeatherCurrentComp(props){
+export default function WeatherCurrentComp(props){
     return (
         <div>
             <div>UV Index: {props.weather.uv.index} {props.weather.uv.text}</div>
@@ -10,5 +10,3 @@ function WeatherCurrentComp(props){
         </div>
     );
 }
-
-export default WeatherCurrentComp;

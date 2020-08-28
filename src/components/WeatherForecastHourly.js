@@ -1,6 +1,6 @@
 import React from 'react';
 
-function WeatherForecastHourly(props) {
+export default function WeatherForecastHourly(props) {
     const forecast = [...props.forecast];
     return (
         <ul>
@@ -18,5 +18,3 @@ function WeatherForecastHourly(props) {
         </ul>
     );
 }
-
-export default WeatherForecastHourly;

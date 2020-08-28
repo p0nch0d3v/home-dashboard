@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import 'moment-timezone';
 
-import { 
-    getCityKey,
-    getCurrentConditions, 
+import {
+    getCityInfo,
+    getCurrentConditions,
     getForecastHourly12,
     getForecaseDaily5,
     getWeather,
@@ -17,8 +18,7 @@ import {
     setStorageValue
 } from '../services/DataService';
 
-import Calendar from './Calendar';
-import Timer from './Timer';
+import DateTime from './DateTime';
 import WeatherCurrent from './WeatherCurrent';
 import WeatherCurrentComp from './WeatherCurrentComp';
 import WeatherForecastHourly from './WeatherForecastHourly';
@@ -39,11 +39,16 @@ class MainSlider extends Component {
     state = {
         date: null,
         time: null,
+        cityKey: null,
+        timeZone: {
+            code: null,
+            name: null
+        },
         weather: {
             text: null,
             temp: {
                 temp: null,
-                unit: null, 
+                unit: null,
             },
             humidity: null,
             feel: {
@@ -65,31 +70,34 @@ class MainSlider extends Component {
     };
 
     getDate = () => {
-        let newDate = moment().format('MM/DD/YYYY');
+        let newDate = moment.utc().tz(this.state.timeZone.name).format('MM/DD/YYYY');
         this.setState({date: newDate});
     };
 
     getTime = () => {
-        let newTime = moment().format('HH:mm:ss');
+        let newTime = moment.utc().tz(this.state.timeZone.name).format('HH:mm:ss');
         this.setState({time: newTime});
     };
 
-    async getCityKey() {
-        const city = '';
-        let cityKey = getStorageValue(StorageKeys.cityKey);
-       
-        if (!cityKey) {
-            cityKey = await getCityKey(city);
-            setStorageValue(StorageKeys.cityKey, cityKey);
+    async getCity() {
+        const city = 'Hermosillo, Sonora, Mexico';
+        let cityInfo = getStorageValue(StorageKeys.cityInfo);
+
+        if (!cityInfo){
+          const cityInfo = await getCityInfo(city);
+          setStorageValue(StorageKeys.cityInfo, cityInfo);
         }
-        return cityKey;
+        if (cityInfo){
+          this.setState({cityKey: cityInfo.Key});
+          this.setState({timeZone: { code: cityInfo.TimeZone.Code, name: cityInfo.TimeZone.Name }});
+        }
     }
 
     async getWeatherConditions(cityKey) {
         let currentConditions = getStorageValue(StorageKeys.currentConditions);
         let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.conditions));
         let now = moment(Date.now());
-        
+
         if (!currentConditions || (now - lastUpdate) >= this.intervals.conditions) {
             currentConditions = await getCurrentConditions(cityKey);
             setStorageValue(StorageKeys.currentConditions, currentConditions);
@@ -135,12 +143,12 @@ class MainSlider extends Component {
     }
 
     async componentDidMount() {
+        await this.getCity();
         this.getDate();
         this.getTime();
-        const cityKey = await this.getCityKey();
-        await this.getWeatherConditions(cityKey);
-        await this.getWeatherForecastHourly(cityKey);
-        await this.getWeatherForecastDaily(cityKey);
+        await this.getWeatherConditions(this.state.cityKey);
+        await this.getWeatherForecastHourly(this.state.cityKey);
+        await this.getWeatherForecastDaily(this.state.cityKey);
 
         setInterval(() => {
             this.getTime();
@@ -151,15 +159,15 @@ class MainSlider extends Component {
         }, this.hour);
 
         setInterval(async ()=>{
-            await this.getWeatherConditions(cityKey);
+            await this.getWeatherConditions(this.state.cityKey);
         }, this.minute);
 
         setInterval(async () => {
-            await this.getWeatherForecastHourly(cityKey);
+            await this.getWeatherForecastHourly(this.state.cityKey);
         }, this.minute);
 
         setInterval(async () => {
-            await this.getWeatherForecastDaily(cityKey);
+            await this.getWeatherForecastDaily(this.state.cityKey);
         }, this.minute);
 
         setInterval(() => {
@@ -169,14 +177,13 @@ class MainSlider extends Component {
 
     render(){
         this.sliderItems = [];
-        this.sliderItems.push(this.state.date ? <Calendar date={this.state.date} /> : '');
-        this.sliderItems.push(this.state.time ? <Timer time={this.state.time} /> : '');
+        this.sliderItems.push(this.state.date && this.state.time ? <DateTime date={this.state.date} time={this.state.time} /> : '');
         this.sliderItems.push(this.state.weather ? <WeatherCurrent weather={this.state.weather} /> : '');
         this.sliderItems.push(this.state.weather ? <WeatherCurrentComp weather={this.state.weather} /> : '');
         this.sliderItems.push(this.state.forecastHourly ? <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
         this.sliderItems.push(this.state.forecastDaily ? <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
         return (
-            <div>
+            <div className="col-12">
                 { this.sliderItems[this.currentSlider] }
             </div>
         );

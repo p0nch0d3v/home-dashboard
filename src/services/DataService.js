@@ -1,5 +1,5 @@
 export const StorageKeys = {
-    cityKey: 'cityKey',
+    cityInfo: 'cityInfo',
     currentConditions: 'currentConditions',
     forecastHourly: 'forecastHourly',
     forecastDaily: 'forecastDaily',
@@ -16,5 +16,7 @@ export function getStorageValue(key){
 }
 
 export function setStorageValue(key, value){
-    localStorage[key] = JSON.stringify(value);
+    if (value) {
+        localStorage[key] = JSON.stringify(value);
+    }
 }
