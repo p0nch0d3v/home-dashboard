@@ -1,0 +1,19 @@
+.mainSlider {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+
+  &_left{
+    font-size: 10vw;
+    align-self: center;
+    background-color: lightgray;
+  }
+  &_right{
+    font-size: 10vw;
+    align-self: center;
+    background-color: lightgray;
+  }
+  .content{
+
+  }
+}

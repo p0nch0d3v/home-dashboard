@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import 'moment-timezone';
 
+import './MainSlider.scss';
+
 import {
     getCityInfo,
     getCurrentConditions,
@@ -39,7 +41,11 @@ class MainSlider extends Component {
     state = {
         date: null,
         time: null,
-        cityKey: null,
+        weekDay: null,
+        city: {
+          key: null,
+          name: null
+        },
         timeZone: {
             code: null,
             name: null
@@ -70,8 +76,11 @@ class MainSlider extends Component {
     };
 
     getDate = () => {
-        let newDate = moment.utc().tz(this.state.timeZone.name).format('MM/DD/YYYY');
+        let newMomentDate = moment.utc().tz(this.state.timeZone.name);
+        let newDate = newMomentDate.format('MM/DD/YYYY');
+        let newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newDate});
+        this.setState({weekDay: newWeekDay});
     };
 
     getTime = () => {
@@ -88,8 +97,18 @@ class MainSlider extends Component {
           setStorageValue(StorageKeys.cityInfo, cityInfo);
         }
         if (cityInfo){
-          this.setState({cityKey: cityInfo.Key});
-          this.setState({timeZone: { code: cityInfo.TimeZone.Code, name: cityInfo.TimeZone.Name }});
+          this.setState({
+            city: {
+              name: cityInfo.LocalizedName,
+              key: cityInfo.Key
+            }
+          });
+          this.setState({
+            timeZone: {
+              code: cityInfo.TimeZone.Code,
+              name: cityInfo.TimeZone.Name
+            }
+          });
         }
     }
 
@@ -146,9 +165,10 @@ class MainSlider extends Component {
         await this.getCity();
         this.getDate();
         this.getTime();
-        await this.getWeatherConditions(this.state.cityKey);
-        await this.getWeatherForecastHourly(this.state.cityKey);
-        await this.getWeatherForecastDaily(this.state.cityKey);
+        const cityKey = this.state.city.key;
+        await this.getWeatherConditions(cityKey);
+        await this.getWeatherForecastHourly(cityKey);
+        await this.getWeatherForecastDaily(cityKey);
 
         setInterval(() => {
             this.getTime();
@@ -159,15 +179,15 @@ class MainSlider extends Component {
         }, this.hour);
 
         setInterval(async ()=>{
-            await this.getWeatherConditions(this.state.cityKey);
+            await this.getWeatherConditions(cityKey);
         }, this.minute);
 
         setInterval(async () => {
-            await this.getWeatherForecastHourly(this.state.cityKey);
+            await this.getWeatherForecastHourly(cityKey);
         }, this.minute);
 
         setInterval(async () => {
-            await this.getWeatherForecastDaily(this.state.cityKey);
+            await this.getWeatherForecastDaily(cityKey);
         }, this.minute);
 
         setInterval(() => {
@@ -177,15 +197,23 @@ class MainSlider extends Component {
 
     render(){
         this.sliderItems = [];
-        this.sliderItems.push(this.state.date && this.state.time ? <DateTime date={this.state.date} time={this.state.time} /> : '');
+        this.sliderItems.push(this.state.date ? <DateTime date={this.state.date}
+                                                              time={this.state.time}
+                                                              weekDay={this.state.weekDay} /> : '');
         this.sliderItems.push(this.state.weather ? <WeatherCurrent weather={this.state.weather} /> : '');
-        this.sliderItems.push(this.state.weather ? <WeatherCurrentComp weather={this.state.weather} /> : '');
-        this.sliderItems.push(this.state.forecastHourly ? <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
-        this.sliderItems.push(this.state.forecastDaily ? <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
+        // this.sliderItems.push(this.state.weather ? <WeatherCurrentComp weather={this.state.weather} /> : '');
+        // this.sliderItems.push(this.state.forecastHourly ? <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
+        // this.sliderItems.push(this.state.forecastDaily ? <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
         return (
-            <div className="col-12">
-                { this.sliderItems[this.currentSlider] }
+          <div className="container-fliud">
+            <div className="mainSlider row m-0">
+              <div className="col-1 mainSlider_left">&lt;</div>
+              <div className="col-10 content">
+                  { this.sliderItems[this.currentSlider] }
+              </div>
+              <div className="col-1 mainSlider_right"> &gt;</div>
             </div>
+          </div>
         );
     }
 }
