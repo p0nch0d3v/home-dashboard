@@ -71,6 +71,13 @@ export function getWeather(conditions){
         pressure: {
             value: conditions.Pressure.Metric.Value,
             unit: conditions.Pressure.Metric.Unit
+        },
+        wind: {
+            direction: conditions.Wind.Direction.Localized,
+            speed: {
+                value: conditions.Wind.Speed.Metric.Value,
+                unit: conditions.Wind.Speed.Metric.Unit
+            }
         }
     }
 }

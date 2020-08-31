@@ -1,36 +1,30 @@
 .weatherCurrent {
   display: flex;
   text-align: center;
-  font-size: 11vw;
+  font-size: 8.5vw;
   max-height: 100vh;
   height: 100%;
 
-  &_left {
+  &_item {
+    height: 50vh;
+    width: 50%;
     display: flex;
-    align-items: center;
-
-    .icon {
-      max-width: 49vw;
-      max-height: 49vh;
-      width: 100%;
-      height: 100%;
-    }
+    justify-content: center;
+    flex-direction: column;
   }
 
-  &_right {
+  &_doubleItem {
+    height: 50vh;
+    width: 100%;
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    align-items: center;
-    align-content: space-evenly;
-    justify-content: space-evenly;
+  }
 
-    .text {
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-    .temp {
-    }
-    .feel {
-    }
+  .icon {
+    max-width: 49vw;
+    max-height: 49vh;
+    width: 100%;
+    height: 100%;
   }
 }

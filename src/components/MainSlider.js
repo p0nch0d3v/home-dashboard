@@ -31,8 +31,8 @@ class MainSlider extends Component {
     minute = this.second * 60;
     hour = this.minute * 60;
     intervals = {
-        conditions : this.minute * 10,
-        forecastHourly: this.minute * 20,
+        conditions : this.minute * 20,
+        forecastHourly: this.minute * 30,
         forecastDaily: this.hour
     };
     currentSlider = 0;
@@ -69,6 +69,13 @@ class MainSlider extends Component {
             pressure: {
                 feelTemp: null,
                 feelUnit: null,
+            },
+            wind: {
+                direction: null,
+                speed: {
+                    value: null,
+                    unit: null
+                }
             }
         },
         forecastHourly: [],
@@ -134,7 +141,7 @@ class MainSlider extends Component {
         let now = moment(Date.now());
         let firstHour = forecastHourly ? moment(forecastHourly[0].DateTime) : moment(null);
 
-        if (!forecastHourly || (now - lastUpdate) >= this.intervals.forecastHourly || now >= firstHour) {
+        if (!forecastHourly || (now - lastUpdate) >= this.intervals.forecastHourly /*|| now >= firstHour*/) {
             forecastHourly = await getForecastHourly12(cityKey);
             setStorageValue(StorageKeys.forecastHourly, forecastHourly);
             setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
@@ -197,13 +204,17 @@ class MainSlider extends Component {
 
     render(){
         this.sliderItems = [];
-        this.sliderItems.push(this.state.date ? <DateTime date={this.state.date}
-                                                              time={this.state.time}
-                                                              weekDay={this.state.weekDay} /> : '');
-        this.sliderItems.push(this.state.weather ? <WeatherCurrent weather={this.state.weather} /> : '');
-        // this.sliderItems.push(this.state.weather ? <WeatherCurrentComp weather={this.state.weather} /> : '');
-        // this.sliderItems.push(this.state.forecastHourly ? <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
-        // this.sliderItems.push(this.state.forecastDaily ? <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
+        this.sliderItems.push(this.state.date ?
+          <DateTime date={this.state.date}
+                    time={this.state.time}
+                    weekDay={this.state.weekDay} /> : '');
+        this.sliderItems.push(this.state.weather ?
+          <WeatherCurrent weather={this.state.weather} /> : '');
+        this.sliderItems.push(this.state.weather ?
+           <WeatherCurrentComp weather={this.state.weather} /> : '');
+        //this.sliderItems.push(this.state.forecastHourly ? <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
+        //this.sliderItems.push(this.state.forecastDaily ? <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
+
         return (
           <div className="container-fliud">
             <div className="mainSlider row m-0">
