@@ -37,6 +37,7 @@ class MainSlider extends Component {
     };
     currentSlider = 0;
     sliderItems = [];
+    sliderInternval = null;
 
     state = {
         date: null,
@@ -98,6 +99,25 @@ class MainSlider extends Component {
         this.setState({time: newTime});
       }
     };
+
+    setSliderInterval() {
+      if (this.sliderInternval) {
+        clearInterval(this.sliderInternval);
+      }
+      this.sliderInternval = setInterval(() => {
+        this.moveSlider(true);
+      }, this.second * 20);
+    }
+
+    moveSlider(forward){
+      if (forward) {
+        this.currentSlider = (this.currentSlider + 1) < this.sliderItems.length ? (this.currentSlider + 1) : 0;
+      }
+      else {
+        this.currentSlider = (this.currentSlider - 1) >= 0 ? (this.currentSlider - 1) : (this.sliderItems.length - 1);
+      }
+      this.setSliderInterval();
+    }
 
     async getCity() {
         const city = '';
@@ -207,9 +227,7 @@ class MainSlider extends Component {
             await this.getWeatherForecastDaily(cityKey);
         }, this.minute);
 
-        setInterval(() => {
-            this.currentSlider = this.currentSlider + 1 < this.sliderItems.length ? this.currentSlider + 1 : 0;
-        }, this.second * 20);
+        this.setSliderInterval();
     }
 
     render(){
@@ -228,11 +246,13 @@ class MainSlider extends Component {
         return (
           <div className="container-fliud">
             <div className="mainSlider row m-0">
-              <div className="col-1 mainSlider_left">&lt;</div>
+              <div className="col-1 mainSlider_left"
+                   onClick={() => { this.moveSlider(false) }}>&lt;</div>
               <div className="col-10 content">
                   { this.sliderItems[this.currentSlider] }
               </div>
-              <div className="col-1 mainSlider_right"> &gt;</div>
+              <div className="col-1 mainSlider_right"
+                   onClick={() => { this.moveSlider(true) }}> &gt;</div>
             </div>
           </div>
         );

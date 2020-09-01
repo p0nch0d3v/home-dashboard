@@ -8,8 +8,8 @@ export default function WeatherCurrent(props){
                 <img className="icon" src={props.weather.icon} alt={props.weather.text} />
             </div>
             <div className="weatherCurrent_item">
-                <span>{props.weather.temp.value} {props.weather.temp.unit}</span>
-                <span>({props.weather.feel.value} {props.weather.feel.unit})</span>
+                <span>{props.weather.temp.value} °{props.weather.temp.unit}</span>
+                <span>({props.weather.feel.value} °{props.weather.feel.unit})</span>
             </div>
             <div className="weatherCurrent_doubleItem">
                 <span>{props.weather.text}</span>
