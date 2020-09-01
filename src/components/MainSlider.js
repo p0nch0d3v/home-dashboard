@@ -83,16 +83,20 @@ class MainSlider extends Component {
     };
 
     getDate = () => {
+      if (this.state.timeZone.name) {
         let newMomentDate = moment.utc().tz(this.state.timeZone.name);
         let newDate = newMomentDate.format('MM/DD/YYYY');
         let newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newDate});
         this.setState({weekDay: newWeekDay});
+      }
     };
 
     getTime = () => {
+      if (this.state.timeZone.name) {
         let newTime = moment.utc().tz(this.state.timeZone.name).format('HH:mm:ss');
         this.setState({time: newTime});
+      }
     };
 
     async getCity() {
@@ -100,10 +104,10 @@ class MainSlider extends Component {
         let cityInfo = getStorageValue(StorageKeys.cityInfo);
 
         if (!cityInfo){
-          const cityInfo = await getCityInfo(city);
+          cityInfo = await getCityInfo(city);
           setStorageValue(StorageKeys.cityInfo, cityInfo);
         }
-        if (cityInfo){
+        if (cityInfo) {
           this.setState({
             city: {
               name: cityInfo.LocalizedName,
@@ -117,9 +121,11 @@ class MainSlider extends Component {
             }
           });
         }
+        return cityInfo.Key;
     }
 
     async getWeatherConditions(cityKey) {
+      if (cityKey) {
         let currentConditions = getStorageValue(StorageKeys.currentConditions);
         let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.conditions));
         let now = moment(Date.now());
@@ -133,9 +139,11 @@ class MainSlider extends Component {
             const weather = getWeather(currentConditions);
             this.setState({ weather: weather });
         }
+      }
     }
 
     async getWeatherForecastHourly(cityKey) {
+      if (cityKey) {
         let forecastHourly = getStorageValue(StorageKeys.forecastHourly);
         let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly));
         let now = moment(Date.now());
@@ -150,9 +158,11 @@ class MainSlider extends Component {
             const forecast = getForecastHourly(forecastHourly);
             this.setState({ forecastHourly: forecast });
         }
+      }
     }
 
     async getWeatherForecastDaily(cityKey) {
+      if (cityKey) {
         let forecastDaily = getStorageValue(StorageKeys.forecastDaily);
         let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastDaily));
         let now = moment(Date.now());
@@ -166,13 +176,13 @@ class MainSlider extends Component {
             const forecast = getForecaseDaily(forecastDaily);
             this.setState({ forecastDaily: forecast });
         }
+      }
     }
 
     async componentDidMount() {
-        await this.getCity();
+        const cityKey = await this.getCity();
         this.getDate();
         this.getTime();
-        const cityKey = this.state.city.key;
         await this.getWeatherConditions(cityKey);
         await this.getWeatherForecastHourly(cityKey);
         await this.getWeatherForecastDaily(cityKey);

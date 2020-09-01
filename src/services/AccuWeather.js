@@ -12,13 +12,13 @@ let defaultParams = {
 };
 
 export async function getCityInfo(search){
-    let cityKey = await axios({
+    let cityInfo = await axios({
         method: 'GET',
         url: `${baseUrl}/locations/v1/cities/search`,
         params: Object.assign({q: search}, defaultParams)
     }).then(r => { return r.data[0]; })
     .catch(e => { console.warn(e); return null; });
-    return cityKey;
+    return cityInfo;
 }
 
 export async function getCurrentConditions(cityKey){
@@ -82,7 +82,7 @@ export function getWeather(conditions){
     }
 }
 
- export function getForecastHourly(forescastHourly){
+export function getForecastHourly(forescastHourly){
     let forecast = [];
     for (let i = 0; i < 4; i++) {
         const f = forescastHourly[i];
@@ -94,7 +94,7 @@ export function getWeather(conditions){
             feel: {
                 value: f.RealFeelTemperature.Value,
                 unit: f.RealFeelTemperature.Unit
-            }, 
+            },
             dateTime: moment(f.DateTime).format("HH:mm"),
             uv: {
                 index: f.UVIndex,
@@ -107,7 +107,7 @@ export function getWeather(conditions){
     return forecast;
  }
 
- export function getForecaseDaily(forescastResult) {
+export function getForecaseDaily(forescastResult) {
     let forecast = [];
     for (let i = 0; i < 4; i++) {
         const f = forescastResult[i];
