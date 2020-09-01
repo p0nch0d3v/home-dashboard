@@ -169,7 +169,7 @@ class MainSlider extends Component {
         let now = moment(Date.now());
         let firstHour = forecastHourly ? moment(forecastHourly[0].DateTime) : moment(null);
 
-        if (!forecastHourly || (now - lastUpdate) >= this.intervals.forecastHourly /*|| now >= firstHour*/) {
+        if (!forecastHourly || (now - lastUpdate) >= this.intervals.forecastHourly || now >= firstHour.add(15, 'm')) {
             forecastHourly = await getForecastHourly12(cityKey);
             setStorageValue(StorageKeys.forecastHourly, forecastHourly);
             setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
@@ -240,7 +240,8 @@ class MainSlider extends Component {
           <WeatherCurrent weather={this.state.weather} /> : '');
         this.sliderItems.push(this.state.weather ?
            <WeatherCurrentComp weather={this.state.weather} /> : '');
-        //this.sliderItems.push(this.state.forecastHourly ? <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
+        this.sliderItems.push(this.state.forecastHourly ?
+          <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
         //this.sliderItems.push(this.state.forecastDaily ? <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
 
         return (
