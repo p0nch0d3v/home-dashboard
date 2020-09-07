@@ -3,11 +3,13 @@ import './WeatherForecastHourly.scss';
 
 export default function WeatherForecastHourly(props) {
     const forecast = [...props.forecast];
+    const borderClasses = ['border-right', 'border-bottom', 'border-top', 'border-left'];
+
     return (
         <div className="weatherForecastHourly">
             {forecast.map((f, i) => (
-                <span key={i} className="weatherForecastHourly_item">
-                    <span className="weatherForecastHourly_doubleSubItem">
+                <span key={i} className={'weatherForecastHourly_item ' + borderClasses[i]}>
+                    <span className="weatherForecastHourly_doubleSubItem main_text">
                       <div>{f.dateTime}</div>
                       <div>{f.text}</div>
                     </span>

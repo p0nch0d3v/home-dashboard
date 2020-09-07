@@ -109,7 +109,7 @@ export function getForecastHourly(forescastHourly){
 
 export function getForecaseDaily(forescastResult) {
     let forecast = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 1; i < 5; i++) {
         const f = forescastResult[i];
         forecast.push({
             temp: {
@@ -122,7 +122,11 @@ export function getForecaseDaily(forescastResult) {
                     unit: f.Temperature.Minimum.Unit
                 }
             },
-            date: moment(f.Date).format('MM/DD dddd'),
+            date: {
+              month: moment(f.Date).format('MMMM'),
+              dayNumber: moment(f.Date).format('DD'),
+              dayWeek: moment(f.Date).format('dddd')
+            },
             icon: `https://www.accuweather.com/images/weathericons/${f.Day.Icon}.svg`,
             text: f.Day.IconPhrase,
             sunRise: moment(f.Sun.Rise).format("HH:mm"),
