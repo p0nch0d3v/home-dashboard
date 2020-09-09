@@ -12,19 +12,20 @@ import {
     getWeather,
     getForecastHourly,
     getForecaseDaily
-} from '../services/AccuWeather';
+} from '../../services/AccuWeather';
 
 import {
     StorageKeys,
     getStorageValue,
     setStorageValue
-} from '../services/DataService';
+} from '../../services/DataService';
 
-import DateTime from './DateTime';
-import WeatherCurrent from './WeatherCurrent';
-import WeatherCurrentComp from './WeatherCurrentComp';
-import WeatherForecastHourly from './WeatherForecastHourly';
-import WeatherForecastDaily from  './WeatherForecastDaily';
+import DateTime from '../DateTime/DateTime';
+import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
+import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
+import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
+import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
+import DebugInfo from '../DebugInfo/DebugInfo';
 
 class MainSlider extends Component {
     second = 1000;
@@ -80,13 +81,20 @@ class MainSlider extends Component {
             }
         },
         forecastHourly: [],
-        forecastDaily: []
+        forecastDaily: [],
+        debug: {
+          lastUpdate: {
+            conditions: null,
+            forecastHourly: null,
+            forecastDaily: null
+          }
+        }
     };
 
     getDate = () => {
       if (this.state.timeZone.name) {
         let newMomentDate = moment.utc().tz(this.state.timeZone.name);
-        let newDate = newMomentDate.format('MM/DD/YYYY');
+        let newDate = newMomentDate.format('MMM/DD/YYYY');
         let newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newDate});
         this.setState({weekDay: newWeekDay});
@@ -100,7 +108,7 @@ class MainSlider extends Component {
       }
     };
 
-    setSliderInterval() {
+    setSliderInterval = () => {
       if (this.sliderInternval) {
         clearInterval(this.sliderInternval);
       }
@@ -109,7 +117,7 @@ class MainSlider extends Component {
       }, this.second * 20);
     }
 
-    moveSlider(forward){
+    moveSlider = (forward) => {
       if (forward) {
         this.currentSlider = (this.currentSlider + 1) < this.sliderItems.length ? (this.currentSlider + 1) : 0;
       }
@@ -119,11 +127,23 @@ class MainSlider extends Component {
       this.setSliderInterval();
     }
 
+    setStateDebug = () => {
+      const format = 'YYYY-MM-DD HH:mm:ss.SSS';
+      const newDebug = {
+        lastUpdate: {
+          conditions: moment(getStorageValue(StorageKeys.lastUpdate.conditions)).format(format),
+          forecastHourly: moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly)).format(format),
+          forecastDaily: moment(getStorageValue(StorageKeys.lastUpdate.forecastDaily)).format(format)
+        }
+      };
+      this.setState({debug: newDebug});
+    }
+
     async getCity() {
         const city = '';
         let cityInfo = getStorageValue(StorageKeys.cityInfo);
 
-        if (!cityInfo){
+        if (!cityInfo) {
           cityInfo = await getCityInfo(city);
           setStorageValue(StorageKeys.cityInfo, cityInfo);
         }
@@ -155,10 +175,11 @@ class MainSlider extends Component {
             setStorageValue(StorageKeys.currentConditions, currentConditions);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
         }
-        if (currentConditions){
+        if (currentConditions) {
             const weather = getWeather(currentConditions);
             this.setState({ weather: weather });
         }
+        this.setStateDebug();
       }
     }
 
@@ -178,6 +199,7 @@ class MainSlider extends Component {
             const forecast = getForecastHourly(forecastHourly);
             this.setState({ forecastHourly: forecast });
         }
+        this.setStateDebug();
       }
     }
 
@@ -196,6 +218,7 @@ class MainSlider extends Component {
             const forecast = getForecaseDaily(forecastDaily);
             this.setState({ forecastDaily: forecast });
         }
+        this.setStateDebug();
       }
     }
 
@@ -230,24 +253,28 @@ class MainSlider extends Component {
         this.setSliderInterval();
     }
 
-    render(){
+    render = () => {
         this.sliderItems = [];
-        this.sliderItems.push(this.state.date ?
-          <DateTime date={this.state.date}
-                    time={this.state.time}
-                    weekDay={this.state.weekDay} /> : '');
-
-        this.sliderItems.push(this.state.weather ?
-          <WeatherCurrent weather={this.state.weather} /> : '');
-
-        this.sliderItems.push(this.state.weather ?
-           <WeatherCurrentComp weather={this.state.weather} /> : '');
-
-        this.sliderItems.push(this.state.forecastHourly ?
-         <WeatherForecastHourly forecast={this.state.forecastHourly} /> : '');
-
-        this.sliderItems.push(this.state.forecastDaily ?
-         <WeatherForecastDaily forecast={this.state.forecastDaily}/> : '');
+        if (this.state.date) {
+          this.sliderItems.push(
+            <DateTime date={this.state.date}
+                      time={this.state.time}
+                      weekDay={this.state.weekDay} />
+          );
+        }
+        if (this.state.weather) {
+          this.sliderItems.push(<WeatherCurrent weather={this.state.weather} />);
+          this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
+        }
+        if (this.state.forecastHourly) {
+          this.sliderItems.push(<WeatherForecastHourly forecast={this.state.forecastHourly} />);
+        }
+        if (this.state.forecastDaily) {
+           this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
+        }
+        if (this.state.debug) {
+           this.sliderItems.push(<DebugInfo debug={this.state.debug} />);
+        }
 
         return (
           <div className="container-fliud">

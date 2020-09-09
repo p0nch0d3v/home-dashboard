@@ -9,7 +9,7 @@ export default function WeatherCurrent(props){
             </div>
             <div className="weatherCurrent_item">
                 <span>{props.weather.temp.value} °{props.weather.temp.unit}</span>
-                <span>({props.weather.feel.value} °{props.weather.feel.unit})</span>
+                {props.weather.temp.value !== props.weather.feel.value ? <span>({props.weather.feel.value} °{props.weather.feel.unit})</span> : null}
             </div>
             <div className="weatherCurrent_doubleItem border-top">
                 <span>{props.weather.text}</span>
