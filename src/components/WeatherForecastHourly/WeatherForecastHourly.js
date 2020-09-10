@@ -16,10 +16,11 @@ export default function WeatherForecastHourly(props) {
                     <span className="weatherForecastHourly_subItem">
                       <img className="icon" src={f.icon} alt={f.text} />
                     </span>
-                    <span className="weatherForecastHourly_subItem">
+                    <span className="weatherForecastHourly_subItem text_info">
                       <div>{f.temp.value} °{f.temp.unit}</div>
                       <div>({f.feel.value} °{f.feel.unit})</div>
                       <div>UV: {f.uv.index} {f.uv.text}</div>
+                      <div>Rain: {f.precipitationProbability} %</div>
                     </span>
                 </span>
             ))}

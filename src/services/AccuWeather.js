@@ -82,56 +82,62 @@ export function getWeather(conditions){
     }
 }
 
-export function getForecastHourly(forescastHourly){
+export function getForecastHourly(forescastHourly, currentHour) {
+    currentHour = new Date(currentHour);
     let forecast = [];
-    for (let i = 0; i < 4; i++) {
-        const f = forescastHourly[i];
-        forecast.push({
-            temp: {
-                value: f.Temperature.Value,
-                unit: f.Temperature.Unit
-            },
-            feel: {
-                value: f.RealFeelTemperature.Value,
-                unit: f.RealFeelTemperature.Unit
-            },
-            dateTime: moment(f.DateTime).format("HH:mm"),
-            uv: {
-                index: f.UVIndex,
-                text: f.UVIndexText
-            },
-            icon: `https://www.accuweather.com/images/weathericons/${f.WeatherIcon}.svg`,
-            text: f.IconPhrase,
-        });
-    }
+    forescastHourly.map(f => {
+        if (moment(f.EpochDateTime * 1000) > moment(currentHour) && forecast.length < 4) {
+          forecast.push({
+              temp: {
+                  value: f.Temperature.Value,
+                  unit: f.Temperature.Unit
+              },
+              feel: {
+                  value: f.RealFeelTemperature.Value,
+                  unit: f.RealFeelTemperature.Unit
+              },
+              dateTime: moment(f.DateTime).format("HH:mm"),
+              uv: {
+                  index: f.UVIndex,
+                  text: f.UVIndexText
+              },
+              icon: `https://www.accuweather.com/images/weathericons/${f.WeatherIcon}.svg`,
+              text: f.IconPhrase,
+              precipitationProbability: f.PrecipitationProbability
+          });
+        }
+    });
     return forecast;
  }
 
-export function getForecaseDaily(forescastResult) {
+export function getForecaseDaily(forescastResult, currentDay) {
     let forecast = [];
-    for (let i = 1; i < 5; i++) {
-        const f = forescastResult[i];
-        forecast.push({
-            temp: {
-                min: {
-                    value: f.Temperature.Maximum.Value,
-                    unit: f.Temperature.Maximum.Unit
+    forescastResult.map(f => {
+        if (forecast.length < 4) {
+            forecast.push({
+                temp: {
+                    min: {
+                        value: f.Temperature.Maximum.Value,
+                        unit: f.Temperature.Maximum.Unit
+                    },
+                    max: {
+                        value: f.Temperature.Minimum.Value,
+                        unit: f.Temperature.Minimum.Unit
+                    }
                 },
-                max: {
-                    value: f.Temperature.Minimum.Value,
-                    unit: f.Temperature.Minimum.Unit
-                }
-            },
-            date: {
-              month: moment(f.Date).format('MMMM'),
-              dayNumber: moment(f.Date).format('DD'),
-              dayWeek: moment(f.Date).format('dddd')
-            },
-            icon: `https://www.accuweather.com/images/weathericons/${f.Day.Icon}.svg`,
-            text: f.Day.IconPhrase,
-            sunRise: moment(f.Sun.Rise).format("HH:mm"),
-            sunSet: moment(f.Sun.Set).format("HH:mm")
-        });
-    }
+                date: {
+                    date: moment(f.Date),
+                    month: moment(f.Date).format('MMMM'),
+                    dayNumber: moment(f.Date).format('DD'),
+                    dayWeek: moment(f.Date).format('dddd')
+                },
+                icon: `https://www.accuweather.com/images/weathericons/${f.Day.Icon}.svg`,
+                text: f.Day.IconPhrase,
+                sunRise: moment(f.Sun.Rise),
+                sunSet: moment(f.Sun.Set),
+                precipitationProbability: f.Day.PrecipitationProbability
+            });
+        }
+    });
     return forecast;
  }

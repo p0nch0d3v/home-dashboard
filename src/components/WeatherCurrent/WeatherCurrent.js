@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import './WeatherCurrent.scss'
 
 export default function WeatherCurrent(props){
@@ -13,6 +14,7 @@ export default function WeatherCurrent(props){
             </div>
             <div className="weatherCurrent_doubleItem border-top">
                 <span>{props.weather.text}</span>
+                {props.sunRise && props.sunSet && <span>{props.sunRise.format('HH:mm')} - {props.sunSet.format('HH:mm')}</span>}
             </div>
         </div>
     );

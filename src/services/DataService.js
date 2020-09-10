@@ -11,12 +11,13 @@ export const StorageKeys = {
 };
 
 export function getStorageValue(key){
-    const value = localStorage[key];
+    const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : null;
 }
 
 export function setStorageValue(key, value){
     if (value) {
-        localStorage[key] = JSON.stringify(value);
+        localStorage.removeItem(key);
+        localStorage.setItem(key, JSON.stringify(value));
     }
 }

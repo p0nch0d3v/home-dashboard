@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import './WeatherForecastDaily.scss';
 
 export default function WeatherForecastDaily(props) {
@@ -18,8 +19,8 @@ export default function WeatherForecastDaily(props) {
                   <span className="weatherForecastDaily_subItem text_info">
                     <div>Max: {f.temp.min.value} °{f.temp.min.unit}</div>
                     <div>Min: {f.temp.max.value} °{f.temp.max.unit}</div>
-                    <div>Sunrise: {f.sunRise}</div>
-                    <div>Sunset: {f.sunSet}</div>
+                    <div>Rain: {f.precipitationProbability} %</div>
+                    <div>{f.sunRise.format('HH:mm')} - {f.sunSet.format('HH:mm')}</div>
                   </span>
                 </span>
             ))}

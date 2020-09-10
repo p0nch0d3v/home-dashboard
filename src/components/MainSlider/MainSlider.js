@@ -33,7 +33,7 @@ class MainSlider extends Component {
     hour = this.minute * 60;
     intervals = {
         conditions : this.minute * 20,
-        forecastHourly: this.minute * 30,
+        forecastHourly: this.hour,
         forecastDaily: this.hour
     };
     currentSlider = 0;
@@ -42,8 +42,11 @@ class MainSlider extends Component {
 
     state = {
         date: null,
+        formattedDate: null,
         time: null,
         weekDay: null,
+        sunRise: null,
+        sunSet: null,
         city: {
           key: null,
           name: null
@@ -93,17 +96,18 @@ class MainSlider extends Component {
 
     getDate = () => {
       if (this.state.timeZone.name) {
-        let newMomentDate = moment.utc().tz(this.state.timeZone.name);
-        let newDate = newMomentDate.format('MMM/DD/YYYY');
-        let newWeekDay = newMomentDate.format('dddd');
-        this.setState({date: newDate});
+        const newMomentDate = moment.utc().tz(this.state.timeZone.name);
+        const newDate = newMomentDate.format('MMM/DD/YYYY');
+        const newWeekDay = newMomentDate.format('dddd');
+        this.setState({date: newMomentDate});
+        this.setState({formattedDate: newDate});
         this.setState({weekDay: newWeekDay});
       }
     };
 
     getTime = () => {
       if (this.state.timeZone.name) {
-        let newTime = moment.utc().tz(this.state.timeZone.name).format('HH:mm:ss');
+        const newTime = moment.utc().tz(this.state.timeZone.name).format('HH:mm:ss');
         this.setState({time: newTime});
       }
     };
@@ -186,17 +190,16 @@ class MainSlider extends Component {
     async getWeatherForecastHourly(cityKey) {
       if (cityKey) {
         let forecastHourly = getStorageValue(StorageKeys.forecastHourly);
-        let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly));
-        let now = moment(Date.now());
-        let firstHour = forecastHourly ? moment(forecastHourly[0].DateTime) : moment(null);
+        const lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly));
+        const now = moment(Date.now());
 
-        if (!forecastHourly || ((now - lastUpdate) >= this.intervals.forecastHourly && now >= firstHour.add(15, 'm'))) {
+        if (!forecastHourly || ((now - lastUpdate) >= this.intervals.forecastHourly)) {
             forecastHourly = await getForecastHourly12(cityKey);
             setStorageValue(StorageKeys.forecastHourly, forecastHourly);
             setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
         }
         if (forecastHourly) {
-            const forecast = getForecastHourly(forecastHourly);
+            const forecast = getForecastHourly(forecastHourly, `${this.state.formattedDate} ${this.state.time}`);
             this.setState({ forecastHourly: forecast });
         }
         this.setStateDebug();
@@ -216,6 +219,11 @@ class MainSlider extends Component {
         }
         if (forecastDaily) {
             const forecast = getForecaseDaily(forecastDaily);
+            const today = forecast.find(f => f.date.date.format('MM/DD/YYYY') === this.state.date.format('MM/DD/YYYY'));
+            if (today) {
+              this.setState({ sunRise: today.sunRise });
+              this.setState({ sunSet: today.sunSet });
+            }
             this.setState({ forecastDaily: forecast });
         }
         this.setStateDebug();
@@ -257,13 +265,14 @@ class MainSlider extends Component {
         this.sliderItems = [];
         if (this.state.date) {
           this.sliderItems.push(
-            <DateTime date={this.state.date}
+            <DateTime date={this.state.formattedDate}
                       time={this.state.time}
-                      weekDay={this.state.weekDay} />
-          );
+                      weekDay={this.state.weekDay} /> );
         }
         if (this.state.weather) {
-          this.sliderItems.push(<WeatherCurrent weather={this.state.weather} />);
+          this.sliderItems.push(<WeatherCurrent weather={this.state.weather} 
+                                                sunRise={this.state.sunRise} 
+                                                sunSet={this.state.sunSet} />);
           this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
         }
         if (this.state.forecastHourly) {
@@ -272,9 +281,9 @@ class MainSlider extends Component {
         if (this.state.forecastDaily) {
            this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
         }
-        if (this.state.debug) {
-           this.sliderItems.push(<DebugInfo debug={this.state.debug} />);
-        }
+        // if (this.state.debug) {
+        //   this.sliderItems.push(<DebugInfo debug={this.state.debug} />);
+        // }
 
         return (
           <div className="container-fliud">
