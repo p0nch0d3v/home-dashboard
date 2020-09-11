@@ -20,7 +20,9 @@ export default function WeatherForecastHourly(props) {
                       <div>{f.temp.value} °{f.temp.unit}</div>
                       <div>({f.feel.value} °{f.feel.unit})</div>
                       <div>UV: {f.uv.index} {f.uv.text}</div>
-                      <div>Rain: {f.precipitationProbability} %</div>
+                      {(f.precipitationProbability && f.precipitationProbability > 0)
+                        ? <div>Rain: {f.precipitationProbability} %</div> : null
+                      }
                     </span>
                 </span>
             ))}

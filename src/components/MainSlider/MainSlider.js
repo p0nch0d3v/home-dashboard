@@ -25,7 +25,6 @@ import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
 import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
 import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
-import DebugInfo from '../DebugInfo/DebugInfo';
 
 class MainSlider extends Component {
     second = 1000;
@@ -145,89 +144,98 @@ class MainSlider extends Component {
 
     async getCity() {
         const city = '';
-        let cityInfo = getStorageValue(StorageKeys.cityInfo);
+        let cityInfoSaved = getStorageValue(StorageKeys.cityInfo);
 
-        if (!cityInfo) {
-          cityInfo = await getCityInfo(city);
+        if (!cityInfoSaved) {
+          const cityInfo = await getCityInfo(city);
           setStorageValue(StorageKeys.cityInfo, cityInfo);
         }
-        if (cityInfo) {
+
+        cityInfoSaved = getStorageValue(StorageKeys.cityInfo);
+        if (cityInfoSaved) {
           this.setState({
             city: {
-              name: cityInfo.LocalizedName,
-              key: cityInfo.Key
+              name: cityInfoSaved.LocalizedName,
+              key: cityInfoSaved.Key
             }
           });
           this.setState({
             timeZone: {
-              code: cityInfo.TimeZone.Code,
-              name: cityInfo.TimeZone.Name
+              code: cityInfoSaved.TimeZone.Code,
+              name: cityInfoSaved.TimeZone.Name
             }
           });
         }
-        return cityInfo.Key;
+        return cityInfoSaved ? cityInfoSaved.Key : null;
     }
 
     async getWeatherConditions(cityKey) {
       if (cityKey) {
-        let currentConditions = getStorageValue(StorageKeys.currentConditions);
-        let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.conditions));
-        let now = moment(Date.now());
+        let currentConditionsSaved = getStorageValue(StorageKeys.currentConditions);
+        const lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.conditions));
+        const now = moment(Date.now());
 
-        if (!currentConditions || (now - lastUpdate) >= this.intervals.conditions) {
-            currentConditions = await getCurrentConditions(cityKey);
+        if (!currentConditionsSaved || (now - lastUpdate) >= this.intervals.conditions) {
+            const currentConditions = await getCurrentConditions(cityKey);
             setStorageValue(StorageKeys.currentConditions, currentConditions);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
         }
-        if (currentConditions) {
-            const weather = getWeather(currentConditions);
-            this.setState({ weather: weather });
+
+        currentConditionsSaved = getStorageValue(StorageKeys.currentConditions);
+        if (currentConditionsSaved) {
+          const weather = getWeather(currentConditionsSaved);
+          this.setState({ weather: weather });
         }
-        this.setStateDebug();
       }
+      this.setStateDebug();
     }
 
     async getWeatherForecastHourly(cityKey) {
       if (cityKey) {
-        let forecastHourly = getStorageValue(StorageKeys.forecastHourly);
+        let forecastHourlySaved = getStorageValue(StorageKeys.forecastHourly);
         const lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly));
         const now = moment(Date.now());
 
-        if (!forecastHourly || ((now - lastUpdate) >= this.intervals.forecastHourly)) {
-            forecastHourly = await getForecastHourly12(cityKey);
+        if (!forecastHourlySaved || ((now - lastUpdate) >= this.intervals.forecastHourly)) {
+            const forecastHourly = await getForecastHourly12(cityKey);
             setStorageValue(StorageKeys.forecastHourly, forecastHourly);
             setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
+
         }
-        if (forecastHourly) {
-            const forecast = getForecastHourly(forecastHourly, `${this.state.formattedDate} ${this.state.time}`);
-            this.setState({ forecastHourly: forecast });
+
+        forecastHourlySaved = getStorageValue(StorageKeys.forecastHourly);
+        if (forecastHourlySaved) {
+          const forecast = getForecastHourly(forecastHourlySaved, `${this.state.formattedDate} ${this.state.time}`);
+          this.setState({ forecastHourly: forecast });
         }
-        this.setStateDebug();
       }
+      this.setStateDebug();
     }
 
     async getWeatherForecastDaily(cityKey) {
       if (cityKey) {
-        let forecastDaily = getStorageValue(StorageKeys.forecastDaily);
+        let forecastDailySaved = getStorageValue(StorageKeys.forecastDaily);
         let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastDaily));
         let now = moment(Date.now());
 
-        if (!forecastDaily || (now - lastUpdate) >= this.intervals.forecastDaily) {
-            forecastDaily = await getForecaseDaily5(cityKey);
+        if (!forecastDailySaved || (now - lastUpdate) >= this.intervals.forecastDaily) {
+            const forecastDaily = await getForecaseDaily5(cityKey);
             setStorageValue(StorageKeys.forecastDaily, forecastDaily);
             setStorageValue(StorageKeys.lastUpdate.forecastDaily, Date.now());
         }
-        if (forecastDaily) {
-            const forecast = getForecaseDaily(forecastDaily);
-            const today = forecast.find(f => f.date.date.format('MM/DD/YYYY') === this.state.date.format('MM/DD/YYYY'));
-            if (today) {
-              this.setState({ sunRise: today.sunRise });
-              this.setState({ sunSet: today.sunSet });
-            }
-            this.setState({ forecastDaily: forecast });
+
+        forecastDailySaved = getStorageValue(StorageKeys.forecastDaily);
+        if (forecastDailySaved) {
+          const forecast = getForecaseDaily(forecastDailySaved);
+          const today = forecast.find(f => f.date.date.format('MM/DD/YYYY') === this.state.date.format('MM/DD/YYYY'));
+          if (today) {
+            this.setState({ sunRise: today.sunRise });
+            this.setState({ sunSet: today.sunSet });
+          }
+          this.setState({ forecastDaily: forecast });
         }
-        this.setStateDebug();
       }
+      this.setStateDebug();
     }
 
     async componentDidMount() {
@@ -259,6 +267,7 @@ class MainSlider extends Component {
         }, this.minute);
 
         this.setSliderInterval();
+
     }
 
     render = () => {
@@ -270,8 +279,8 @@ class MainSlider extends Component {
                       weekDay={this.state.weekDay} /> );
         }
         if (this.state.weather) {
-          this.sliderItems.push(<WeatherCurrent weather={this.state.weather} 
-                                                sunRise={this.state.sunRise} 
+          this.sliderItems.push(<WeatherCurrent weather={this.state.weather}
+                                                sunRise={this.state.sunRise}
                                                 sunSet={this.state.sunSet} />);
           this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
         }
@@ -281,9 +290,19 @@ class MainSlider extends Component {
         if (this.state.forecastDaily) {
            this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
         }
-        // if (this.state.debug) {
-        //   this.sliderItems.push(<DebugInfo debug={this.state.debug} />);
-        // }
+
+        /*this.sliderItems.push(
+          <div className="text-center">
+            <h1>Conditions:</h1>
+            <h1>{this.state.debug.lastUpdate.conditions}</h1>
+            <br/>
+            <h1>Hourly:</h1>
+            <h1>{this.state.debug.lastUpdate.forecastHourly}</h1>
+            <br/>
+            <h1>Daily:</h1>
+            <h1>{this.state.debug.lastUpdate.forecastDaily}</h1>
+          </div>
+        );*/
 
         return (
           <div className="container-fliud">

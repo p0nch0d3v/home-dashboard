@@ -85,7 +85,7 @@ export function getWeather(conditions){
 export function getForecastHourly(forescastHourly, currentHour) {
     currentHour = new Date(currentHour);
     let forecast = [];
-    forescastHourly.map(f => {
+    forescastHourly.forEach(f => {
         if (moment(f.EpochDateTime * 1000) > moment(currentHour) && forecast.length < 4) {
           forecast.push({
               temp: {
@@ -112,7 +112,7 @@ export function getForecastHourly(forescastHourly, currentHour) {
 
 export function getForecaseDaily(forescastResult, currentDay) {
     let forecast = [];
-    forescastResult.map(f => {
+    forescastResult.forEach(f => {
         if (forecast.length < 4) {
             forecast.push({
                 temp: {
@@ -127,7 +127,7 @@ export function getForecaseDaily(forescastResult, currentDay) {
                 },
                 date: {
                     date: moment(f.Date),
-                    month: moment(f.Date).format('MMMM'),
+                    month: moment(f.Date).format('MMM'),
                     dayNumber: moment(f.Date).format('DD'),
                     dayWeek: moment(f.Date).format('dddd')
                 },
