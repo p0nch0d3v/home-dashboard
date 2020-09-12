@@ -46,6 +46,8 @@ class MainSlider extends Component {
         weekDay: null,
         sunRise: null,
         sunSet: null,
+        isDay: null,
+        isNight: null,
         city: {
           key: null,
           name: null
@@ -105,9 +107,20 @@ class MainSlider extends Component {
     };
 
     getTime = () => {
+      const now = moment.utc().tz(this.state.timeZone.name);
       if (this.state.timeZone.name) {
-        const newTime = moment.utc().tz(this.state.timeZone.name).format('HH:mm:ss');
+        const newTime = now.format('HH:mm:ss');
         this.setState({time: newTime});
+      }
+      if (this.state.sunRise && this.state.sunSet){
+        if (now >= this.state.sunRise && now <= this.state.sunSet) {
+          this.setState({ isDay: true });
+          this.setState({ isNight: false });
+        }
+        else {
+          this.setState({ isDay: false });
+          this.setState({ isNight: true });
+        }
       }
     };
 
@@ -177,8 +190,10 @@ class MainSlider extends Component {
 
         if (!currentConditionsSaved || (now - lastUpdate) >= this.intervals.conditions) {
             const currentConditions = await getCurrentConditions(cityKey);
-            setStorageValue(StorageKeys.currentConditions, currentConditions);
-            setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
+            if (currentConditions) {
+              setStorageValue(StorageKeys.currentConditions, currentConditions);
+              setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
+            }
         }
 
         currentConditionsSaved = getStorageValue(StorageKeys.currentConditions);
@@ -198,9 +213,10 @@ class MainSlider extends Component {
 
         if (!forecastHourlySaved || ((now - lastUpdate) >= this.intervals.forecastHourly)) {
             const forecastHourly = await getForecastHourly12(cityKey);
-            setStorageValue(StorageKeys.forecastHourly, forecastHourly);
-            setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
-
+            if (forecastHourly) {
+              setStorageValue(StorageKeys.forecastHourly, forecastHourly);
+              setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
+            }
         }
 
         forecastHourlySaved = getStorageValue(StorageKeys.forecastHourly);
@@ -220,8 +236,10 @@ class MainSlider extends Component {
 
         if (!forecastDailySaved || (now - lastUpdate) >= this.intervals.forecastDaily) {
             const forecastDaily = await getForecaseDaily5(cityKey);
-            setStorageValue(StorageKeys.forecastDaily, forecastDaily);
-            setStorageValue(StorageKeys.lastUpdate.forecastDaily, Date.now());
+            if (forecastDaily) {
+              setStorageValue(StorageKeys.forecastDaily, forecastDaily);
+              setStorageValue(StorageKeys.lastUpdate.forecastDaily, Date.now());
+            }
         }
 
         forecastDailySaved = getStorageValue(StorageKeys.forecastDaily);
@@ -304,8 +322,10 @@ class MainSlider extends Component {
           </div>
         );*/
 
+        const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
+
         return (
-          <div className="container-fliud">
+          <div className={'container-fliud ' + backgroundColor}>
             <div className="mainSlider row m-0">
               <div className="col-1 mainSlider_left"
                    onClick={() => { this.moveSlider(false) }}>&lt;</div>
