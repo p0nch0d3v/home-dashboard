@@ -14,7 +14,7 @@ export default function WeatherCurrent(props){
             </div>
             <div className="weatherCurrent_doubleItem border-top">
                 <span>{props.weather.text}</span>
-                {props.sunRise && props.sunSet && <span>{props.sunRise.format('HH:mm')} - {props.sunSet.format('HH:mm')}</span>}
+                <span>{props.weather.tempMin.value} °{props.weather.tempMin.unit} - {props.weather.tempMax.value} °{props.weather.tempMax.unit}</span>
             </div>
         </div>
     );

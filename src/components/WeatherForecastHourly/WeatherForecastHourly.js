@@ -3,24 +3,25 @@ import './WeatherForecastHourly.scss';
 
 export default function WeatherForecastHourly(props) {
     const forecast = [...props.forecast];
-    const borderClasses = ['border-right', 'border-bottom', 'border-top', 'border-left'];
+    const borderClasses = ['border-right', 'border-right', 'border-right', 'border-none'];
 
     return (
         <div className="weatherForecastHourly">
             {forecast.map((f, i) => (
                 <span key={i} className={'weatherForecastHourly_item ' + borderClasses[i]}>
-                    <span className="weatherForecastHourly_doubleSubItem main_text">
+                    <span className="main_text">
                       <div>{f.dateTime}</div>
                       <div>{f.text}</div>
                     </span>
-                    <span className="weatherForecastHourly_subItem">
-                      <img className="icon" src={f.icon} alt={f.text} />
-                    </span>
-                    <span className="weatherForecastHourly_subItem text_info">
+                    <img className="icon" src={f.icon} alt={f.text} />
+                    <span className="text_info">
                       <div>{f.temp.value} °{f.temp.unit}</div>
                       <div>({f.feel.value} °{f.feel.unit})</div>
-                      <div>UV: {f.uv.index} {f.uv.text}</div>
-                      {(f.precipitationProbability && f.precipitationProbability > 0)
+                      {
+                        (f.uv.index > 0) ? <div>UV: {f.uv.index}</div> : null
+                      }
+                      {
+                        (f.precipitationProbability && f.precipitationProbability > 0)
                         ? <div>Rain: {f.precipitationProbability} %</div> : null
                       }
                     </span>

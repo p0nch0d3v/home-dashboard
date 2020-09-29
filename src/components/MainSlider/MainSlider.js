@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -31,13 +32,16 @@ class MainSlider extends Component {
     minute = this.second * 60;
     hour = this.minute * 60;
     intervals = {
-        conditions : this.minute * 20,
+        conditions : this.minute * 25,
         forecastHourly: this.hour,
         forecastDaily: this.hour
     };
     currentSlider = 0;
     sliderItems = [];
     sliderInternval = null;
+    startTouchX = null;
+    endTouchX = null;
+
 
     state = {
         date: null,
@@ -82,6 +86,14 @@ class MainSlider extends Component {
                     value: null,
                     unit: null
                 }
+            },
+            tempMax: {
+                value: null,
+                unit: null
+            },
+            tempMin: {
+                value: null,
+                unit: null
             }
         },
         forecastHourly: [],
@@ -98,7 +110,7 @@ class MainSlider extends Component {
     getDate = () => {
       if (this.state.timeZone.name) {
         const newMomentDate = moment.utc().tz(this.state.timeZone.name);
-        const newDate = newMomentDate.format('MMM/DD/YYYY');
+        const newDate = newMomentDate.format('MMM / DD / YYYY');
         const newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newMomentDate});
         this.setState({formattedDate: newDate});
@@ -109,7 +121,7 @@ class MainSlider extends Component {
     getTime = () => {
       const now = moment.utc().tz(this.state.timeZone.name);
       if (this.state.timeZone.name) {
-        const newTime = now.format('HH:mm:ss');
+        const newTime = now.format('HH:mm');
         this.setState({time: newTime});
       }
       if (this.state.sunRise && this.state.sunSet){
@@ -144,15 +156,25 @@ class MainSlider extends Component {
     }
 
     setStateDebug = () => {
-      const format = 'YYYY-MM-DD HH:mm:ss.SSS';
+      const now = moment(new Date());
+
       const newDebug = {
         lastUpdate: {
-          conditions: moment(getStorageValue(StorageKeys.lastUpdate.conditions)).format(format),
-          forecastHourly: moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly)).format(format),
-          forecastDaily: moment(getStorageValue(StorageKeys.lastUpdate.forecastDaily)).format(format)
+          conditions: moment(now - getStorageValue(StorageKeys.lastUpdate.conditions)),
+          forecastHourly: moment(now - getStorageValue(StorageKeys.lastUpdate.forecastHourly)),
+          forecastDaily: moment(now - getStorageValue(StorageKeys.lastUpdate.forecastDaily))
         }
       };
       this.setState({debug: newDebug});
+    }
+
+    keyHandker = (e) => {
+      if (e.charCode === 37 || e.keyCode === 37) {
+        this.moveSlider(false);
+      }
+      if (e.charCode === 39 || e.keyCode === 39){
+        this.moveSlider(true);
+      }
     }
 
     async getCity() {
@@ -245,12 +267,17 @@ class MainSlider extends Component {
         forecastDailySaved = getStorageValue(StorageKeys.forecastDaily);
         if (forecastDailySaved) {
           const forecast = getForecaseDaily(forecastDailySaved);
-          const today = forecast.find(f => f.date.date.format('MM/DD/YYYY') === this.state.date.format('MM/DD/YYYY'));
+          let today =  forecast.find(f => f.date.date.format('MM/DD/YYYY') === this.state.date.format('MM/DD/YYYY'));
+          let forecastArray = forecast.filter(f => f.date.date.format('MM/DD/YYYY') !== this.state.date.format('MM/DD/YYYY'))
           if (today) {
             this.setState({ sunRise: today.sunRise });
             this.setState({ sunSet: today.sunSet });
+            let currentWeather = this.state.weather;
+            currentWeather.tempMax = today.temp.max;
+            currentWeather.tempMin = today.temp.min;
+            this.setState({ weather: currentWeather });
           }
-          this.setState({ forecastDaily: forecast });
+          this.setState({ forecastDaily: forecastArray });
         }
       }
       this.setStateDebug();
@@ -286,6 +313,25 @@ class MainSlider extends Component {
 
         this.setSliderInterval();
 
+        document.body.addEventListener('touchstart', (e) => {
+          var touchobj = e.changedTouches[0];
+          this.startTouchX = parseInt(touchobj.clientX);
+          e.preventDefault();
+        }, false);
+
+        document.body.addEventListener('touchend', (e) => {
+          var touchobj = e.changedTouches[0];
+          this.endTouchX = parseInt(touchobj.clientX);
+          const diff = this.startTouchX - this.endTouchX;
+          if (diff >= 600) {
+            this.moveSlider(true);
+          }
+          else if (diff <= -600) {
+            this.moveSlider(false);
+          }
+          this.startTouchX = null;
+          e.preventDefault();
+        }, false);
     }
 
     render = () => {
@@ -297,9 +343,7 @@ class MainSlider extends Component {
                       weekDay={this.state.weekDay} /> );
         }
         if (this.state.weather) {
-          this.sliderItems.push(<WeatherCurrent weather={this.state.weather}
-                                                sunRise={this.state.sunRise}
-                                                sunSet={this.state.sunSet} />);
+          this.sliderItems.push(<WeatherCurrent weather={this.state.weather} />);
           this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
         }
         if (this.state.forecastHourly) {
@@ -309,33 +353,39 @@ class MainSlider extends Component {
            this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
         }
 
-        /*this.sliderItems.push(
-          <div className="text-center">
-            <h1>Conditions:</h1>
-            <h1>{this.state.debug.lastUpdate.conditions}</h1>
-            <br/>
-            <h1>Hourly:</h1>
-            <h1>{this.state.debug.lastUpdate.forecastHourly}</h1>
-            <br/>
-            <h1>Daily:</h1>
-            <h1>{this.state.debug.lastUpdate.forecastDaily}</h1>
-          </div>
-        );*/
+        if (this.state.debug.lastUpdate.conditions &&
+            this.state.debug.lastUpdate.forecastHourly &&
+            this.state.debug.lastUpdate.forecastDaily) {
+
+          if (this.state.debug.lastUpdate.conditions > moment(this.intervals.conditions) ||
+              this.state.debug.lastUpdate.forecastHourly > moment(this.intervals.forecastHourly) ||
+              this.state.debug.lastUpdate.forecastDaily > moment(this.intervals.forecastDaily)) {
+
+            this.sliderItems.push(
+              <div className="text-center" style={{fontSize:'10vw'}}>
+                <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
+                <br/>
+                <span>Hourly:{this.state.debug.lastUpdate.forecastHourly}</span>
+                <br/>
+                <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
+              </div>
+            );
+          }
+        }
 
         const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
 
         return (
-          <div className={'container-fliud ' + backgroundColor}>
-            <div className="mainSlider row m-0">
-              <div className="col-1 mainSlider_left"
-                   onClick={() => { this.moveSlider(false) }}>&lt;</div>
-              <div className="col-10 content">
+          <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={this.keyHandker}>
+            <div className="mainSlider row m-0 p-0">
+              <div className="col-12 m-0 p-0 content">
                   { this.sliderItems[this.currentSlider] }
               </div>
-              <div className="col-1 mainSlider_right"
-                   onClick={() => { this.moveSlider(true) }}> &gt;</div>
             </div>
+            <KeyboardEventHandler handleKeys={['left', 'right']}
+                                  onKeyEvent={(key, e) => this.keyHandker(e)} />
           </div>
+
         );
     }
 }

@@ -78,6 +78,14 @@ export function getWeather(conditions){
                 value: conditions.Wind.Speed.Metric.Value,
                 unit: conditions.Wind.Speed.Metric.Unit
             }
+        },
+        tempMax: {
+          value: null,
+          unit: null
+        },
+        tempMin: {
+          value: null,
+          unit: null
         }
     }
 }
@@ -110,17 +118,17 @@ export function getForecastHourly(forescastHourly, currentHour) {
     return forecast;
  }
 
-export function getForecaseDaily(forescastResult, currentDay) {
+export function getForecaseDaily(forescastResult) {
     let forecast = [];
     forescastResult.forEach(f => {
-        if (forecast.length < 4) {
+        if (forecast.length < 5) {
             forecast.push({
                 temp: {
-                    min: {
+                    max: {
                         value: f.Temperature.Maximum.Value,
                         unit: f.Temperature.Maximum.Unit
                     },
-                    max: {
+                    min: {
                         value: f.Temperature.Minimum.Value,
                         unit: f.Temperature.Minimum.Unit
                     }
