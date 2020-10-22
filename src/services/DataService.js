@@ -11,13 +11,13 @@ export const StorageKeys = {
 };
 
 export function getStorageValue(key){
-    const value = localStorage.getItem(key);
+    const value = sessionStorage.getItem(key);
     return value ? JSON.parse(value) : null;
 }
 
 export function setStorageValue(key, value){
     if (value) {
-        localStorage.removeItem(key);
-        localStorage.setItem(key, JSON.stringify(value));
+        sessionStorage.removeItem(key);
+        sessionStorage.setItem(key, JSON.stringify(value));
     }
 }

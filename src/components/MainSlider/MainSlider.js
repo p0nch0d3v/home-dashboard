@@ -103,7 +103,8 @@ class MainSlider extends Component {
             conditions: null,
             forecastHourly: null,
             forecastDaily: null
-          }
+          },
+          showDebug: false
         }
     };
 
@@ -158,13 +159,21 @@ class MainSlider extends Component {
     setStateDebug = () => {
       const now = moment(new Date());
 
+      const conditionsDiff = now - getStorageValue(StorageKeys.lastUpdate.conditions);
+      const forecastHourlyDiff = now - getStorageValue(StorageKeys.lastUpdate.forecastHourly);
+      const forecastDailyDiff = now - getStorageValue(StorageKeys.lastUpdate.forecastDaily);
+
       const newDebug = {
         lastUpdate: {
-          conditions: moment(now - getStorageValue(StorageKeys.lastUpdate.conditions)),
-          forecastHourly: moment(now - getStorageValue(StorageKeys.lastUpdate.forecastHourly)),
-          forecastDaily: moment(now - getStorageValue(StorageKeys.lastUpdate.forecastDaily))
-        }
+          conditions: moment(conditionsDiff).format('mm:ss'),
+          forecastHourly: moment(forecastHourlyDiff).format('mm:ss'),
+          forecastDaily: moment(forecastDailyDiff).format('mm:ss')
+        },
+        showDebug: (conditionsDiff >= this.intervals.conditions)
+                || (forecastHourlyDiff >= this.intervals.forecastHourly)
+                || (forecastDailyDiff >= this.intervals.forecastDaily)
       };
+
       this.setState({debug: newDebug});
     }
 
@@ -275,6 +284,7 @@ class MainSlider extends Component {
             let currentWeather = this.state.weather;
             currentWeather.tempMax = today.temp.max;
             currentWeather.tempMin = today.temp.min;
+            currentWeather.precipitationProbability = today.precipitationProbability;
             this.setState({ weather: currentWeather });
           }
           this.setState({ forecastDaily: forecastArray });
@@ -336,41 +346,24 @@ class MainSlider extends Component {
 
     render = () => {
         this.sliderItems = [];
-        if (this.state.date) {
+        this.sliderItems.push(
+          <DateTime date={this.state.formattedDate}
+                    time={this.state.time}
+                    weekDay={this.state.weekDay} /> );
+        this.sliderItems.push(<WeatherCurrent weather={this.state.weather} />);
+        this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
+        this.sliderItems.push(<WeatherForecastHourly forecast={this.state.forecastHourly} />);
+        this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
+        if (this.state.debug.showDebug) {
           this.sliderItems.push(
-            <DateTime date={this.state.formattedDate}
-                      time={this.state.time}
-                      weekDay={this.state.weekDay} /> );
-        }
-        if (this.state.weather) {
-          this.sliderItems.push(<WeatherCurrent weather={this.state.weather} />);
-          this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
-        }
-        if (this.state.forecastHourly) {
-          this.sliderItems.push(<WeatherForecastHourly forecast={this.state.forecastHourly} />);
-        }
-        if (this.state.forecastDaily) {
-           this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
-        }
-
-        if (this.state.debug.lastUpdate.conditions &&
-            this.state.debug.lastUpdate.forecastHourly &&
-            this.state.debug.lastUpdate.forecastDaily) {
-
-          if (this.state.debug.lastUpdate.conditions > moment(this.intervals.conditions) ||
-              this.state.debug.lastUpdate.forecastHourly > moment(this.intervals.forecastHourly) ||
-              this.state.debug.lastUpdate.forecastDaily > moment(this.intervals.forecastDaily)) {
-
-            this.sliderItems.push(
-              <div className="text-center" style={{fontSize:'10vw'}}>
-                <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
-                <br/>
-                <span>Hourly:{this.state.debug.lastUpdate.forecastHourly}</span>
-                <br/>
-                <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
-              </div>
-            );
-          }
+            <div className="text-center" style={{fontSize:'10vw'}}>
+              <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
+              <br/>
+              <span>Hourly: {this.state.debug.lastUpdate.forecastHourly}</span>
+              <br/>
+              <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
+            </div>
+          );
         }
 
         const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
