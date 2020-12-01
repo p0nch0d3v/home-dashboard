@@ -187,7 +187,7 @@ class MainSlider extends Component {
     }
 
     async getCity() {
-        const city = '';
+        const city = 'Hermosillo, Sonora, Mexico';
         let cityInfoSaved = getStorageValue(StorageKeys.cityInfo);
 
         if (!cityInfoSaved) {
@@ -384,3 +384,4 @@ class MainSlider extends Component {
 }
 
 export default MainSlider;
+

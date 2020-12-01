@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 
-const apikey = '';
+const apikey = 'q5k9eGMwkkkyefZ8KwX47vtCvFanuf5u';
 const language = 'en-us';
 const baseUrl = 'http://dataservice.accuweather.com';
 let defaultParams = {
@@ -55,12 +55,12 @@ export function getWeather(conditions){
     return {
         text: conditions.WeatherText,
         temp: {
-            value: conditions.Temperature.Metric.Value,
+            value: Math.round(conditions.Temperature.Metric.Value),
             unit: conditions.Temperature.Metric.Unit,
         },
         humidity: conditions.RelativeHumidity,
         feel: {
-            value: conditions.RealFeelTemperature.Metric.Value,
+            value: Math.round(conditions.RealFeelTemperature.Metric.Value),
             unit: conditions.RealFeelTemperature.Metric.Unit,
         },
         icon: `https://www.accuweather.com/images/weathericons/${conditions.WeatherIcon}.svg`,
@@ -97,11 +97,11 @@ export function getForecastHourly(forescastHourly, currentHour) {
         if (moment(f.EpochDateTime * 1000) > moment(currentHour) && forecast.length < 4) {
           forecast.push({
               temp: {
-                  value: f.Temperature.Value,
+                  value: Math.round(f.Temperature.Value),
                   unit: f.Temperature.Unit
               },
               feel: {
-                  value: f.RealFeelTemperature.Value,
+                  value: Math.round(f.RealFeelTemperature.Value),
                   unit: f.RealFeelTemperature.Unit
               },
               dateTime: moment(f.DateTime).format("HH:mm"),
@@ -125,11 +125,11 @@ export function getForecaseDaily(forescastResult) {
             forecast.push({
                 temp: {
                     max: {
-                        value: f.Temperature.Maximum.Value,
+                        value: Math.round(f.Temperature.Maximum.Value),
                         unit: f.Temperature.Maximum.Unit
                     },
                     min: {
-                        value: f.Temperature.Minimum.Value,
+                        value: Math.round(f.Temperature.Minimum.Value),
                         unit: f.Temperature.Minimum.Unit
                     }
                 },

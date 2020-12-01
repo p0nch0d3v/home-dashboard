@@ -4,6 +4,6 @@ services:
   home-dashboard:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - 3000:80
