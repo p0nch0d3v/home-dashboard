@@ -18,7 +18,8 @@ export default function WeatherCurrentComp(props){
             </div>
             <div className="weatherCurrentComp_item border-left">
                 <div>Wind:</div>
-                <div>{props.weather.wind.speed.value} {props.weather.wind.speed.unit} {props.weather.wind.direction}</div>
+                <div>{props.weather.wind.speed.value} {props.weather.wind.speed.unit}</div>
+                <div>{props.weather.wind.direction}</div>
             </div>
         </div>
     );

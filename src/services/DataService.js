@@ -1,5 +1,6 @@
 export const StorageKeys = {
     cityInfo: 'cityInfo',
+    locationInfo: 'locationInfo',
     currentConditions: 'currentConditions',
     forecastHourly: 'forecastHourly',
     forecastDaily: 'forecastDaily',
