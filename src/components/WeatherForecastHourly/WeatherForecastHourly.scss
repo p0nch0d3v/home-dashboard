@@ -1,10 +1,10 @@
 .weatherForecastHourly {
-  height: 100vh;
+  height: 95vh;
   display: flex;
   flex-wrap: wrap;
 
   &_item {
-    width: 25%;
+    width: 20%;
     display: flex;
     justify-content: space-evenly;
     flex-direction: column;

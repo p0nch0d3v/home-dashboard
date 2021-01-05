@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 
-const apikey = 'q5k9eGMwkkkyefZ8KwX47vtCvFanuf5u';
+const apikey = process.env.REACT_APP_ACCUWEATHER_API_KEY;
 const language = 'en-us';
 const baseUrl = 'http://dataservice.accuweather.com';
 let defaultParams = {
@@ -57,6 +57,7 @@ export function getWeather(conditions){
         temp: {
             value: Math.round(conditions.Temperature.Metric.Value),
             unit: conditions.Temperature.Metric.Unit,
+            formatted: Math.round(conditions.Temperature.Metric.Value) + ' °' + conditions.Temperature.Metric.Unit 
         },
         humidity: conditions.RelativeHumidity,
         feel: {
@@ -94,7 +95,7 @@ export function getForecastHourly(forescastHourly, currentHour) {
     currentHour = new Date(currentHour);
     let forecast = [];
     forescastHourly.forEach(f => {
-        if (moment(f.EpochDateTime * 1000) > moment(currentHour) && forecast.length < 4) {
+        if (moment(f.EpochDateTime * 1000) > moment(currentHour) && forecast.length < 5) {
           forecast.push({
               temp: {
                   value: Math.round(f.Temperature.Value),
@@ -104,7 +105,7 @@ export function getForecastHourly(forescastHourly, currentHour) {
                   value: Math.round(f.RealFeelTemperature.Value),
                   unit: f.RealFeelTemperature.Unit
               },
-              dateTime: moment(f.DateTime).format("HH:mm"),
+              dateTime: moment(f.DateTime).format("hh A"),
               uv: {
                   index: f.UVIndex,
                   text: f.UVIndexText
@@ -137,7 +138,7 @@ export function getForecaseDaily(forescastResult) {
                     date: moment(f.Date),
                     month: moment(f.Date).format('MMM'),
                     dayNumber: moment(f.Date).format('DD'),
-                    dayWeek: moment(f.Date).format('dddd')
+                    dayWeek: moment(f.Date).format('ddd')
                 },
                 icon: `https://www.accuweather.com/images/weathericons/${f.Day.Icon}.svg`,
                 text: f.Day.IconPhrase,

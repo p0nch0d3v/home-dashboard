@@ -20,7 +20,7 @@ export default function WeatherForecastDaily(props) {
                     <div>{f.temp.max.value} °{f.temp.max.unit}</div>
                     {
                       (f.precipitationProbability && f.precipitationProbability > 0)
-                      ? <div>Rain: {f.precipitationProbability} %</div> : null
+                      ? <div>[{f.precipitationProbability} %]</div> : null
                     }
                   </span>
                 </span>

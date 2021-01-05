@@ -1,0 +1,21 @@
+.main-header {
+    width: 100vw;
+    height: 5vh;
+    font-size: 2.5vw;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-weight: bold;
+    
+    &_time {
+        border-bottom: 1px solid;
+        margin-left: 1vw;
+    }
+    &_temp {
+        border-bottom: 1px solid;
+    }
+    &_date {
+        border-bottom: 1px solid;
+        margin-right: 1vw;
+    }
+}

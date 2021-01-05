@@ -26,15 +26,16 @@ import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
 import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
 import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
+import MainHeader from '../MainHeader/MainHeader';
 
 class MainSlider extends Component {
     second = 1000;
     minute = this.second * 60;
     hour = this.minute * 60;
     intervals = {
-        conditions : this.minute * 25,
-        forecastHourly: this.hour,
-        forecastDaily: this.hour
+        conditions : this.minute * 20,
+        forecastHourly: this.hour * 2,
+        forecastDaily: this.hour * 2
     };
     currentSlider = 0;
     sliderItems = [];
@@ -111,7 +112,7 @@ class MainSlider extends Component {
     getDate = () => {
       if (this.state.timeZone.name) {
         const newMomentDate = moment.utc().tz(this.state.timeZone.name);
-        const newDate = newMomentDate.format('MMM / DD / YYYY');
+        const newDate = newMomentDate.format('DD / MMM / YYYY');
         const newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newMomentDate});
         this.setState({formattedDate: newDate});
@@ -122,7 +123,7 @@ class MainSlider extends Component {
     getTime = () => {
       const now = moment.utc().tz(this.state.timeZone.name);
       if (this.state.timeZone.name) {
-        const newTime = now.format('HH:mm');
+        const newTime = now.format('hh:mm A');
         this.setState({time: newTime});
       }
       if (this.state.sunRise && this.state.sunSet){
@@ -187,7 +188,7 @@ class MainSlider extends Component {
     }
 
     async getCity() {
-        const city = 'Hermosillo, Sonora, Mexico';
+        const city = '';
         let cityInfoSaved = getStorageValue(StorageKeys.cityInfo);
 
         if (!cityInfoSaved) {
@@ -307,7 +308,7 @@ class MainSlider extends Component {
 
         setInterval(() => {
             this.getDate();
-        }, this.hour);
+        }, this.minute);
 
         setInterval(async ()=>{
             await this.getWeatherConditions(cityKey);
@@ -333,10 +334,10 @@ class MainSlider extends Component {
           var touchobj = e.changedTouches[0];
           this.endTouchX = parseInt(touchobj.clientX);
           const diff = this.startTouchX - this.endTouchX;
-          if (diff >= 600) {
+          if (diff >= 500) {
             this.moveSlider(true);
           }
-          else if (diff <= -600) {
+          else if (diff <= -500) {
             this.moveSlider(false);
           }
           this.startTouchX = null;
@@ -347,14 +348,44 @@ class MainSlider extends Component {
     render = () => {
         this.sliderItems = [];
         this.sliderItems.push(
-          <DateTime date={this.state.formattedDate}
-                    time={this.state.time}
-                    weekDay={this.state.weekDay} /> );
-        this.sliderItems.push(<WeatherCurrent weather={this.state.weather} />);
-        this.sliderItems.push(<WeatherCurrentComp weather={this.state.weather} />);
-        this.sliderItems.push(<WeatherForecastHourly forecast={this.state.forecastHourly} />);
-        this.sliderItems.push(<WeatherForecastDaily forecast={this.state.forecastDaily}/>);
-        if (this.state.debug.showDebug) {
+          <div>
+            <MainHeader temp={this.state.weather.temp.formatted} />
+            <DateTime date={this.state.formattedDate}
+                      time={this.state.time}
+                      weekDay={this.state.weekDay} /> 
+          </div>);
+        this.sliderItems.push(
+          <div>
+            <MainHeader date={this.state.formattedDate}
+                        time={this.state.time} />
+            <WeatherCurrent weather={this.state.weather} />
+          </div>
+          );
+        this.sliderItems.push(
+          <div>
+            <MainHeader temp={this.state.weather.temp.formatted}
+                        date={this.state.formattedDate}
+                        time={this.state.time} />
+            <WeatherCurrentComp weather={this.state.weather} />
+          </div>
+          );
+        this.sliderItems.push(
+          <div>
+            <MainHeader temp={this.state.weather.temp.formatted}
+                        date={this.state.formattedDate}
+                        time={this.state.time} />
+            <WeatherForecastHourly forecast={this.state.forecastHourly} />
+          </div>
+          );
+        this.sliderItems.push(
+          <div>
+            <MainHeader temp={this.state.weather.temp.formatted}
+                        date={this.state.formattedDate}
+                        time={this.state.time} />
+            <WeatherForecastDaily forecast={this.state.forecastDaily}/>
+          </div>
+          );
+        /*if (this.state.debug.showDebug) {
           this.sliderItems.push(
             <div className="text-center" style={{fontSize:'10vw'}}>
               <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
@@ -364,7 +395,7 @@ class MainSlider extends Component {
               <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
             </div>
           );
-        }
+        }*/
 
         const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
 

@@ -1,5 +1,5 @@
 .weatherForecastDaily {
-  height: 100vh;
+  height: 95vh;
   display: flex;
   flex-wrap: wrap;
 
@@ -15,7 +15,7 @@
   }
 
   .main_text {
-    font-size: 4.5vw;
+    font-size: 4vw;
   }
 
   .icon {
@@ -24,6 +24,6 @@
   }
 
   .text_info {
-    font-size: 4.75vw;
+    font-size: 4.5vw;
   }
 }

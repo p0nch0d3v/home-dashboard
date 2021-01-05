@@ -18,7 +18,7 @@ export default function WeatherCurrent(props){
                 {
                   props.weather.precipitationProbability && props.weather.precipitationProbability >= 0
                   ?
-                  <span> ({props.weather.precipitationProbability} %)</span>
+                  <span> [{props.weather.precipitationProbability} %]</span>
                   : null
                 }
                 </span>
