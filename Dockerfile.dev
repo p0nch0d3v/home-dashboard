@@ -1,0 +1,13 @@
+FROM node:lts
+
+RUN mkdir /app
+WORKDIR /app
+COPY package.json /app
+
+EXPOSE 3000
+
+RUN npm install
+RUN npm install -g react-scripts@4.0.1
+
+COPY . /app
+CMD npm run start

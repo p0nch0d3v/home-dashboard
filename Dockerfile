@@ -1,10 +1,10 @@
 # Stage 1
-FROM node:10-alpine as build-step
+FROM node:lts as build-step
 RUN mkdir /app
 WORKDIR /app
 COPY package.json /app
 RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+RUN npm install react-scripts@4.0.1 -g --silent
 COPY . /app
 RUN npm run build
 
