@@ -1,4 +1,6 @@
 import axios from 'axios';
+import moment from 'moment';
+
 import {
     StorageKeys,
     getStorageValue,
@@ -7,6 +9,7 @@ import {
 
 const apikey = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
+const imageBaseUrl = 'http://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
 export async function getLocationInfo(force = false){
@@ -51,35 +54,35 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
         let conditions = await axios({
             method: 'GET',
             url: `${getBaseUrl(latitude, longitude)}&exclude=minutely,hourly,daily,alerts`
-        }).then(r => { return r.data; })
+        }).then(r => { return r.data.current; })
         .catch(e => { console.warn(e); return null; });
 
         if (conditions) {
             conditionsInfo = {
-                text: conditions.current.weather[0].main,
+                text: conditions.weather[0].main,
                 temp: {
-                    value: Math.round(conditions.current.temp),
+                    value: Math.round(conditions.temp),
                     unit: 'C',
-                    formatted: Math.round(conditions.current.temp) + ' °C' 
+                    formatted: Math.round(conditions.temp) + ' °C' 
                 },
-                humidity: conditions.current.humidity,
+                humidity: conditions.humidity,
                 feel: {
-                    value: Math.round(conditions.current.feels_like),
+                    value: Math.round(conditions.feels_like),
                     unit: 'C',
                 },
-                icon: `http://openweathermap.org/img/wn/${conditions.current.weather[0].icon}@4x.png`,
+                icon: imageBaseUrl.replace('{icon}', conditions.weather[0].icon),
                 uv: {
-                    index: Math.round(conditions.current.uvi),
-                    text: getUvIndexDescription(Math.round(conditions.current.uvi))
+                    index: Math.round(conditions.uvi),
+                    text: getUvIndexDescription(Math.round(conditions.uvi))
                 },
                 pressure: {
-                    value: conditions.current.pressure,
+                    value: conditions.pressure,
                     unit: 'hPa'
                 },
                 wind: {
-                    direction: getCardinalDirectionFromDegree(conditions.current.wind_deg),
+                    direction: getCardinalDirectionFromDegree(conditions.wind_deg),
                     speed: {
-                        value: Math.round(conditions.current.wind_speed * 3.6),
+                        value: Math.round(conditions.wind_speed * 3.6),
                         unit: 'Km/h'
                     }
                 },
@@ -91,14 +94,62 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
                     value: null,
                     unit: null
                 },
-                sunSet: conditions.current.sunset * 1000,
-                sunRise: conditions.current.sunrise * 1000
+                sunSet: conditions.sunset * 1000,
+                sunRise: conditions.sunrise * 1000
             };
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
         }
     }
     return conditionsInfo;
+}
+
+export async function getForecastHourly(latitude, longitude, force = false) {
+    let forecastInfo = getStorageValue(StorageKeys.forecastHourly);
+    if (forecastInfo && force === false){
+        return forecastInfo;
+    }
+    else {
+        let forecast = await axios({
+            method: 'GET',
+            url: `${getBaseUrl(latitude, longitude)}&exclude=current,minutely,daily,alerts`
+        }).then(r => { return r.data.hourly; })
+        .catch(e => { console.warn(e); return null; });
+        forecastInfo = [];
+        
+        if (forecast) {
+            const limit = 5;
+            const now = Date.now();
+            
+            forecast.forEach(f => {
+                const dateTime = f.dt * 1000;
+                if (dateTime > now && forecastInfo.length < limit){
+                    forecastInfo.push({
+                        temp: {
+                            value: Math.round(f.temp),
+                            unit: 'C'
+                        },
+                        feel: {
+                            value: Math.round(f.feels_like),
+                            unit: 'C'
+                        },
+                        dateTime: dateTime,
+                        formattedDateTime: moment(dateTime).format("hh A"),
+                        uv: {
+                            index: Math.round(f.uvi),
+                            text: getUvIndexDescription(Math.round(f.uvi))
+                        },
+                        icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
+                        text:  f.weather[0].main,
+                        precipitationProbability: f.pop
+                    });
+                }
+            });
+            setStorageValue(StorageKeys.forecastHourly, forecastInfo);
+            setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
+        }
+    }
+    return forecastInfo;
 }
 
 function getCardinalDirectionFromDegree(degree){
