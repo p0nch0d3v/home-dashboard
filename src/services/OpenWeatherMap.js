@@ -9,7 +9,7 @@ import {
 
 const apikey = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
-const imageBaseUrl = 'http://openweathermap.org/img/wn/{icon}@4x.png'
+const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
 export async function getLocationInfo(force = false){
@@ -147,6 +147,58 @@ export async function getForecastHourly(latitude, longitude, force = false) {
             });
             setStorageValue(StorageKeys.forecastHourly, forecastInfo);
             setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
+        }
+    }
+    return forecastInfo;
+}
+
+export async function getForecastDaily(latitude, longitude, force = false) {
+    let forecastInfo = getStorageValue(StorageKeys.forecastDaily);
+    if (forecastInfo && force === false){
+        return forecastInfo;
+    }
+    else {
+        let forecast = await axios({
+            method: 'GET',
+            url: `${getBaseUrl(latitude, longitude)}&exclude=current,minutely,hourly,alerts`
+        }).then(r => { return r.data.daily; })
+        .catch(e => { console.warn(e); return null; });
+        forecastInfo = [];
+        
+        if (forecast) {
+            const limit = 6;
+            const now = moment(Date.now()).format('YYYY-MM-DD');
+            
+            forecast.forEach(f => {
+                if (forecastInfo.length < limit) {
+                    const date = f.dt * 1000;
+
+                    forecastInfo.push({
+                        temp: {
+                            max: {
+                                value: Math.round(f.temp.max),
+                                unit: 'C'
+                            },
+                            min: {
+                                value: Math.round(f.temp.min),
+                                unit: 'C'
+                            }
+                        },
+                        date: {
+                            date: moment(date),
+                            month: moment(date).format('MMM'),
+                            dayNumber: moment(date).format('DD'),
+                            dayWeek: moment(date).format('ddd')
+                        },
+                        icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
+                        text: f.weather[0].main,
+                        precipitationProbability: f.pop,
+                        isToday: now === moment(date).format('YYYY-MM-DD')
+                    });
+                }
+            });
+            setStorageValue(StorageKeys.forecastDaily, forecastInfo);
+            setStorageValue(StorageKeys.lastUpdate.forecastDaily, Date.now());
         }
     }
     return forecastInfo;

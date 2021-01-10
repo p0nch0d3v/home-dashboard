@@ -6,23 +6,14 @@ import 'moment-timezone';
 import './MainSlider.scss';
 import {
   getLocationInfo,
-  getCurrentWeather
+  getCurrentWeather,
+  getForecastHourly,
+  getForecastDaily
 } from '../../services/OpenWeatherMap';
-
-/*import {
-    getCityInfo,
-    getCurrentConditions,
-    getForecastHourly12,
-    getForecaseDaily5,
-    getWeather,
-    getForecastHourly,
-    getForecaseDaily
-} from '../../services/AccuWeather';*/
 
 import {
     StorageKeys,
-    getStorageValue,
-    setStorageValue
+    getStorageValue
 } from '../../services/DataService';
 
 import DateTime from '../DateTime/DateTime';
@@ -37,9 +28,9 @@ class MainSlider extends Component {
     minute = this.second * 60;
     hour = this.minute * 60;
     intervals = {
-        conditions : this.minute * 20,
-        forecastHourly: this.hour * 2,
-        forecastDaily: this.hour * 2
+        conditions : this.minute * 5,
+        forecastHourly: this.hour,
+        forecastDaily: this.hour
     };
     currentSlider = 0;
     sliderItems = [];
@@ -210,75 +201,59 @@ class MainSlider extends Component {
     async getWeatherConditions(force = false) {
       const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
       const now = moment(Date.now());
-      console.debug(now);
-      console.debug(moment(lastUpdate));
-      console.debug(now - moment(lastUpdate));
-      if (force || (now - moment(lastUpdate)) >= this.intervals.conditions) {
-        const currentWeather = await getCurrentWeather(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
-        if (currentWeather){
-          this.setState({weather: currentWeather});
-          this.setBackgroundColor();
+      force = force || (now - moment(lastUpdate)) >= this.intervals.conditions;
+
+      const currentWeather = await getCurrentWeather(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
+      if (currentWeather) {
+        
+        if (this.state.weather.tempMax || this.state.weather.tempMin || this.state.weather.precipitationProbability){
+          currentWeather.tempMax = this.state.weather.tempMax;
+          currentWeather.tempMin = this.state.weather.tempMin;
+          currentWeather.precipitationProbability = this.state.weather.precipitationProbability;
         }
+
+        this.setState({weather: currentWeather});
+        this.setBackgroundColor();
       }
-     
-      this.setStateDebug();
+      
+      // this.setStateDebug();
     }
 
-    async getWeatherForecastHourly(cityKey) {
-      if (cityKey) {
-        let forecastHourlySaved = getStorageValue(StorageKeys.forecastHourly);
-        const lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastHourly));
-        const now = moment(Date.now());
-
-        if (!forecastHourlySaved || ((now - lastUpdate) >= this.intervals.forecastHourly)) {
-            /*const forecastHourly = await getForecastHourly12(cityKey);
-            if (forecastHourly) {
-              setStorageValue(StorageKeys.forecastHourly, forecastHourly);
-              setStorageValue(StorageKeys.lastUpdate.forecastHourly, Date.now());
-            }*/
-        }
-
-        forecastHourlySaved = getStorageValue(StorageKeys.forecastHourly);
-        if (forecastHourlySaved) {
-          /*const forecast = getForecastHourly(forecastHourlySaved, `${this.state.formattedDate} ${this.state.time}`);
-          this.setState({ forecastHourly: forecast });*/
-        }
+    async getWeatherForecastHourly(force = false) {
+      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
+      const now = moment(Date.now());
+      force = force || (now - moment(lastUpdate)) >= this.intervals.forecastHourly;
+      
+      const forecast = await getForecastHourly(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
+      if (forecast){
+        this.setState({ forecastHourly: forecast });
       }
-      this.setStateDebug();
+      
+      // this.setStateDebug();
     }
 
-    async getWeatherForecastDaily(cityKey) {
-      if (cityKey) {
-        let forecastDailySaved = getStorageValue(StorageKeys.forecastDaily);
-        let lastUpdate = moment(getStorageValue(StorageKeys.lastUpdate.forecastDaily));
-        let now = moment(Date.now());
-
-        if (!forecastDailySaved || (now - lastUpdate) >= this.intervals.forecastDaily) {
-            /*const forecastDaily = await getForecaseDaily5(cityKey);
-            if (forecastDaily) {
-              setStorageValue(StorageKeys.forecastDaily, forecastDaily);
-              setStorageValue(StorageKeys.lastUpdate.forecastDaily, Date.now());
-            }*/
-        }
-
-        forecastDailySaved = getStorageValue(StorageKeys.forecastDaily);
-        if (forecastDailySaved) {
-          /*const forecast = getForecaseDaily(forecastDailySaved);
-          let today =  forecast.find(f => f.date.date.format('MM/DD/YYYY') === this.state.date.format('MM/DD/YYYY'));
-          let forecastArray = forecast.filter(f => f.date.date.format('MM/DD/YYYY') !== this.state.date.format('MM/DD/YYYY'))
-          if (today) {
-            this.setState({ sunRise: today.sunRise });
-            this.setState({ sunSet: today.sunSet });
-            let currentWeather = this.state.weather;
-            currentWeather.tempMax = today.temp.max;
-            currentWeather.tempMin = today.temp.min;
-            currentWeather.precipitationProbability = today.precipitationProbability;
-            this.setState({ weather: currentWeather });
-          }
-          this.setState({ forecastDaily: forecastArray });*/
+    async getWeatherForecastDaily(force = false) {
+      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
+      const now = moment(Date.now());
+      force = force || (now - moment(lastUpdate)) >= this.intervals.forecastDaily;
+      
+      let forecast = await getForecastDaily(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
+      if (forecast) {
+        const todayForecast = forecast.find(f => f.isToday === true)
+        
+        forecast = forecast.filter(f => f.isToday === false);
+        this.setState({ forecastDaily: forecast });
+        
+        if (todayForecast) {
+          let currentWeather = this.state.weather;
+          currentWeather.tempMax = todayForecast.temp.max;
+          currentWeather.tempMin = todayForecast.temp.min;
+          currentWeather.precipitationProbability = todayForecast.precipitationProbability;
+          this.setState({ weather: currentWeather });
         }
       }
-      this.setStateDebug();
+      
+      // this.setStateDebug();
     }
 
     async componentDidMount() {
@@ -286,8 +261,8 @@ class MainSlider extends Component {
         this.getDate();
         this.getTime();
         await this.getWeatherConditions(true);
-        // await this.getWeatherForecastHourly(cityKey);
-        // await this.getWeatherForecastDaily(cityKey);
+        await this.getWeatherForecastHourly(true);
+        await this.getWeatherForecastDaily(true);
 
         setInterval(() => {
             this.getTime();
@@ -301,15 +276,15 @@ class MainSlider extends Component {
             await this.getWeatherConditions();
         }, this.minute);
 
-        /*setInterval(async () => {
-            await this.getWeatherForecastHourly(cityKey);
+        setInterval(async () => {
+            await this.getWeatherForecastHourly();
         }, this.minute);
 
         setInterval(async () => {
-            await this.getWeatherForecastDaily(cityKey);
+            await this.getWeatherForecastDaily();
         }, this.minute);
 
-        this.setSliderInterval();*/
+        this.setSliderInterval();
 
         document.body.addEventListener('touchstart', (e) => {
           var touchobj = e.changedTouches[0];
@@ -330,6 +305,17 @@ class MainSlider extends Component {
           this.startTouchX = null;
           e.preventDefault();
         }, false);
+
+        document.querySelector('.main-header').addEventListener('touchend', (e) => {
+          var el = document.documentElement;
+          if (document.fullscreen && document.fullscreenEnabled){
+            document.exitFullscreen();
+          }
+          else {
+            var rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+            rfs.call(el);
+          }
+        });
     }
 
     render = () => {
@@ -357,22 +343,22 @@ class MainSlider extends Component {
             <WeatherCurrentComp weather={this.state.weather} />
           </div>
           );
-        /*this.sliderItems.push(
+        this.sliderItems.push(
           <div>
             <MainHeader temp={this.state.weather.temp.formatted}
                         date={this.state.formattedDate}
                         time={this.state.time} />
             <WeatherForecastHourly forecast={this.state.forecastHourly} />
           </div>
-          );*/
-        /*this.sliderItems.push(
+          );
+        this.sliderItems.push(
           <div>
             <MainHeader temp={this.state.weather.temp.formatted}
                         date={this.state.formattedDate}
                         time={this.state.time} />
             <WeatherForecastDaily forecast={this.state.forecastDaily}/>
           </div>
-          );*/
+          );
         /*if (this.state.debug.showDebug) {
           this.sliderItems.push(
             <div className="text-center" style={{fontSize:'10vw'}}>
