@@ -8,5 +8,5 @@ RUN npm install react-scripts@4.0.1 -g
 RUN npm run build
 
 # Stage 2
-FROM nginx:lts-alpine
+FROM nginx:alpine
 COPY --from=build-step /app/build /usr/share/nginx/html
