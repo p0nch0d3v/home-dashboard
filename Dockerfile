@@ -2,12 +2,11 @@
 FROM node:lts as build-step
 RUN mkdir /app
 WORKDIR /app
-COPY package.json /app
+COPY . /app
 RUN npm install
 RUN npm install react-scripts@4.0.1 -g
-COPY . /app
 RUN npm run build
 
 # Stage 2
-FROM nginx:1.17.1-alpine
+FROM nginx:lts-alpine
 COPY --from=build-step /app/build /usr/share/nginx/html
