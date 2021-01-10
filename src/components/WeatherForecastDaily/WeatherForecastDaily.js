@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import './WeatherForecastDaily.scss';
 
-export default function WeatherForecastDaily(props) {screenLeft
+export default function WeatherForecastDaily(props) {
     const forecast = [...props.forecast];
     const borderClasses = ['border-right', 'border-right', 'border-right', 'border-right','border-none'];
 

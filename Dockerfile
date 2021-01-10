@@ -3,8 +3,8 @@ FROM node:lts as build-step
 RUN mkdir /app
 WORKDIR /app
 COPY package.json /app
-RUN npm install --silent
-RUN npm install react-scripts@4.0.1 -g --silent
+RUN npm install
+RUN npm install react-scripts@4.0.1 -g
 COPY . /app
 RUN npm run build
 
