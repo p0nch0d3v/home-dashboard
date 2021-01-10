@@ -11,6 +11,7 @@ const apikey = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
+console.debug(process.env);
 
 export async function getLocationInfo(force = false){
     let locationInfo = getStorageValue(StorageKeys.locationInfo);
