@@ -9,6 +9,9 @@ RUN npm run build
 ARG REACT_APP_OPENWEATHERMAP_API_KEY
 ENV REACT_APP_OPENWEATHERMAP_API_KEY $REACT_APP_OPENWEATHERMAP_API_KEY
 
+RUN echo $REACT_APP_OPENWEATHERMAP_API_KEY >> /app/.evn
+RUN cat /app/.env
+
 # Stage 2
 FROM nginx:alpine
 COPY --from=build-step /app/build /usr/share/nginx/html
