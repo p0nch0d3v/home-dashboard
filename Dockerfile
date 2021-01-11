@@ -1,7 +1,5 @@
-ARG REACT_APP_OPENWEATHERMAP_API_KEY
-
 FROM node:lts as build-step
-
+ARG REACT_APP_OPENWEATHERMAP_API_KEY
 ENV REACT_APP_OPENWEATHERMAP_API_KEY $REACT_APP_OPENWEATHERMAP_API_KEY
 
 RUN mkdir /app
@@ -10,9 +8,9 @@ COPY . /app
 RUN npm install
 RUN npm install react-scripts@4.0.1 -g
 
-RUN touch /app/.env
-RUN echo $REACT_APP_OPENWEATHERMAP_API_KEY >> /app/.env
-RUN cat /app/.env
+RUN touch /app/.env.production
+RUN echo "REACT_APP_OPENWEATHERMAP_API_KEY=$REACT_APP_OPENWEATHERMAP_API_KEY" >> /app/.env.production
+#RUN cat /app/.env.production
 
 RUN npm run build
 
@@ -21,24 +19,10 @@ FROM nginx:alpine
 COPY --from=build-step /app/build /usr/share/nginx/html
 
 # FROM ubuntu:latest
-# RUN apt update -y && apt upgrade -y
-# RUN apt install nginx curl -y
-# RUN cd /tmp
-# RUN curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-# RUN bash nodesource_setup.sh
-# RUN apt install nodejs
-
+# ARG REACT_APP_OPENWEATHERMAP_API_KEY
+# ENV REACT_APP_OPENWEATHERMAP_API_KEY $REACT_APP_OPENWEATHERMAP_API_KEY
 # RUN mkdir /app
 # WORKDIR /app
-# COPY . /app
-# RUN npm install
-# RUN npm install react-scripts@4.0.1 -g
-# RUN npm run build
-
-# RUN cp -r /app/build/* /usr/share/nginx/html/
-
-# COPY nginx/nginx.conf /etc/nginx/conf.d
-
-# EXPOSE 80
-
-# CMD ["nginx", "-g", "daemon off;"]
+# RUN touch /app/.env.production
+# RUN echo "REACT_APP_OPENWEATHERMAP_API_KEY = $REACT_APP_OPENWEATHERMAP_API_KEY" >> /app/.env.production
+# RUN cat /app/.env.production
