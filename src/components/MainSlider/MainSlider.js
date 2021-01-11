@@ -160,7 +160,7 @@ class MainSlider extends Component {
     }
 
     setStateDebug = () => {
-      /*const now = moment(new Date());
+      const now = moment(new Date());
 
       const conditionsDiff = now - getStorageValue(StorageKeys.lastUpdate.conditions);
       const forecastHourlyDiff = now - getStorageValue(StorageKeys.lastUpdate.forecastHourly);
@@ -177,7 +177,7 @@ class MainSlider extends Component {
                 || (forecastDailyDiff >= this.intervals.forecastDaily)
       };
 
-      this.setState({debug: newDebug});*/
+      this.setState({debug: newDebug});
     }
 
     keyHandker = (e) => {
@@ -216,20 +216,23 @@ class MainSlider extends Component {
         this.setBackgroundColor();
       }
       
-      // this.setStateDebug();
+      this.setStateDebug();
     }
 
     async getWeatherForecastHourly(force = false) {
       const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
       const now = moment(Date.now());
       force = force || (now - moment(lastUpdate)) >= this.intervals.forecastHourly;
+      if (this.state.forecastHourly && this.state.forecastHourly.length > 0){
+        force = force || Date.now() > this.state.forecastHourly[0].dateTime;
+      }
       
       const forecast = await getForecastHourly(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
       if (forecast){
         this.setState({ forecastHourly: forecast });
       }
       
-      // this.setStateDebug();
+      this.setStateDebug();
     }
 
     async getWeatherForecastDaily(force = false) {
@@ -237,6 +240,10 @@ class MainSlider extends Component {
       const now = moment(Date.now());
       force = force || (now - moment(lastUpdate)) >= this.intervals.forecastDaily;
       
+      if (this.state.forecastDaily && this.state.forecastDaily.length > 0){
+        force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(this.state.forecastHourly[0].dateTime).format('YYYY-MM-DD'));
+      }
+
       let forecast = await getForecastDaily(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
       if (forecast) {
         const todayForecast = forecast.find(f => f.isToday === true)
@@ -253,7 +260,7 @@ class MainSlider extends Component {
         }
       }
       
-      // this.setStateDebug();
+      this.setStateDebug();
     }
 
     async componentDidMount() {
@@ -359,7 +366,7 @@ class MainSlider extends Component {
             <WeatherForecastDaily forecast={this.state.forecastDaily}/>
           </div>
           );
-        /*if (this.state.debug.showDebug) {
+        if (this.state.debug.showDebug) {
           this.sliderItems.push(
             <div className="text-center" style={{fontSize:'10vw'}}>
               <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
@@ -369,7 +376,7 @@ class MainSlider extends Component {
               <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
             </div>
           );
-        }*/
+        }
 
         const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
 
