@@ -6,7 +6,7 @@ RUN npm install
 RUN npm install react-scripts@4.0.1 -g
 
 RUN touch /app/.env
-RUN echo $REACT_APP_OPENWEATHERMAP_API_KEY > /app/.env
+RUN echo $REACT_APP_OPENWEATHERMAP_API_KEY >> /app/.env
 RUN cat /app/.env
 
 RUN npm run build
