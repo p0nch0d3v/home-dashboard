@@ -1,12 +1,12 @@
 .weatherCurrentComp {
-  height: 95vh;
+  height: 90vh;
   display: flex;
   flex-wrap: wrap;
-  font-size: 6.5vw;
+  font-size: 6vw;
   text-align: center;
 
   &_item {
-    height: 47.5vh;
+    height: 45vh;
     width: 50%;
     display: flex;
     justify-content: center;
