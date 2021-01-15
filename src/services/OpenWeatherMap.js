@@ -141,7 +141,7 @@ export async function getForecastHourly(latitude, longitude, force = false) {
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
                         text:  f.weather[0].main,
-                        precipitationProbability: f.pop
+                        precipitationProbability: Math.round(f.pop * 100)
                     });
                 }
             });
@@ -192,7 +192,7 @@ export async function getForecastDaily(latitude, longitude, force = false) {
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
                         text: f.weather[0].main,
-                        precipitationProbability: f.pop,
+                        precipitationProbability: Math.round(f.pop * 100),
                         isToday: now === moment(date).format('YYYY-MM-DD')
                     });
                 }
