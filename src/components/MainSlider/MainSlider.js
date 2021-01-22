@@ -28,7 +28,7 @@ class MainSlider extends Component {
     minute = this.second * 60;
     hour = this.minute * 60;
     intervals = {
-        conditions : this.minute * 5,
+        conditions : this.minute * 10,
         forecastHourly: this.hour,
         forecastDaily: this.hour
     };
@@ -172,9 +172,9 @@ class MainSlider extends Component {
           forecastHourly: moment(forecastHourlyDiff).format('mm:ss'),
           forecastDaily: moment(forecastDailyDiff).format('mm:ss')
         },
-        showDebug: (conditionsDiff >= this.intervals.conditions)
-                || (forecastHourlyDiff >= this.intervals.forecastHourly)
-                || (forecastDailyDiff >= this.intervals.forecastDaily)
+        showDebug: (conditionsDiff > this.intervals.conditions)
+                || (forecastHourlyDiff > this.intervals.forecastHourly)
+                || (forecastDailyDiff > this.intervals.forecastDaily)
       };
 
       this.setState({debug: newDebug});
