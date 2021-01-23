@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import './WeatherForecastDaily.scss';
 
 export default function WeatherForecastDaily(props) {

@@ -16,7 +16,7 @@ export default function WeatherForecastHourly(props) {
                     <span className="text_info">
                       <div>{f.temp.value} °{f.temp.unit}</div>
                       {
-                        f.temp.value != f.feel.value ? <div>({f.feel.value} °{f.feel.unit})</div> : null
+                        f.temp.value !== f.feel.value ? <div>({f.feel.value} °{f.feel.unit})</div> : null
                       }
                       {
                         (f.uv.index > 0) ? <div>UV: {f.uv.index}</div> : null
