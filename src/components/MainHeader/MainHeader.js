@@ -1,5 +1,4 @@
 import React from 'react';
-import './MainHeader.scss';
 
 export default function MainHeader(props){
     return (

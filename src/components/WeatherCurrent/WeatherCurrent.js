@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import './WeatherCurrent.scss'
 
 export default function WeatherCurrent(props){
     return(

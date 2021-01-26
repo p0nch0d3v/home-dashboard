@@ -3,7 +3,6 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 import moment from 'moment';
 import 'moment-timezone';
 
-import './MainSlider.scss';
 import {
   getLocationInfo,
   getCurrentWeather,

@@ -1,5 +1,4 @@
 import React from 'react';
-import './DateTime.scss';
 
 export default function DateTime(props){
     return (

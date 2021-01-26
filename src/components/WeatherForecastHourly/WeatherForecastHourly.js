@@ -1,5 +1,4 @@
 import React from 'react';
-import './WeatherForecastHourly.scss';
 
 export default function WeatherForecastHourly(props) {
     const forecast = [...props.forecast];

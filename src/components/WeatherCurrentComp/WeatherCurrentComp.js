@@ -1,5 +1,4 @@
 import React from 'react';
-import './WeatherCurrentComp.scss';
 
 export default function WeatherCurrentComp(props){
     return (
