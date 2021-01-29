@@ -176,7 +176,7 @@ class MainSlider extends Component {
                 || (forecastDailyDiff > this.intervals.forecastDaily)
       };
 
-      this.setState({debug: newDebug});
+      this.setState({ debug: newDebug });
     }
 
     keyHandker = (e) => {
@@ -214,8 +214,6 @@ class MainSlider extends Component {
         this.setState({weather: currentWeather});
         this.setBackgroundColor();
       }
-      
-      this.setStateDebug();
     }
 
     async getWeatherForecastHourly(force = false) {
@@ -230,8 +228,6 @@ class MainSlider extends Component {
       if (forecast){
         this.setState({ forecastHourly: forecast });
       }
-      
-      this.setStateDebug();
     }
 
     async getWeatherForecastDaily(force = false) {
@@ -258,8 +254,6 @@ class MainSlider extends Component {
           this.setState({ weather: currentWeather });
         }
       }
-      
-      this.setStateDebug();
     }
 
     async componentDidMount() {
@@ -269,6 +263,7 @@ class MainSlider extends Component {
         await this.getWeatherConditions(true);
         await this.getWeatherForecastHourly(true);
         await this.getWeatherForecastDaily(true);
+        this.setStateDebug();
 
         setInterval(() => {
             this.getTime();
@@ -288,6 +283,10 @@ class MainSlider extends Component {
 
         setInterval(async () => {
             await this.getWeatherForecastDaily();
+        }, this.minute);
+
+        setInterval(async() => {
+            this.setStateDebug();
         }, this.minute);
 
         this.setSliderInterval();
