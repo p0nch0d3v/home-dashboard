@@ -9,12 +9,11 @@ $item-max-height:90vh;
 $item-mid-height:45vh;
 
 @mixin icon() {
-  width: 99.5%;
-  height: 99.5%;
+  width: 95%;
+  height: 95%;
   background-color: $img-bk;
   border-radius: 20%;
 }
-
 
 .mainSlider {
   display: flex;
@@ -26,10 +25,12 @@ $item-mid-height:45vh;
     align-self: center;
   }
 }
+
 .day {
   background-color: $day-bk;
   color: #000;
 }
+
 .night {
   background-color: $night-bk;
   color: #fff;
@@ -40,7 +41,7 @@ $item-mid-height:45vh;
   height: 10vh;
   font-size: 4vw;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   font-weight: bold;
   
