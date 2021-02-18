@@ -63,12 +63,13 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
                 temp: {
                     value: Math.round(conditions.temp),
                     unit: 'C',
-                    formatted: Math.round(conditions.temp) + ' °C' 
+                    formatted: `${Math.round(conditions.temp)} °C` 
                 },
                 humidity: conditions.humidity,
                 feel: {
                     value: Math.round(conditions.feels_like),
                     unit: 'C',
+                    formatted: `${Math.round(conditions.feels_like)} °C`
                 },
                 icon: imageBaseUrl.replace('{icon}', conditions.weather[0].icon),
                 uv: {

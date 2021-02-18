@@ -59,11 +59,13 @@ class MainSlider extends Component {
             temp: {
                 temp: null,
                 unit: null,
+                formatted: null
             },
             humidity: null,
             feel: {
                 feelTemp: null,
                 feelUnit: null,
+                formatted: null
             },
             uv: {
                 index: null,
@@ -107,7 +109,7 @@ class MainSlider extends Component {
     getDate = () => {
       if (this.state.location.timezone) {
         const newMomentDate = moment.utc().tz(this.state.location.timezone);
-        const newDate = newMomentDate.format('DD / MMM / YYYY');
+        const newDate = newMomentDate.format('DD/MMM/YYYY');
         const newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newMomentDate});
         this.setState({formattedDate: newDate});
@@ -326,7 +328,8 @@ class MainSlider extends Component {
         this.sliderItems = [];
         this.sliderItems.push(
           <div>
-            <MainHeader temp={this.state.weather.temp.formatted} />
+            <MainHeader temp={this.state.weather.temp.formatted}
+                        feelTemp={this.state.weather.feel.formatted} />
             <DateTime date={this.state.formattedDate}
                       time={this.state.time}
                       weekDay={this.state.weekDay} /> 
@@ -342,6 +345,7 @@ class MainSlider extends Component {
         this.sliderItems.push(
           <div>
             <MainHeader temp={this.state.weather.temp.formatted}
+                        feelTemp={this.state.weather.feel.formatted}
                         date={this.state.formattedDate}
                         time={this.state.time} />
             <WeatherCurrentComp weather={this.state.weather} />
@@ -350,6 +354,7 @@ class MainSlider extends Component {
         this.sliderItems.push(
           <div>
             <MainHeader temp={this.state.weather.temp.formatted}
+                        feelTemp={this.state.weather.feel.formatted}
                         date={this.state.formattedDate}
                         time={this.state.time} />
             <WeatherForecastHourly forecast={this.state.forecastHourly} />
@@ -358,6 +363,7 @@ class MainSlider extends Component {
         this.sliderItems.push(
           <div>
             <MainHeader temp={this.state.weather.temp.formatted}
+                        feelTemp={this.state.weather.feel.formatted}
                         date={this.state.formattedDate}
                         time={this.state.time} />
             <WeatherForecastDaily forecast={this.state.forecastDaily}/>
