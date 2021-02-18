@@ -72,6 +72,7 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
                     formatted: `${Math.round(conditions.feels_like)} °C`
                 },
                 icon: imageBaseUrl.replace('{icon}', conditions.weather[0].icon),
+                iconCode: `icon_${conditions.weather[0].icon}`,
                 uv: {
                     index: Math.round(conditions.uvi),
                     text: getUvIndexDescription(Math.round(conditions.uvi))
@@ -141,6 +142,7 @@ export async function getForecastHourly(latitude, longitude, force = false) {
                             text: getUvIndexDescription(Math.round(f.uvi))
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
+                        iconCode: `icon_${f.weather[0].icon}`,
                         text:  f.weather[0].main,
                         precipitationProbability: Math.round(f.pop * 100)
                     });
@@ -192,6 +194,7 @@ export async function getForecastDaily(latitude, longitude, force = false) {
                             dayWeek: moment(date).format('ddd')
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
+                        iconCode: `icon_${f.weather[0].icon}`,
                         text: f.weather[0].main,
                         precipitationProbability: Math.round(f.pop * 100),
                         isToday: now === moment(date).format('YYYY-MM-DD')

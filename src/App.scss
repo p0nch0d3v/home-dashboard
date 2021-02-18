@@ -1,3 +1,5 @@
+@use 'icons';
+
 $day-bk:#76a7e3;
 $day-font-color:#000;
 
@@ -7,12 +9,78 @@ $night-font-color:#FFF;
 $img-bk:#4B75AA;
 $item-max-height:90vh;
 $item-mid-height:45vh;
+$icon_url: 'https://openweathermap.org/img/wn/';
+$icon_ext: '@4x.png';
 
-@mixin icon() {
-  width: 95%;
-  height: 95%;
-  background-color: $img-bk;
-  border-radius: 20%;
+@mixin icon($max-width: 1px, $max-height: 1px) {
+  .icon {
+    width: 95%;
+    height: 95%;
+    border-radius: 20%;
+    max-width: $max-width;
+    max-height: $max-height;
+    background-color: $img-bk;
+    align-self: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 145%;
+    
+    &.icon_01d {
+      background-image: url($icon_url + '01d' + $icon_ext);
+    }
+    &.icon_02d { 
+      background-image: url($icon_url + '02d' + $icon_ext); 
+    }
+    &.icon_03d { 
+      background-image: url($icon_url + '03d' + $icon_ext); 
+    } 
+    &.icon_04d { 
+      background-image: url($icon_url + '04d' + $icon_ext); 
+    }
+    &.icon_09d { 
+      background-image: url($icon_url + '09d' + $icon_ext); 
+    }
+    &.icon_10d { 
+      background-image: url($icon_url + '10d' + $icon_ext); 
+    }
+    &.icon_11d { 
+      background-image: url($icon_url + '11d' + $icon_ext); 
+    }
+    &.icon_13d { 
+      background-image: url($icon_url + '13d' + $icon_ext); 
+    }
+    &.icon_50d { 
+      background-image: url($icon_url + '50d' + $icon_ext); 
+    }
+
+    &.icon_01n {
+      background-image: url($icon_url + '01n' + $icon_ext); 
+    }
+    &.icon_02n{ 
+      background-image: url($icon_url + '02n' + $icon_ext); 
+    }
+    &.icon_03n{ 
+      background-image: url($icon_url + '03n' + $icon_ext); 
+    }
+    &.icon_04n{ 
+      background-image: url($icon_url + '04n' + $icon_ext); 
+    }
+    &.icon_09n { 
+      background-image: url($icon_url + '09n' + $icon_ext); 
+    }
+    &.icon_10n { 
+      background-image: url($icon_url + '10n' + $icon_ext); 
+    }
+    &.icon_11n { 
+      background-image: url($icon_url + '11n' + $icon_ext); 
+    }
+    &.icon_13n { 
+      background-image: url($icon_url + '13n' + $icon_ext); 
+    }
+    &.icon_50n { 
+      background-image: url($icon_url + '50n' + $icon_ext); 
+    }
+  }
 }
 
 .mainSlider {
@@ -111,12 +179,8 @@ $item-mid-height:45vh;
       flex-direction: column;
     }
   
-    .icon {
-      @include icon();
-      max-width: 49.9vh;
-      max-height: 49.9vh;
-      align-self: center;
-    }
+    @include icon(49.9vh, 49.9vh);
+    
   }
   
 .weatherCurrentComp {
@@ -155,11 +219,7 @@ $item-mid-height:45vh;
       font-size: 4vw;
     }
   
-    .icon {
-      @include icon();
-      max-width: 20vw;
-      max-height: 20vw;
-    }
+    @include icon(20vw, 20vw);
   
     .text_info {
       font-size: 4.5vw;
@@ -190,11 +250,7 @@ $item-mid-height:45vh;
       white-space: nowrap;
     }
   
-    .icon {
-      @include icon();
-      max-width: 20vw;
-      max-height: 20vw;
-    }
+    @include icon(20vw, 20vw);
   
     .text_info {
       font-size: 4vw;

@@ -11,7 +11,7 @@ export default function WeatherForecastHourly(props) {
                     <span className="main_text">
                       <div>{f.formattedDateTime}</div>
                     </span>
-                    <img className="icon" src={f.icon} alt={f.text} />
+                    <span className={'icon ' + f.iconCode}></span>
                     <span className="text_info">
                       <div>{f.temp.value} °{f.temp.unit}</div>
                       {

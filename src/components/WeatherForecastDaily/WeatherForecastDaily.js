@@ -12,7 +12,7 @@ export default function WeatherForecastDaily(props) {
                     <div>{f.date.month} / {f.date.dayNumber}</div>
                     <div>{f.date.dayWeek}</div>
                   </span>
-                  <img className="icon" src={f.icon} alt={f.text} />
+                  <span className={'icon ' + f.iconCode}></span>
                   <span className="text_info">
                     <div>{f.temp.min.value} °{f.temp.min.unit}</div>
                     <div>{f.temp.max.value} °{f.temp.max.unit}</div>

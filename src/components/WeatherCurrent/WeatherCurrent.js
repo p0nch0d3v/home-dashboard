@@ -5,7 +5,7 @@ export default function WeatherCurrent(props){
     return(
         <div className="weatherCurrent row m-0">
             <div className="weatherCurrent_item border-right">
-                <img className="icon" src={props.weather.icon} alt={props.weather.text} />
+                <span className={'icon ' + props.weather.iconCode}></span>
             </div>
             <div className="weatherCurrent_item">
                 <span>{props.weather.temp.value} °{props.weather.temp.unit}</span>
