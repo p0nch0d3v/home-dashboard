@@ -109,7 +109,7 @@ class MainSlider extends Component {
     getDate = () => {
       if (this.state.location.timezone) {
         const newMomentDate = moment.utc().tz(this.state.location.timezone);
-        const newDate = newMomentDate.format('DD/MMM/YYYY');
+        const newDate = newMomentDate.format('DD / MMM / YYYY');
         const newWeekDay = newMomentDate.format('dddd');
         this.setState({date: newMomentDate});
         this.setState({formattedDate: newDate});
