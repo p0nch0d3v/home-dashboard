@@ -187,11 +187,11 @@ $icon_ext: '@4x.png';
     height: $item-max-height;
     display: flex;
     flex-wrap: wrap;
-    font-size: 6vw;
+    font-size: 5vw;
     text-align: center;
   
     &_item {
-      height: $item-mid-height;
+      height: $item-max-height / 3;
       width: 50%;
       display: flex;
       justify-content: center;
