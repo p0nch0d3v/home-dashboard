@@ -1,4 +1,4 @@
-@use 'icons';
+// @use 'icons';
 
 $day-bk:#76a7e3;
 $day-font-color:#000;
@@ -24,6 +24,7 @@ $icon_ext: '@4x.png';
     background-position: center;
     background-repeat: no-repeat;
     background-size: 145%;
+    display: inline-block;
     
     &.icon_01d {
       background-image: url($icon_url + '01d' + $icon_ext);
@@ -156,14 +157,13 @@ $icon_ext: '@4x.png';
 }
 
 .weatherCurrent {
-    display: flex;
     text-align: center;
     font-size: 8.5vw;
     height: $item-max-height;
   
     &_item {
       max-height: $item-mid-height;
-      height: 50%;
+      height: $item-mid-height;
       width: 50%;
       display: flex;
       justify-content: center;
@@ -172,8 +172,8 @@ $icon_ext: '@4x.png';
   
     &_doubleItem {
       max-height: $item-mid-height;
-      height: 50%;
-      width: 100%;
+      height: $item-mid-height;
+      width: 100% !important;
       display: flex;
       justify-content: center;
       flex-direction: column;
@@ -257,4 +257,15 @@ $icon_ext: '@4x.png';
     }
   }
   
-  
+.border-top {
+  border-top: 1px solid #dee2e6!important;
+}
+.border-right {
+  border-right: 1px solid #dee2e6!important;
+}
+.border-bottom {
+  border-bottom: 1px solid #dee2e6!important;
+}
+.border-left {
+  border-left: 1px solid #dee2e6!important;
+}
