@@ -191,8 +191,8 @@ $icon_ext: '@4x.png';
     text-align: center;
   
     &_item {
-      height: $item-max-height / 3;
-      width: 50%;
+      height: calc($item-max-height / 2);
+      width: 33.33%;
       display: flex;
       justify-content: center;
       flex-direction: column;
