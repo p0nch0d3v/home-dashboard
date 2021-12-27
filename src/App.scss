@@ -12,10 +12,10 @@ $item-mid-height:45vh;
 $icon_url: 'https://openweathermap.org/img/wn/';
 $icon_ext: '@4x.png';
 
-@mixin icon($max-width: 1px, $max-height: 1px) {
+@mixin icon($max-width: 1px, $max-height: 1px, $width: 95%, $height: 95%) {
   .icon {
-    width: 95%;
-    height: 95%;
+    width: $width;
+    height: $height;
     border-radius: 20%;
     max-width: $max-width;
     max-height: $max-height;
@@ -119,6 +119,9 @@ $icon_ext: '@4x.png';
   }
   &_temp {
     text-align: center;
+    display: flex;
+    align-items: center;
+    @include icon(7.5vh, 7.5vh, 7.5vh, 7.5vh);
   }
   &_date {
       margin-right: 1vw;

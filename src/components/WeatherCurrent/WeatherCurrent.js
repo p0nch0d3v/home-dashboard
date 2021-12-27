@@ -3,11 +3,11 @@ import React from 'react';
 export default function WeatherCurrent(props){
     const temp = (<span>{props.weather.temp.value} °{props.weather.temp.unit}</span>);
     
-    const feelTemp = (props.weather.temp.value !== props.weather.feel.value ? <span>({props.weather.feel.value} °{props.weather.feel.unit})</span> : null)
+    const feelTemp = (props.weather.temp.value !== props.weather.feel.value ? <span>({props.weather.feel.value} °{props.weather.feel.unit})</span> : <></>)
     
     const threshold = <>{props.weather.tempMin.value} °{props.weather.tempMin.unit} - {props.weather.tempMax.value} °{props.weather.tempMax.unit}</>;
     
-    const precipitation = props.weather.precipitationProbability && props.weather.precipitationProbability >= 0 ? <> [{props.weather.precipitationProbability} %]</> : null;
+    const precipitation = props.weather.precipitationProbability && props.weather.precipitationProbability >= 0 ? <> [{props.weather.precipitationProbability} %]</> : <></>;
     
     return(
         <div className="weatherCurrent container-fluid m-0 p-0">

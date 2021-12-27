@@ -1,5 +1,9 @@
 import moment from 'moment';
 
+const rand = function(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
 export async function getLocationInfo(force = false){
     return {
         ip: '127.0.0.1',
@@ -14,31 +18,37 @@ export async function getLocationInfo(force = false){
 }
 
 export async function getCurrentWeather(latitude, longitude, force = false) {
+    let weatherText = ''
+    for (let i = 0; i < rand(10, 50); i++) {         
+        weatherText += (i % 2) ? String.fromCharCode(rand(65, 90)) : String.fromCharCode(rand(97, 122));
+    }
     return {
-        text: 'Weather',
+        text: weatherText,
         temp: {
-            value: 99,
+            value: rand(0, 99),
             unit: 'C',
-            formatted: '99' + ' °C' 
+            formatted: `${rand(0, 99)} °C` 
         },
-        humidity: 99,
+        humidity: rand(0, 99),
         feel: {
-            value: 98,
+            value: rand(0, 99),
             unit: 'C',
+            formatted : `${rand(0, 99)} °C`
         },
-        icon: '',
+        iconCode: 'icon_01d',
+        icon: 'https://openweathermap.org/img/wn/041@4x.png',
         uv: {
-            index: 12,
-            text: getUvIndexDescription(12)
+            index: rand(0, 12),
+            text: getUvIndexDescription(rand(0, 12))
         },
         pressure: {
-            value: 1010,
+            value: rand(870, 1085),
             unit: 'hPa'
         },
         wind: {
-            direction: getCardinalDirectionFromDegree(180),
+            direction: getCardinalDirectionFromDegree(rand(0,359)),
             speed: {
-                value: 999,
+                value: rand(0, 99),
                 unit: 'Km/h'
             }
         },
@@ -61,22 +71,23 @@ export async function getForecastHourly(latitude, longitude, force = false) {
     for (let i = 0; i < 5; i++) {
         forecastInfo.push({
             temp: {
-                value: 999,
+                value: rand(0, 99),
                 unit: 'C'
             },
             feel: {
-                value: 999,
+                value: rand(0, 99),
                 unit: 'C'
             },
             dateTime: Date.now(),
             formattedDateTime: moment(Date.now()).format("hh A"),
             uv: {
-                index: 12,
-                text: getUvIndexDescription(12)
+                index: rand(0, 12),
+                text: getUvIndexDescription(rand(0, 12))
             },
-            icon: '',
-            text:  '',
-            precipitationProbability: 100
+            iconCode: 'icon_01d',
+            icon: 'https://openweathermap.org/img/wn/041@4x.png',
+            text: '',
+            precipitationProbability: rand(0, 100)
         });
     }
     return forecastInfo;
@@ -90,11 +101,11 @@ export async function getForecastDaily(latitude, longitude, force = false) {
         forecastInfo.push({
             temp: {
                 max: {
-                    value: 999,
+                    value: rand(0, 99),
                     unit: 'C'
                 },
                 min: {
-                    value: 999,
+                    value: rand(0, 99),
                     unit: 'C'
                 }
             },
@@ -104,9 +115,10 @@ export async function getForecastDaily(latitude, longitude, force = false) {
                 dayNumber: moment(date).format('DD'),
                 dayWeek: moment(date).format('ddd')
             },
-            icon: '',
+            iconCode: 'icon_01d',
+            icon: 'https://openweathermap.org/img/wn/041@4x.png',
             text: '',
-            precipitationProbability: 100,
+            precipitationProbability: rand(0, 100),
             isToday: i === 0
         });
     }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 import moment from 'moment';
 import 'moment-timezone';
 
@@ -326,50 +325,62 @@ class MainSlider extends Component {
 
     render = () => {
         this.sliderItems = [];
+        
         this.sliderItems.push(
-          <div>
+          <>
             <MainHeader temp={this.state.weather.temp.formatted}
-                        feelTemp={this.state.weather.feel.formatted} />
+                        feelTemp={this.state.weather.feel.formatted} 
+                        iconCode={this.state.weather.iconCode} />
             <DateTime date={this.state.formattedDate}
                       time={this.state.time}
                       weekDay={this.state.weekDay} /> 
-          </div>
-          );
+          </>
+        );
+        
         this.sliderItems.push(
-          <div>
+          <>
             <MainHeader date={this.state.formattedDate}
                         time={this.state.time} />
             <WeatherCurrent weather={this.state.weather} />
-          </div>
-          );
+          </>
+        );
+
         this.sliderItems.push(
-          <div>
+          <>
             <MainHeader temp={this.state.weather.temp.formatted}
                         feelTemp={this.state.weather.feel.formatted}
                         date={this.state.formattedDate}
-                        time={this.state.time} />
-            <WeatherCurrentComp weather={this.state.weather} />
-          </div>
-          );
+                        time={this.state.time} 
+                        iconCode={this.state.weather.iconCode} />
+            <WeatherCurrentComp weather={this.state.weather} 
+                                sunRise={moment(this.state.weather.sunRise).format('hh:mm A')}
+                                sunSet={moment(this.state.weather.sunSet).format('hh:mm A')} />
+          </>
+        );
+        
         this.sliderItems.push(
-          <div>
+          <>
             <MainHeader temp={this.state.weather.temp.formatted}
                         feelTemp={this.state.weather.feel.formatted}
                         date={this.state.formattedDate}
-                        time={this.state.time} />
+                        time={this.state.time} 
+                        iconCode={this.state.weather.iconCode} />
             <WeatherForecastHourly forecast={this.state.forecastHourly} />
-          </div>
-          );
+          </>
+        );
+        
         this.sliderItems.push(
-          <div>
+          <>
             <MainHeader temp={this.state.weather.temp.formatted}
                         feelTemp={this.state.weather.feel.formatted}
                         date={this.state.formattedDate}
-                        time={this.state.time} />
+                        time={this.state.time} 
+                        iconCode={this.state.weather.iconCode} />
             <WeatherForecastDaily forecast={this.state.forecastDaily}/>
-          </div>
-          );
-        if (this.state.debug.showDebug) {
+          </>
+        );
+        
+        /* if (this.state.debug.showDebug) {
           this.sliderItems.push(
             <div className="text-center" style={{fontSize:'10vw'}}>
               <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
@@ -379,7 +390,7 @@ class MainSlider extends Component {
               <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
             </div>
           );
-        }
+        } */
 
         const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
 
@@ -390,13 +401,9 @@ class MainSlider extends Component {
                   { this.sliderItems[this.currentSlider] }
               </div>
             </div>
-            <KeyboardEventHandler handleKeys={['left', 'right']}
-                                  onKeyEvent={(key, e) => this.keyHandker(e)} />
           </div>
-
         );
     }
 }
 
 export default MainSlider;
-
