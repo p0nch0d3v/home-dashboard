@@ -6,9 +6,9 @@ services:
     image: node:lts
     command: >
       bash -c "cd /app &&
-               npm install &&
+               npm install -f &&
                npm run start"
     volumes:
       - .:/app
     ports:
-      - 3000:3000
+      - 3001:3000
