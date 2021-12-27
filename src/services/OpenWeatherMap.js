@@ -13,19 +13,13 @@ const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
 export async function getLocationInfo(force = false){
-    let locationInfo = getStorageValue(StorageKeys.locationInfo);
-    if (locationInfo && force === false){
+    let locationInfo = getStorageValue(StorageKeys.local, StorageKeys.locationInfo);
+    if (locationInfo && force === false) {
         return locationInfo;
     }
     else {
         locationInfo = {};
-        
-        const ipInfo = await axios({
-            url: 'https://ipinfo.io/json',
-            method: 'GET'
-        }).then(r=>{
-            return r.data;
-        }).catch(e => { console.error(e); return null; });;
+        const ipInfo = await getipInfo(force);
 
         locationInfo.ip = ipInfo.ip;
         locationInfo.city = ipInfo.city;
@@ -39,7 +33,7 @@ export async function getLocationInfo(force = false){
             longitude: position.coords.longitude
         };
 
-        setStorageValue(StorageKeys.locationInfo, locationInfo);
+        setStorageValue(StorageKeys.local, StorageKeys.locationInfo, locationInfo);
     }
 
     return locationInfo;
@@ -270,4 +264,23 @@ function getPosition(options) {
     return new Promise((resolve, reject) => 
         navigator.geolocation.getCurrentPosition(resolve, reject, options)
     );
+}
+
+async function getipInfo(force) {
+    let ipInfo = getStorageValue(StorageKeys.local, StorageKeys.ipInfo);
+    if (!ipInfo || force === true) {        
+        ipInfo = await axios({
+            url: 'https://ipinfo.io/json',
+            method: 'GET',
+            headers: {
+                "Accept": "application/json"  
+            }
+        }).then(r => {
+            return r.data;
+        }).catch(e => { 
+            console.error(e); return null; 
+        });
+        setStorageValue(StorageKeys.local, StorageKeys.ipInfo, ipInfo);
+    }
+    return ipInfo
 }

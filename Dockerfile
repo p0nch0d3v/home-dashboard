@@ -7,7 +7,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY . /app
 RUN npm install
-RUN npm install react-scripts@4.0.1 -g
+RUN npm install react-scripts@4.0.3 -g
 
 RUN touch /app/.env.production
 RUN touch /app/.env
