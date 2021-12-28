@@ -14,11 +14,14 @@ import {
     getStorageValue
 } from '../../services/DataService';
 
+import { getExchangeRate } from '../../services/ExchangeRate';
+
 import DateTime from '../DateTime/DateTime';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
 import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
 import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
+import ExchangeRate from '../ExchangeRate/ExchangeRate';
 import MainHeader from '../MainHeader/MainHeader';
 
 class MainSlider extends Component {
@@ -28,7 +31,8 @@ class MainSlider extends Component {
     intervals = {
         conditions : this.minute * 10,
         forecastHourly: this.hour,
-        forecastDaily: this.hour
+        forecastDaily: this.hour,
+        exchangeRate: this.hour * 3
     };
     currentSlider = 0;
     sliderItems = [];
@@ -95,6 +99,7 @@ class MainSlider extends Component {
         },
         forecastHourly: [],
         forecastDaily: [],
+        exchangeRates: [],
         debug: {
           lastUpdate: {
             conditions: null,
@@ -260,6 +265,15 @@ class MainSlider extends Component {
       this.setStateDebug();
     }
 
+    async getExchangeRates(force = true) {
+      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
+      const now = moment(Date.now());
+      force = force || (now - moment(lastUpdate)) >= this.intervals.exchangeRate;
+
+      let rates = await getExchangeRate(force);
+      this.setState({ exchangeRates: rates });
+    }
+
     async componentDidMount() {
         await this.getLocation(true);
         this.getDate();
@@ -267,6 +281,7 @@ class MainSlider extends Component {
         await this.getWeatherConditions(true);
         await this.getWeatherForecastHourly(true);
         await this.getWeatherForecastDaily(true);
+        await this.getExchangeRates(true);
         this.setStateDebug();
 
         setInterval(() => {
@@ -287,6 +302,10 @@ class MainSlider extends Component {
 
         setInterval(async () => {
             await this.getWeatherForecastDaily();
+        }, this.minute);
+
+        setInterval(async () => {
+            await this.getExchangeRates();
         }, this.minute);
 
         this.setSliderInterval();
@@ -379,6 +398,19 @@ class MainSlider extends Component {
             <WeatherForecastDaily forecast={this.state.forecastDaily}/>
           </>
         );
+
+        if (this.state.exchangeRates && this.state.exchangeRates.length > 0) {
+          this.sliderItems.push(
+            <>
+              <MainHeader temp={this.state.weather.temp.formatted}
+                          feelTemp={this.state.weather.feel.formatted}
+                          date={this.state.formattedDate}
+                          time={this.state.time} 
+                          iconCode={this.state.weather.iconCode} />
+              <ExchangeRate rates={this.state.exchangeRates} />
+            </>
+          );
+        }
         
         /* if (this.state.debug.showDebug) {
           this.sliderItems.push(

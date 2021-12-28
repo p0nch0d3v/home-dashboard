@@ -202,73 +202,90 @@ $icon_ext: '@4x.png';
     }
   }
 
-  .weatherForecastDaily {
-    height: $item-max-height;
+.weatherForecastDaily {
+  height: $item-max-height;
+  display: flex;
+  flex-wrap: wrap;
+
+  &_item {
+    width: 20%;
     display: flex;
-    flex-wrap: wrap;
-  
-    &_item {
-      width: 20%;
-      display: flex;
-      justify-content: space-evenly;
-      flex-direction: column;
-      margin: 0;
-      padding: 0;
-      align-items: center;
-      text-align: center;
-    }
-  
-    .main_text {
-      font-size: 4vw;
-    }
-  
-    @include icon(20vw, 20vw);
-  
-    .text_info {
-      font-size: 4.5vw;
-    }
+    justify-content: space-evenly;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    text-align: center;
   }
-  
-  .weatherForecastHourly {
-    height: $item-max-height;
+
+  .main_text {
+    font-size: 4vw;
+  }
+
+  @include icon(20vw, 20vw);
+
+  .text_info {
+    font-size: 4.5vw;
+  }
+}
+
+.weatherForecastHourly {
+  height: $item-max-height;
+  display: flex;
+  flex-wrap: wrap;
+
+  &_item {
+    width: 20%;
     display: flex;
-    flex-wrap: wrap;
-  
-    &_item {
-      width: 20%;
-      display: flex;
-      justify-content: space-evenly;
-      flex-direction: column;
-      margin: 0;
-      padding: 0;
-      align-items: center;
-      text-align: center;
-    }
-  
-    .main_text {
-      font-size: 4vw;
-      width: 95%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  
-    @include icon(20vw, 20vw);
-  
-    .text_info {
-      font-size: 4vw;
-    }
+    justify-content: space-evenly;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    text-align: center;
   }
+
+  .main_text {
+    font-size: 4vw;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @include icon(20vw, 20vw);
+
+  .text_info {
+    font-size: 4vw;
+  }
+}
+
+.exchangeRates {
+  align-items: 'center';
+  align-content: 'center';
+  display: 'flex';
+  flex-direction: 'column';
+  justify-content: 'center';
+
+  &_item {
+    width: '100vw'; 
+    text-align: 'center';
+    display: 'flex';
+    align-items: 'center';
+    align-content: 'center';
+    justify-content: 'center';
+  }
+}
   
 .border-top {
-  border-top: 1px solid #dee2e6!important;
+  border-top: 1px solid $img-bk !important;
 }
 .border-right {
-  border-right: 1px solid #dee2e6!important;
+  border-right: 1px solid $img-bk !important;
 }
 .border-bottom {
-  border-bottom: 1px solid #dee2e6!important;
+  border-bottom: 1px solid $img-bk !important;
 }
 .border-left {
-  border-left: 1px solid #dee2e6!important;
+  border-left: 1px solid $img-bk !important;
 }

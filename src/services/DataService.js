@@ -5,21 +5,23 @@ export const StorageKeys = {
     currentConditions: 'currentConditions',
     forecastHourly: 'forecastHourly',
     forecastDaily: 'forecastDaily',
+    exchangeRate: 'exchangeRate',
     lastUpdate: {
         conditions: 'lastConditionUpdate',
         forecastHourly: 'lastforecastHourlyUpdate',
-        forecastDaily: 'lastforecastDailyUpdate'
+        forecastDaily: 'lastforecastDailyUpdate',
+        exchangeRate: 'lastExchangeRateUpdate'
     },
     session: 'session',
     local: 'local'
 };
 
-export function getStorageValue(storage = StorageKeys.session, key) {
+export function getStorageValue(key, storage = StorageKeys.session) {
     const value = storage === StorageKeys.local ? localStorage.getItem(key) : localStorage.getItem(key);
     return value ? JSON.parse(value) : null;
 }
 
-export function setStorageValue(storage = StorageKeys.session, key, value) {
+export function setStorageValue(key, value, storage = StorageKeys.session) {
     if (value) {
         if (storage === StorageKeys.local) { 
             localStorage.removeItem(key);
