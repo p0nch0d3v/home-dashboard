@@ -18,6 +18,7 @@ export async function getLocationInfo(force = false){
         return locationInfo;
     }
     else {
+        console.debug(new Date().toLocaleTimeString(), 'Calling Location Info');
         locationInfo = {};
         const ipInfo = await getipInfo(force);
 
@@ -33,7 +34,7 @@ export async function getLocationInfo(force = false){
             longitude: position.coords.longitude
         };
 
-        setStorageValue(StorageKeys.local, StorageKeys.locationInfo, locationInfo);
+        setStorageValue(StorageKeys.locationInfo, locationInfo, StorageKeys.local);
     }
 
     return locationInfo;
@@ -45,6 +46,7 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
         return conditionsInfo;
     }
     else {
+        console.debug(new Date().toLocaleTimeString(), 'Calling Current Weather');
         let conditions = await axios({
             method: 'GET',
             url: `${getBaseUrl(latitude, longitude)}&exclude=minutely,hourly,daily,alerts`
@@ -106,6 +108,7 @@ export async function getForecastHourly(latitude, longitude, force = false) {
         return forecastInfo;
     }
     else {
+        console.debug(new Date().toLocaleTimeString(), 'Calling Forecast Hourly');
         let forecast = await axios({
             method: 'GET',
             url: `${getBaseUrl(latitude, longitude)}&exclude=current,minutely,daily,alerts`
@@ -155,6 +158,7 @@ export async function getForecastDaily(latitude, longitude, force = false) {
         return forecastInfo;
     }
     else {
+        console.debug(new Date().toLocaleTimeString(), 'Calling Forecast Daily');
         let forecast = await axios({
             method: 'GET',
             url: `${getBaseUrl(latitude, longitude)}&exclude=current,minutely,hourly,alerts`
@@ -268,7 +272,8 @@ function getPosition(options) {
 
 async function getipInfo(force) {
     let ipInfo = getStorageValue(StorageKeys.ipInfo, StorageKeys.local);
-    if (!ipInfo || force === true) {        
+    if (!ipInfo || force === true) {
+        console.debug(new Date().toLocaleTimeString(), 'Calling Ip Info');  
         ipInfo = await axios({
             url: 'https://ipinfo.io/json',
             method: 'GET',
@@ -280,7 +285,7 @@ async function getipInfo(force) {
         }).catch(e => { 
             console.error(e); return null; 
         });
-        setStorageValue(StorageKeys.local, StorageKeys.ipInfo, ipInfo);
+        setStorageValue(StorageKeys.ipInfo, ipInfo, StorageKeys.local);
     }
     return ipInfo
 }
