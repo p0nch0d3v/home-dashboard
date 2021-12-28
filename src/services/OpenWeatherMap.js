@@ -13,7 +13,7 @@ const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
 export async function getLocationInfo(force = false){
-    let locationInfo = getStorageValue(StorageKeys.local, StorageKeys.locationInfo);
+    let locationInfo = getStorageValue(StorageKeys.locationInfo, StorageKeys.local);
     if (locationInfo && force === false) {
         return locationInfo;
     }
@@ -267,7 +267,7 @@ function getPosition(options) {
 }
 
 async function getipInfo(force) {
-    let ipInfo = getStorageValue(StorageKeys.local, StorageKeys.ipInfo);
+    let ipInfo = getStorageValue(StorageKeys.ipInfo, StorageKeys.local);
     if (!ipInfo || force === true) {        
         ipInfo = await axios({
             url: 'https://ipinfo.io/json',
