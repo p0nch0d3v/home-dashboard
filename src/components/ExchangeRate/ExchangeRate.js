@@ -8,8 +8,7 @@ export default function ExchangeRate(props) {
   
   const itemheight = height / props.rates.length;
   const itemStyle = { 
-    height: `${itemheight}vh`, 
-    fontSize: `${(20 / props.rates.length)}vw`,
+    height: `${itemheight}vh`
   };
   return (
     <div className="exchangeRates" style={mainStyle}>

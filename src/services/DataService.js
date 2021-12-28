@@ -17,7 +17,7 @@ export const StorageKeys = {
 };
 
 export function getStorageValue(key, storage = StorageKeys.session) {
-    const value = storage === StorageKeys.local ? localStorage.getItem(key) : localStorage.getItem(key);
+    const value = storage === StorageKeys.local ? localStorage.getItem(key) : sessionStorage.getItem(key);
     return value ? JSON.parse(value) : null;
 }
 

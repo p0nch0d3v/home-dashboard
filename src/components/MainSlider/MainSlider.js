@@ -265,7 +265,7 @@ class MainSlider extends Component {
       this.setStateDebug();
     }
 
-    async getExchangeRates(force = true) {
+    async getExchangeRates(force = false) {
       const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
       const now = moment(Date.now());
       force = force || (now - moment(lastUpdate)) >= this.intervals.exchangeRate;
@@ -275,13 +275,13 @@ class MainSlider extends Component {
     }
 
     async componentDidMount() {
-        await this.getLocation(true);
+        await this.getLocation();
         this.getDate();
         this.getTime();
-        await this.getWeatherConditions(true);
-        await this.getWeatherForecastHourly(true);
-        await this.getWeatherForecastDaily(true);
-        await this.getExchangeRates(true);
+        await this.getWeatherConditions();
+        await this.getWeatherForecastHourly();
+        await this.getWeatherForecastDaily();
+        await this.getExchangeRates();
         this.setStateDebug();
 
         setInterval(() => {
@@ -355,7 +355,7 @@ class MainSlider extends Component {
                       weekDay={this.state.weekDay} /> 
           </>
         );
-        
+
         this.sliderItems.push(
           <>
             <MainHeader date={this.state.formattedDate}
