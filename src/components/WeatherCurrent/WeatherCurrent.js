@@ -12,14 +12,14 @@ export default function WeatherCurrent(props){
     return(
         <div className="weatherCurrent container-fluid m-0 p-0">
             <div className="row">
-                <div className="weatherCurrent_item border-right col-6 m-0 p-0">
+                <div className="weatherCurrent_item borderRight col-6 m-0 p-0">
                     <span className={'icon ' + props.weather.iconCode}></span>
                 </div>
                 <div className="weatherCurrent_item col-6 m-0 p-0">
                     {props.weather.temp.value > props.weather.feel.value ? <>{temp}{feelTemp}</> : <>{feelTemp}{temp}</>}  
                 </div>
             </div>
-            <div className="weatherCurrent_doubleItem border-top row m-0 p-0">
+            <div className="weatherCurrent_doubleItem borderTop row m-0 p-0">
                 <div className="col-12 m-0 p-0" style={{  wordBreak: 'keep-all', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                     {props.weather.text}
                 </div>

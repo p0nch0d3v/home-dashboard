@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function WeatherForecastDaily(props) {
     const forecast = [...props.forecast];
-    const borderClasses = ['border-right', 'border-right', 'border-right', 'border-right','border-none'];
+    const borderClasses = ['borderRight', 'borderRight', 'borderRight', 'borderRight','borderNone'];
 
     return (
         <div className="weatherForecastDaily">

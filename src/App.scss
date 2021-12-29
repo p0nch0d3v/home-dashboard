@@ -278,15 +278,18 @@ $icon_ext: '@4x.png';
   }
 }
   
-.border-top {
+.borderTop {
   border-top: 1px solid $img-bk !important;
 }
-.border-right {
+.borderRight {
   border-right: 1px solid $img-bk !important;
 }
-.border-bottom {
+.borderBottom {
   border-bottom: 1px solid $img-bk !important;
 }
-.border-left {
+.borderLeft {
   border-left: 1px solid $img-bk !important;
+}
+.borderNone {
+  border: 1px solid transparent !important;
 }
