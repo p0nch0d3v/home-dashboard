@@ -1,18 +1,18 @@
 import React from 'react';
 
-export default function MainHeader(props){
+export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd }){
     return (
-        <div className="main-header">
-            <div className="main-header_time">{props.time}</div>
+        <div className="main-header" onTouchEnd={onTouchEnd}>
+            <div className="main-header_time">{time}</div>
             <div className="main-header_temp">
                 {
-                    props.iconCode ? <span style={{marginRight: '1rem'}} className={'icon ' + props.iconCode}></span>
+                    iconCode ? <span style={{marginRight: '1rem'}} className={'icon ' + iconCode}></span>
                     : <></>
                 }
-                <span>{props.temp}</span>
-                {props.feelTemp !== props.temp ? <span>&nbsp;({props.feelTemp})</span> : <></>}
+                <span>{temp}</span>
+                {feelTemp !== temp ? <span>&nbsp;({feelTemp})</span> : <></>}
             </div>
-            <div className="main-header_date">{props.date}</div>
+            <div className="main-header_date">{date}</div>
          </div>
     )
 }

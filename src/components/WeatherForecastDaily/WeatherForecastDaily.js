@@ -1,7 +1,6 @@
 import React from 'react';
 
-export default function WeatherForecastDaily(props) {
-    const forecast = [...props.forecast];
+export default function WeatherForecastDaily({ forecast }) {
     const borderClasses = ['borderRight', 'borderRight', 'borderRight', 'borderRight','borderNone'];
 
     return (

@@ -1,43 +1,43 @@
 import React from 'react';
 
-export default function WeatherCurrentComp(props){
+export default function WeatherCurrentComp({ weather, sunRise, sunSet }){
     return (
         <div className="weatherCurrentComp">
             <div className="weatherCurrentComp_item borderRight borderBottom">
-                <div>UV: {props.weather.uv.index}</div>
+                <div>UV: {weather.uv.index}</div>
                 {
-                    props.weather.uv.index > 0 ? 
-                    <div>{props.weather.uv.text}</div> : <></>
+                    weather.uv.index > 0 ? 
+                    <div>{weather.uv.text}</div> : <></>
                 }
             </div>
             <div className="weatherCurrentComp_item borderRight borderBottom">
                 <div>Humidity:</div>
                 {
-                    props.weather.humidity > 0 ?
-                    <div>{props.weather.humidity} %</div> : <></>
+                    weather.humidity > 0 ?
+                    <div>{weather.humidity} %</div> : <></>
                 }
             </div>
             <div className="weatherCurrentComp_item borderBottom">
                 <div>Pressure:</div>
-                <div>{props.weather.pressure.value} {props.weather.pressure.unit}</div>
+                <div>{weather.pressure.value} {weather.pressure.unit}</div>
             </div>
             <div className="weatherCurrentComp_item borderRight">
                 <div>Wind:</div>
                 {
-                    props.weather.wind.speed.value > 0 ?
+                    weather.wind.speed.value > 0 ?
                     (<>
-                        <div>{props.weather.wind.speed.value} {props.weather.wind.speed.unit}</div>
-                        <div>{props.weather.wind.direction}</div>
+                        <div>{weather.wind.speed.value} {weather.wind.speed.unit}</div>
+                        <div>{weather.wind.direction}</div>
                     </>) : <></>
                 }
             </div>
             <div className="weatherCurrentComp_item borderRight">
                 <div>Sunrise:</div>
-                <div>{props.sunRise}</div>
+                <div>{sunRise}</div>
             </div>
             <div className="weatherCurrentComp_item">
                 <div>Sunset:</div>
-                <div>{props.sunSet}</div>
+                <div>{sunSet}</div>
             </div>
         </div>
     );
