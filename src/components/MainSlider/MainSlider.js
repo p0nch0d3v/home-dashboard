@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
 import 'moment-timezone';
+import { useInterval } from '../../helpers';
 
 import {
   getLocationInfo,
@@ -11,431 +12,409 @@ import {
 
 import {
     StorageKeys,
-    getStorageValue
+    getStorageValue,
+    setStorageValue
 } from '../../services/DataService';
 
-import { getExchangeRate } from '../../services/ExchangeRate';
+// import { getExchangeRate } from '../../services/ExchangeRate';
 
 import DateTime from '../DateTime/DateTime';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
 import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
 import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
-import ExchangeRate from '../ExchangeRate/ExchangeRate';
+// import ExchangeRate from '../ExchangeRate/ExchangeRate';
 import MainHeader from '../MainHeader/MainHeader';
 
-class MainSlider extends Component {
-    second = 1000;
-    minute = this.second * 60;
-    hour = this.minute * 60;
-    intervals = {
-        conditions : this.minute * 10,
-        forecastHourly: this.hour,
-        forecastDaily: this.hour,
-        exchangeRate: this.hour * 3
-    };
-    currentSlider = 0;
-    sliderItems = [];
-    sliderInternval = null;
-    startTouchX = null;
-    endTouchX = null;
+export default function MainSlider(props){
+  const [backgroundColor, set_backgroundColor] = useState('none');
+  const [second] =  useState(1000);
+  const [minute] = useState(second * 60);
+  const [hour] = useState(minute * 60);
 
-    state = {
-        date: null,
-        formattedDate: null,
-        time: null,
-        weekDay: null,
-        isDay: null,
-        isNight: null,
-        location: {
-            ip: null,
-            city: null,
-            region: null,
-            timezone: null,
-            coordinates: {
-              latitude:null,
-              longitude:null
-            }
-        },
-        weather: {
-            text: null,
-            temp: {
-                temp: null,
-                unit: null,
-                formatted: null
-            },
-            humidity: null,
-            feel: {
-                feelTemp: null,
-                feelUnit: null,
-                formatted: null
-            },
-            uv: {
-                index: null,
-                text: null
-            },
-            icon: null,
-            pressure: {
-                feelTemp: null,
-                feelUnit: null,
-            },
-            wind: {
-                direction: null,
-                speed: {
-                    value: null,
-                    unit: null
-                }
-            },
-            tempMax: {
-                value: null,
-                unit: null
-            },
-            tempMin: {
-                value: null,
-                unit: null
-            },
-            sunRise: null,
-            sunSet: null
-        },
-        forecastHourly: [],
-        forecastDaily: [],
-        exchangeRates: [],
-        debug: {
-          lastUpdate: {
-            conditions: null,
-            forecastHourly: null,
-            forecastDaily: null
-          },
-          showDebug: false
-        }
-    };
+  const [intervals] = useState({
+    slider: 20 * second,
+    conditions : minute * 10,
+    forecastHourly: hour,
+    forecastDaily: hour,
+    exchangeRate: hour * 6
+  });
+  const [currentSlider, set_currentSlider] = useState(0);
+  const [sliderItems, set_sliderItems] = useState([]);
+  const [touchDiff, set_touchDiff] = useState(null);
 
-    getDate = () => {
-      if (this.state.location.timezone) {
-        const newMomentDate = moment.utc().tz(this.state.location.timezone);
-        const newDate = newMomentDate.format('DD / MMM / YYYY');
-        const newWeekDay = newMomentDate.format('dddd');
-        this.setState({date: newMomentDate});
-        this.setState({formattedDate: newDate});
-        this.setState({weekDay: newWeekDay});
-      }
-    };
+  const [date, set_date]= useState(null);
+  const [formattedDate, set_formattedDate]= useState(null);
+  const [time, set_time]= useState(null);
+  const [weekDay, set_weekDay]= useState(null);
+  const [isDay, set_isDay]= useState(null);
+  const [isNight, set_isNight]= useState(null);
 
-    getTime = () => {
-      if (this.state.location.timezone) {
-        const now = moment.utc().tz(this.state.location.timezone);
-        const newTime = now.format('hh:mm A');
-        this.setState({time: newTime});
+  const [location, set_location] = useState(null);
+  const [weather, set_weather] = useState(null);
+  const [currentForecast, set_currentForecast] = useState(null);
+  const [forecastHourly, set_forecastHourly] = useState([]);
+  const [forecastDaily, set_forecastDaily] = useState([]);
+  const [exchangeRates, set_exchangeRates] = useState([]);
+
+  // const [debug, set_debug] = useState({});
+
+  /* FUNCTIONS */
+
+  const consoleDebug = (message , ...optionalParams) => {
+    const extraMessage = optionalParams.join(', ');
+    console.debug(new Date().toLocaleTimeString(), message, extraMessage);
+  };
+
+  const set = (callback, timeout = 250) => {
+    setTimeout(() => {
+      callback();
+    }, timeout);
+  };
+
+  const moveSlider = (forward) => {
+    let nextSliderIndex = currentSlider;
+    if (forward) {
+      nextSliderIndex = (currentSlider + 1) < sliderItems.length ? (currentSlider + 1) : 0;
+    }
+    else {
+      nextSliderIndex = (currentSlider - 1) >= 0 ? (currentSlider - 1) : (sliderItems.length - 1);
+    }
+    
+    if (currentSlider !== nextSliderIndex) {
+      set(() => {
+        set_currentSlider(nextSliderIndex);
+      });
+    }
+  };
+
+  const getLocation = async () => {
+    const newLocation = await getLocationInfo();
+    if (newLocation) {
+      set(() => {
+        set_location(newLocation);
+      });
+    }
+  }
+
+  const getDate = () => {
+    if (location?.timezone) {
+      const newMomentDate = moment.utc().tz(location?.timezone);
+      const newDate = newMomentDate.format('DD / MMM / YYYY');
+      const newWeekDay = newMomentDate.format('dddd');
+      set(() => {
+        set_date(newMomentDate);
+        set_formattedDate(newDate);
+        set_weekDay(newWeekDay);
+      });
+    }
+  };
+
+  const getTime = () => {
+    if (location?.timezone) {
+      const now = moment.utc().tz(location?.timezone);
+      const newTime = now.format('hh:mm A');
+      set(() => {
+        set_time(newTime);
+      });
+    }
+  };
+
+  const setBackgroundColor = () => {
+    const now = moment.utc().tz(location?.timezone);
+    let newIsDay = isDay;
+    let newIsNight = isNight;
+
+    if (weather?.sunRise && weather?.sunSet) {
+      if (now >= moment(weather?.sunRise) && now <= moment(weather?.sunSet)) {
+        newIsDay = true;
+        newIsNight = false;
         
-        this.setBackgroundColor();
-      }
-    };
-
-    setBackgroundColor = () => {
-      const now = moment.utc().tz(this.state.location.timezone);
-      if (this.state.weather.sunRise && this.state.weather.sunSet){
-        if (now >= moment(this.state.weather.sunRise) && now <= moment(this.state.weather.sunSet)) {
-          this.setState({ isDay: true });
-          this.setState({ isNight: false });
-        }
-        else {
-          this.setState({ isDay: false });
-          this.setState({ isNight: true });
-        }
-      }
-    }
-
-    setSliderInterval = () => {
-      if (this.sliderInternval) {
-        clearInterval(this.sliderInternval);
-      }
-      this.sliderInternval = setInterval(() => {
-        this.moveSlider(true);
-      }, this.second * 20);
-    }
-
-    moveSlider = (forward) => {
-      if (forward) {
-        this.currentSlider = (this.currentSlider + 1) < this.sliderItems.length ? (this.currentSlider + 1) : 0;
       }
       else {
-        this.currentSlider = (this.currentSlider - 1) >= 0 ? (this.currentSlider - 1) : (this.sliderItems.length - 1);
-      }
-      this.setSliderInterval();
-    }
-
-    setStateDebug = () => {
-      const now = moment(new Date());
-
-      const conditionsDiff = now - getStorageValue(StorageKeys.lastUpdate.conditions);
-      const forecastHourlyDiff = now - getStorageValue(StorageKeys.lastUpdate.forecastHourly);
-      const forecastDailyDiff = now - getStorageValue(StorageKeys.lastUpdate.forecastDaily);
-
-      const newDebug = {
-        lastUpdate: {
-          conditions: moment(conditionsDiff).format('mm:ss'),
-          forecastHourly: moment(forecastHourlyDiff).format('mm:ss'),
-          forecastDaily: moment(forecastDailyDiff).format('mm:ss')
-        },
-        showDebug: (conditionsDiff > (this.intervals.conditions + this.minute))
-                || (forecastHourlyDiff > (this.intervals.forecastHourly + this.minute))
-                || (forecastDailyDiff > (this.intervals.forecastDaily + this.minute))
-      };
-
-      this.setState({ debug: newDebug });
-    }
-
-    keyHandker = (e) => {
-      if (e.charCode === 37 || e.keyCode === 37) {
-        this.moveSlider(false);
-      }
-      if (e.charCode === 39 || e.keyCode === 39){
-        this.moveSlider(true);
+        newIsDay = false;
+        newIsNight = true;
       }
     }
+    set(() => {
+      set_isDay(newIsDay);
+      set_isNight(newIsNight);
+      
+      const newBackgroundColor = newIsDay === true ? 'day' : (newIsNight === true ? 'night' : 'none');
+      set_backgroundColor(newBackgroundColor);
+    });
+  };
 
-    async getLocation() {
-      const locationInfo = await getLocationInfo();
-      if (locationInfo) {
-        this.setState({
-          location: locationInfo
+  const setupSliderItems = () => {
+    const newSliderItems = [];
+    
+    const onlyWeatherHeader = (weather ? (
+      <MainHeader temp={weather?.temp?.formatted}
+                  feelTemp={weather?.feel?.formatted} 
+                  iconCode={weather?.iconCode} 
+                  onTouchEnd={fullscreenHandler} /> 
+      ) : <></>
+    );
+
+    const dateTimeHeader = (
+      <MainHeader date={formattedDate}
+                  time={time} 
+                  onTouchEnd={fullscreenHandler} />
+    );
+
+    const fullHeader = (weather ? (
+      <MainHeader temp={weather?.temp?.formatted}
+                  feelTemp={weather?.feel?.formatted}
+                  date={formattedDate}
+                  time={time} 
+                  iconCode={weather?.iconCode} 
+                  onTouchEnd={fullscreenHandler} />
+      ) : <></>
+    );
+
+    newSliderItems.push(
+      <>
+        {onlyWeatherHeader}
+        <DateTime date={formattedDate}
+                  time={time}
+                  weekDay={weekDay} /> 
+      </>
+    );
+
+    if (weather && currentForecast) {
+      newSliderItems.push(
+        <>
+          {dateTimeHeader}
+          <WeatherCurrent weather={weather} 
+                          currentForecast={currentForecast} />
+        </>
+      );
+    }
+    
+    if (weather) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <WeatherCurrentComp weather={weather} 
+                              sunRise={moment(weather?.sunRise).format('hh:mm A')}
+                              sunSet={moment(weather?.sunSet).format('hh:mm A')} />
+        </>
+      );
+    }
+
+    if (forecastHourly && forecastHourly.length > 0) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <WeatherForecastHourly forecast={forecastHourly} />
+        </>
+      );
+    }
+    
+    if (forecastDaily && forecastDaily.length > 0) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <WeatherForecastDaily forecast={forecastDaily}/>
+        </>
+      );
+    }
+    
+    // if (exchangeRates && exchangeRates.length > 0) {
+    //   newSliderItems.push(
+    //     <>
+    //       {fullHeader}
+    //       <ExchangeRate rates={exchangeRates} />
+    //     </>
+    //   );
+    // }
+
+    set(() => {
+      set_sliderItems(newSliderItems);
+    });
+
+    if (currentSlider >= newSliderItems.length) {
+      set(() => {
+        set_currentSlider(0);
+      });
+    }
+  };
+
+  /* ASYNC */
+
+  const getWeatherConditions = async (force = false) => {
+    const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
+    const now = moment(Date.now());
+    force = force || (now - moment(lastUpdate)) >= intervals.conditions;
+
+    let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+
+    if (currentWeather) {
+      set(() => {
+        set_weather(currentWeather);
+      });
+    }
+  };
+
+  const getWeatherForecastHourly = async (force = false) => {
+    const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
+    const now = moment(Date.now());
+    force = force || (now - moment(lastUpdate)) >= intervals.forecastHourly;
+    if (forecastHourly && forecastHourly.length > 0) {
+      force = force || Date.now() > forecastHourly[0].dateTime;
+    }
+    
+    const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+    if (forecast) {
+      set(() => {
+        set_forecastHourly(forecast);
+      });
+    }
+  };
+
+  const getWeatherForecastDaily = async (force = false) => {
+    const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
+    const now = moment(Date.now());
+    force = force || (now - moment(lastUpdate)) >= intervals.forecastDaily;
+    
+    if (forecastDaily && forecastDaily.length > 0) {
+      force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastHourly[0].dateTime).format('YYYY-MM-DD'));
+    }
+
+    let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+    if (forecast) {
+      const todayForecast = forecast.find(f => f.isToday === true);
+      forecast = forecast.filter(f => f.isToday === false);
+      
+      set(() => {
+        set_forecastDaily(forecast);
+      });
+      
+      if (todayForecast) {
+        set(() => {
+          set_currentForecast({
+            tempMax: todayForecast?.temp.max,
+            tempMin: todayForecast?.temp.min,
+            precipitationProbability: todayForecast?.precipitationProbability
+          });
         });
       }
     }
+  };
 
-    async getWeatherConditions(force = false) {
-      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
-      const now = moment(Date.now());
-      force = force || (now - moment(lastUpdate)) >= this.intervals.conditions;
+  // const getExchangeRates = async (force = false) => {
+  //   const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
+  //   const now = moment(Date.now());
+  //   force = force || (now - moment(lastUpdate)) >= intervals.exchangeRate;
 
-      const currentWeather = await getCurrentWeather(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
-      if (currentWeather) {
-        
-        if (this.state.weather.tempMax || this.state.weather.tempMin || this.state.weather.precipitationProbability){
-          currentWeather.tempMax = this.state.weather.tempMax;
-          currentWeather.tempMin = this.state.weather.tempMin;
-          currentWeather.precipitationProbability = this.state.weather.precipitationProbability;
-        }
+  //   let rates = await getExchangeRate(force);
+  //   set(() => {
+  //     set_exchangeRates(rates);
+  //   });
+  // }
 
-        this.setState({weather: currentWeather});
-        this.setBackgroundColor();
-      }
-      this.setStateDebug();
+  /* HANDLERS */
+
+  const keyHandker = (e) => {
+    if (e.charCode === 37 || e.keyCode === 37) {
+      moveSlider(false);
     }
-
-    async getWeatherForecastHourly(force = false) {
-      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
-      const now = moment(Date.now());
-      force = force || (now - moment(lastUpdate)) >= this.intervals.forecastHourly;
-      if (this.state.forecastHourly && this.state.forecastHourly.length > 0){
-        force = force || Date.now() > this.state.forecastHourly[0].dateTime;
-      }
-      
-      const forecast = await getForecastHourly(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
-      if (forecast){
-        this.setState({ forecastHourly: forecast });
-      }
-      this.setStateDebug();
+    if (e.charCode === 39 || e.keyCode === 39){
+      moveSlider(true);
     }
+  };
 
-    async getWeatherForecastDaily(force = false) {
-      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
-      const now = moment(Date.now());
-      force = force || (now - moment(lastUpdate)) >= this.intervals.forecastDaily;
-      
-      if (this.state.forecastDaily && this.state.forecastDaily.length > 0){
-        force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(this.state.forecastHourly[0].dateTime).format('YYYY-MM-DD'));
-      }
+  const touchstartHandler = (e) => {
+    var touchobj = e.changedTouches[0];
+    setStorageValue('startTouch', touchobj.clientX);
+    e.preventDefault();
+  };
 
-      let forecast = await getForecastDaily(this.state.location.coordinates.latitude, this.state.location.coordinates.longitude, force);
-      if (forecast) {
-        const todayForecast = forecast.find(f => f.isToday === true)
-        
-        forecast = forecast.filter(f => f.isToday === false);
-        this.setState({ forecastDaily: forecast });
-        
-        if (todayForecast) {
-          let currentWeather = this.state.weather;
-          currentWeather.tempMax = todayForecast.temp.max;
-          currentWeather.tempMin = todayForecast.temp.min;
-          currentWeather.precipitationProbability = todayForecast.precipitationProbability;
-          this.setState({ weather: currentWeather });
-        }
-      }
-      this.setStateDebug();
+  const touchendHandlers = (e) => {
+    var touchobj = e.changedTouches[0];
+    setStorageValue('endTouchX', touchobj.clientX);
+    const diff = parseInt(getStorageValue('startTouch')) - parseInt(getStorageValue('endTouchX'));
+    
+    set(() => {
+      set_touchDiff(diff);
+    });
+
+    setStorageValue('startTouch', null);
+    setStorageValue('endTouchX', null);
+    e.preventDefault();
+  };
+
+  const fullscreenHandler = (e) => {
+    var el = document.documentElement;
+    if (document.fullscreen && document.fullscreenEnabled){
+      document.exitFullscreen();
     }
-
-    async getExchangeRates(force = false) {
-      const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
-      const now = moment(Date.now());
-      force = force || (now - moment(lastUpdate)) >= this.intervals.exchangeRate;
-
-      let rates = await getExchangeRate(force);
-      this.setState({ exchangeRates: rates });
+    else {
+      var rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+      rfs.call(el);
     }
+  };
+  
+  useInterval(() => {
+    moveSlider(true);
+  }, intervals.slider);
 
-    async componentDidMount() {
-        await this.getLocation();
-        this.getDate();
-        this.getTime();
-        await this.getWeatherConditions();
-        await this.getWeatherForecastHourly();
-        await this.getWeatherForecastDaily();
-        await this.getExchangeRates();
-        this.setStateDebug();
+  const mainAction = async () => {
+    getDate();
+    getTime();
+    await getWeatherConditions();
+    await getWeatherForecastHourly();
+    await getWeatherForecastDaily();
+    // await getExchangeRates();
+  };
 
-        setInterval(() => {
-            this.getTime();
-        }, this.second);
+  useInterval(async ()=>{
+    await mainAction();
+  }, minute);
 
-        setInterval(() => {
-            this.getDate();
-        }, this.minute);
+  useEffect(() => {
+    (async () => {
+      await getLocation();
+      await mainAction();
+      setupSliderItems();
+    })();
 
-        setInterval(async ()=>{
-            await this.getWeatherConditions();
-        }, this.minute);
+    document.body.addEventListener('touchstart', touchstartHandler, false);
+    document.body.addEventListener('touchend', touchendHandlers, false);
+  }, []);
 
-        setInterval(async () => {
-            await this.getWeatherForecastHourly();
-        }, this.minute);
+  useEffect(() => {
+    setupSliderItems();
+  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates])
 
-        setInterval(async () => {
-            await this.getWeatherForecastDaily();
-        }, this.minute);
+  useEffect(() => {
+    getDate();
+    getTime();
+  }, [location]);
 
-        setInterval(async () => {
-            await this.getExchangeRates();
-        }, this.minute);
+  useEffect(() => {
+    setBackgroundColor();
+  }, [location, weather]);
 
-        this.setSliderInterval();
-
-        document.body.addEventListener('touchstart', (e) => {
-          var touchobj = e.changedTouches[0];
-          this.startTouchX = parseInt(touchobj.clientX);
-          e.preventDefault();
-        }, false);
-
-        document.body.addEventListener('touchend', (e) => {
-          var touchobj = e.changedTouches[0];
-          this.endTouchX = parseInt(touchobj.clientX);
-          const diff = this.startTouchX - this.endTouchX;
-          if (diff >= 500) {
-            this.moveSlider(true);
-          }
-          else if (diff <= -500) {
-            this.moveSlider(false);
-          }
-          this.startTouchX = null;
-          e.preventDefault();
-        }, false);
-
-        document.querySelector('.main-header').addEventListener('touchend', (e) => {
-          var el = document.documentElement;
-          if (document.fullscreen && document.fullscreenEnabled){
-            document.exitFullscreen();
-          }
-          else {
-            var rfs = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-            rfs.call(el);
-          }
-        });
+  useEffect(() => {
+    document.title = touchDiff;
+    if (touchDiff >= window.innerWidth / 2) {
+      moveSlider(true);
     }
-
-    render = () => {
-        this.sliderItems = [];
-        
-        this.sliderItems.push(
-          <>
-            <MainHeader temp={this.state.weather.temp.formatted}
-                        feelTemp={this.state.weather.feel.formatted} 
-                        iconCode={this.state.weather.iconCode} />
-            <DateTime date={this.state.formattedDate}
-                      time={this.state.time}
-                      weekDay={this.state.weekDay} /> 
-          </>
-        );
-
-        this.sliderItems.push(
-          <>
-            <MainHeader date={this.state.formattedDate}
-                        time={this.state.time} />
-            <WeatherCurrent weather={this.state.weather} />
-          </>
-        );
-
-        this.sliderItems.push(
-          <>
-            <MainHeader temp={this.state.weather.temp.formatted}
-                        feelTemp={this.state.weather.feel.formatted}
-                        date={this.state.formattedDate}
-                        time={this.state.time} 
-                        iconCode={this.state.weather.iconCode} />
-            <WeatherCurrentComp weather={this.state.weather} 
-                                sunRise={moment(this.state.weather.sunRise).format('hh:mm A')}
-                                sunSet={moment(this.state.weather.sunSet).format('hh:mm A')} />
-          </>
-        );
-        
-        this.sliderItems.push(
-          <>
-            <MainHeader temp={this.state.weather.temp.formatted}
-                        feelTemp={this.state.weather.feel.formatted}
-                        date={this.state.formattedDate}
-                        time={this.state.time} 
-                        iconCode={this.state.weather.iconCode} />
-            <WeatherForecastHourly forecast={this.state.forecastHourly} />
-          </>
-        );
-        
-        this.sliderItems.push(
-          <>
-            <MainHeader temp={this.state.weather.temp.formatted}
-                        feelTemp={this.state.weather.feel.formatted}
-                        date={this.state.formattedDate}
-                        time={this.state.time} 
-                        iconCode={this.state.weather.iconCode} />
-            <WeatherForecastDaily forecast={this.state.forecastDaily}/>
-          </>
-        );
-
-        if (this.state.exchangeRates && this.state.exchangeRates.length > 0) {
-          this.sliderItems.push(
-            <>
-              <MainHeader temp={this.state.weather.temp.formatted}
-                          feelTemp={this.state.weather.feel.formatted}
-                          date={this.state.formattedDate}
-                          time={this.state.time} 
-                          iconCode={this.state.weather.iconCode} />
-              <ExchangeRate rates={this.state.exchangeRates} />
-            </>
-          );
-        }
-        
-        /* if (this.state.debug.showDebug) {
-          this.sliderItems.push(
-            <div className="text-center" style={{fontSize:'10vw'}}>
-              <span>Conditions: {this.state.debug.lastUpdate.conditions}</span>
-              <br/>
-              <span>Hourly: {this.state.debug.lastUpdate.forecastHourly}</span>
-              <br/>
-              <span>Daily: {this.state.debug.lastUpdate.forecastDaily}</span>
-            </div>
-          );
-        } */
-
-        const backgroundColor = this.state.isDay === true ? 'day' : (this.state.isNight === true ? 'night' : null)
-
-        return (
-          <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={this.keyHandker}>
-            <div className="mainSlider row m-0 p-0">
-              <div className="col-12 m-0 p-0 content">
-                  { this.sliderItems[this.currentSlider] }
-              </div>
-            </div>
-          </div>
-        );
+    else if (touchDiff <= ((window.innerWidth / 2) * -1)) {
+      moveSlider(false);
     }
+  }, [touchDiff]);
+
+  return (
+    <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={keyHandker}>
+      <div className="mainSlider row m-0 p-0">
+        <div className="col-12 m-0 p-0 content">
+            { sliderItems.map((value, index) => {
+              return currentSlider === index ? value : <></>;
+            }) }
+        </div>
+      </div>
+    </div>
+  )
 }
-
-export default MainSlider;

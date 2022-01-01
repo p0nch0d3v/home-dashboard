@@ -1,7 +1,6 @@
 import React from 'react';
 
-export default function WeatherForecastHourly(props) {
-    const forecast = [...props.forecast];
+export default function WeatherForecastHourly({ forecast }) {
     const borderClasses = ['borderRight', 'borderRight', 'borderRight', 'borderRight', 'borderNone'];
 
     return (
