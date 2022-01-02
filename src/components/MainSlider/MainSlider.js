@@ -16,24 +16,23 @@ import {
     setStorageValue
 } from '../../services/DataService';
 
-// import { getExchangeRate } from '../../services/ExchangeRate';
+import { getExchangeRate } from '../../services/ExchangeRate';
 
 import DateTime from '../DateTime/DateTime';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
 import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
 import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
 import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
-// import ExchangeRate from '../ExchangeRate/ExchangeRate';
+import ExchangeRate from '../ExchangeRate/ExchangeRate';
 import MainHeader from '../MainHeader/MainHeader';
 
-export default function MainSlider(props){
+export default function MainSlider(props) {
   const [backgroundColor, set_backgroundColor] = useState('none');
   const [second] =  useState(1000);
   const [minute] = useState(second * 60);
   const [hour] = useState(minute * 60);
 
   const [intervals] = useState({
-    slider: 20 * second,
     conditions : minute * 10,
     forecastHourly: hour,
     forecastDaily: hour,
@@ -41,6 +40,8 @@ export default function MainSlider(props){
   });
   const [currentSlider, set_currentSlider] = useState(0);
   const [sliderItems, set_sliderItems] = useState([]);
+  const [sliderTimes, set_sliderTimes] = useState([]);
+  const [sliderTime, set_sliderTime] = useState(5 * second);
   const [touchDiff, set_touchDiff] = useState(null);
 
   const [date, set_date]= useState(null);
@@ -61,11 +62,6 @@ export default function MainSlider(props){
 
   /* FUNCTIONS */
 
-  const consoleDebug = (message , ...optionalParams) => {
-    const extraMessage = optionalParams.join(', ');
-    console.debug(new Date().toLocaleTimeString(), message, extraMessage);
-  };
-
   const set = (callback, timeout = 250) => {
     setTimeout(() => {
       callback();
@@ -84,6 +80,7 @@ export default function MainSlider(props){
     if (currentSlider !== nextSliderIndex) {
       set(() => {
         set_currentSlider(nextSliderIndex);
+        set_sliderTime(sliderTimes[nextSliderIndex]);
       });
     }
   };
@@ -147,6 +144,7 @@ export default function MainSlider(props){
 
   const setupSliderItems = () => {
     const newSliderItems = [];
+    const newSliderTimes = [];
     
     const onlyWeatherHeader = (weather ? (
       <MainHeader temp={weather?.temp?.formatted}
@@ -180,6 +178,7 @@ export default function MainSlider(props){
                   weekDay={weekDay} /> 
       </>
     );
+    newSliderTimes.push(30 * second);
 
     if (weather && currentForecast) {
       newSliderItems.push(
@@ -189,6 +188,7 @@ export default function MainSlider(props){
                           currentForecast={currentForecast} />
         </>
       );
+      newSliderTimes.push(20 * second);
     }
     
     if (weather) {
@@ -200,6 +200,7 @@ export default function MainSlider(props){
                               sunSet={moment(weather?.sunSet).format('hh:mm A')} />
         </>
       );
+      newSliderTimes.push(20 * second);
     }
 
     if (forecastHourly && forecastHourly.length > 0) {
@@ -209,6 +210,7 @@ export default function MainSlider(props){
           <WeatherForecastHourly forecast={forecastHourly} />
         </>
       );
+      newSliderTimes.push(30 * second);
     }
     
     if (forecastDaily && forecastDaily.length > 0) {
@@ -218,19 +220,22 @@ export default function MainSlider(props){
           <WeatherForecastDaily forecast={forecastDaily}/>
         </>
       );
+      newSliderTimes.push(30 * second);
     }
     
-    // if (exchangeRates && exchangeRates.length > 0) {
-    //   newSliderItems.push(
-    //     <>
-    //       {fullHeader}
-    //       <ExchangeRate rates={exchangeRates} />
-    //     </>
-    //   );
-    // }
+    if (exchangeRates && exchangeRates.length > 0) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <ExchangeRate rates={exchangeRates} />
+        </>
+      );
+      newSliderTimes.push(10 * second);
+    }
 
     set(() => {
       set_sliderItems(newSliderItems);
+      set_sliderTimes(newSliderTimes);
     });
 
     if (currentSlider >= newSliderItems.length) {
@@ -247,12 +252,14 @@ export default function MainSlider(props){
     const now = moment(Date.now());
     force = force || (now - moment(lastUpdate)) >= intervals.conditions;
 
-    let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+    if (location?.coordinates) {
+      let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
 
-    if (currentWeather) {
-      set(() => {
-        set_weather(currentWeather);
-      });
+      if (currentWeather) {
+        set(() => {
+          set_weather(currentWeather);
+        });
+      }
     }
   };
 
@@ -260,15 +267,18 @@ export default function MainSlider(props){
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
     const now = moment(Date.now());
     force = force || (now - moment(lastUpdate)) >= intervals.forecastHourly;
+    
     if (forecastHourly && forecastHourly.length > 0) {
       force = force || Date.now() > forecastHourly[0].dateTime;
     }
     
-    const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
-    if (forecast) {
-      set(() => {
-        set_forecastHourly(forecast);
-      });
+    if (location?.coordinates) {
+      const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+      if (forecast) {
+        set(() => {
+          set_forecastHourly(forecast);
+        });
+      }
     }
   };
 
@@ -281,37 +291,39 @@ export default function MainSlider(props){
       force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastHourly[0].dateTime).format('YYYY-MM-DD'));
     }
 
-    let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
-    if (forecast) {
-      const todayForecast = forecast.find(f => f.isToday === true);
-      forecast = forecast.filter(f => f.isToday === false);
-      
-      set(() => {
-        set_forecastDaily(forecast);
-      });
-      
-      if (todayForecast) {
+    if (location?.coordinates) {
+      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+      if (forecast) {
+        const todayForecast = forecast.find(f => f.isToday === true);
+        forecast = forecast.filter(f => f.isToday === false);
+        
         set(() => {
-          set_currentForecast({
-            tempMax: todayForecast?.temp.max,
-            tempMin: todayForecast?.temp.min,
-            precipitationProbability: todayForecast?.precipitationProbability
-          });
+          set_forecastDaily(forecast);
         });
+        
+        if (todayForecast) {
+          set(() => {
+            set_currentForecast({
+              tempMax: todayForecast?.temp.max,
+              tempMin: todayForecast?.temp.min,
+              precipitationProbability: todayForecast?.precipitationProbability
+            });
+          });
+        }
       }
     }
   };
 
-  // const getExchangeRates = async (force = false) => {
-  //   const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
-  //   const now = moment(Date.now());
-  //   force = force || (now - moment(lastUpdate)) >= intervals.exchangeRate;
+  const getExchangeRates = async (force = false) => {
+    const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
+    const now = moment(Date.now());
+    force = force || (now - moment(lastUpdate)) >= intervals.exchangeRate;
 
-  //   let rates = await getExchangeRate(force);
-  //   set(() => {
-  //     set_exchangeRates(rates);
-  //   });
-  // }
+    let rates = await getExchangeRate(force);
+    set(() => {
+      set_exchangeRates(rates);
+    });
+  }
 
   /* HANDLERS */
 
@@ -357,7 +369,7 @@ export default function MainSlider(props){
   
   useInterval(() => {
     moveSlider(true);
-  }, intervals.slider);
+  }, sliderTime);
 
   const mainAction = async () => {
     getDate();
@@ -365,7 +377,7 @@ export default function MainSlider(props){
     await getWeatherConditions();
     await getWeatherForecastHourly();
     await getWeatherForecastDaily();
-    // await getExchangeRates();
+    await getExchangeRates();
   };
 
   useInterval(async ()=>{
@@ -397,7 +409,6 @@ export default function MainSlider(props){
   }, [location, weather]);
 
   useEffect(() => {
-    document.title = touchDiff;
     if (touchDiff >= window.innerWidth / 2) {
       moveSlider(true);
     }
