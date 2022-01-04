@@ -98,8 +98,20 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
                     unit: null
                 },
                 sunSet: conditions.sunset * 1000,
-                sunRise: conditions.sunrise * 1000
+                sunRise: conditions.sunrise * 1000,
+                
             };
+            conditionsInfo.dayLight = (conditionsInfo.sunSet - conditionsInfo.sunRise) * 1000;
+            
+            const sunrise = moment(conditionsInfo.sunRise);
+            const sunset = moment(conditionsInfo.sunSet) 
+            
+            let dayLight = sunset.subtract(sunrise.hours(), 'hours');
+            dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
+            dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
+
+            conditionsInfo.formattedDayLight = dayLight.format("hh:mm:ss");
+            
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
         }

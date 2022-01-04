@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function WeatherCurrentComp({ weather, sunRise, sunSet }){
+export default function WeatherCurrentComp({ weather, sunRise, sunSet, dayLight }){
     return (
         <div className="weatherCurrentComp">
             <div className="weatherCurrentComp_item borderRight borderBottom">
@@ -31,13 +31,19 @@ export default function WeatherCurrentComp({ weather, sunRise, sunSet }){
                     </>) : <></>
                 }
             </div>
-            <div className="weatherCurrentComp_item borderRight">
-                <div>Sunrise:</div>
-                <div>{sunRise}</div>
-            </div>
-            <div className="weatherCurrentComp_item">
-                <div>Sunset:</div>
-                <div>{sunSet}</div>
+            <div className="weatherCurrentComp_double_width_item sunInfo">
+                <span className="sunrise">
+                    <span>Sunrise:</span>
+                    <span>{sunRise}</span>
+                </span>
+                <span className="sunset">
+                    <span>Sunset:</span>
+                    <span>{sunSet}</span>
+                </span>
+                <span className="dayLight">
+                    <span>Day Ligth:</span>&nbsp;&nbsp;
+                    <span>{dayLight}</span>
+                </span>
             </div>
         </div>
     );

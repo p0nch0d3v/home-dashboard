@@ -125,8 +125,7 @@ export default function MainSlider(props) {
     if (weather?.sunRise && weather?.sunSet) {
       if (now >= moment(weather?.sunRise) && now <= moment(weather?.sunSet)) {
         newIsDay = true;
-        newIsNight = false;
-        
+        newIsNight = false;        
       }
       else {
         newIsDay = false;
@@ -197,7 +196,8 @@ export default function MainSlider(props) {
           {fullHeader}
           <WeatherCurrentComp weather={weather} 
                               sunRise={moment(weather?.sunRise).format('hh:mm A')}
-                              sunSet={moment(weather?.sunSet).format('hh:mm A')} />
+                              sunSet={moment(weather?.sunSet).format('hh:mm A')} 
+                              dayLight={weather?.formattedDayLight}/>
         </>
       );
       newSliderTimes.push(20 * second);

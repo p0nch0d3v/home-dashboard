@@ -66,7 +66,9 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
             unit: null
         },
         sunSet: Date.now(),
-        sunRise: Date.now()
+        sunRise: Date.now(),
+        dayLight: Date.now(),
+        formattedDayLight: `${rand(0, 12)}:${rand(0, 59)}:${rand(0, 59)}`
     };
 }
 
