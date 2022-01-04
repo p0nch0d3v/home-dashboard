@@ -312,6 +312,25 @@ $icon_ext: '@4x.png';
   }
 }
   
+.calendar {
+  font-size: 7.25vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  
+  .week {
+    border: 1px solid transparent;
+    
+    .weekDay {
+      border: 1px solid transparent;
+
+      &.today {
+        background-color: $img-bk;
+      }
+    }
+  }
+}
+
 .borderTop {
   border-top: 1px solid $img-bk !important;
 }

@@ -24,6 +24,7 @@ import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
 import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
 import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
 import ExchangeRate from '../ExchangeRate/ExchangeRate';
+import Calendar from '../Calendar/Calendar';
 import MainHeader from '../MainHeader/MainHeader';
 
 export default function MainSlider(props) {
@@ -169,15 +170,28 @@ export default function MainSlider(props) {
       ) : <></>
     );
 
-    newSliderItems.push(
-      <>
-        {onlyWeatherHeader}
-        <DateTime date={formattedDate}
-                  time={time}
-                  weekDay={weekDay} /> 
-      </>
-    );
-    newSliderTimes.push(30 * second);
+    if (date && time) {
+      newSliderItems.push(
+        <>
+          {onlyWeatherHeader}
+          <DateTime date={formattedDate}
+                    time={time}
+                    weekDay={weekDay} /> 
+        </>
+      );
+      newSliderTimes.push(30 * second);
+    
+    }
+
+    if (date) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <Calendar date={date} />
+        </>
+      )
+      newSliderTimes.push(45 * second);
+    }
 
     if (weather && currentForecast) {
       newSliderItems.push(
