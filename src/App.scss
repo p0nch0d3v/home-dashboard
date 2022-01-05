@@ -313,19 +313,32 @@ $icon_ext: '@4x.png';
 }
   
 .calendar {
-  font-size: 7.25vh;
+  font-size: 6.5vh;
   display: flex;
   flex-direction: column;
   text-align: center;
   
+  .header {
+    font-weight: 700;
+  }
+
   .week {
     border: 1px solid transparent;
     
     .weekDay {
       border: 1px solid transparent;
+      width: 10vh;
+      height: 10vh;
+      display: inline-block;
+
+      &.weekend {
+        font-weight: 100;
+      }
 
       &.today {
         background-color: $img-bk;
+        border-radius: 50%;
+        font-weight: 700;
       }
     }
   }

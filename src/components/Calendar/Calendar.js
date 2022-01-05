@@ -22,6 +22,12 @@ export default function Calendar({ date }) {
         rows.push(week);
     }
 
+    const weekDayClasses = (dayValue, weekDay) => {
+        return 'weekDay' 
+            + (date.date() === dayValue ? ' today' : '')
+            + (weekDay === 0 || weekDay === 6 ? ' weekend' : '');
+    } 
+
     return (
         <div className="container-fluid calendar">
             <div className="row">
@@ -30,14 +36,14 @@ export default function Calendar({ date }) {
                 </div>
             </div>
             
-            <div className="row">
-                <div className="col">S</div>
-                <div className="col">M</div>
-                <div className="col">T</div>
-                <div className="col">W</div>
-                <div className="col">T</div>
-                <div className="col">F</div>
-                <div className="col">S</div>
+            <div className="row header">
+                <div className="col">Su</div>
+                <div className="col">Mo</div>
+                <div className="col">Tu</div>
+                <div className="col">We</div>
+                <div className="col">Th</div>
+                <div className="col">Fr</div>
+                <div className="col">Sa</div>
             </div>
             
             {rows.map((weekValue, weekIndex) => {
@@ -45,8 +51,10 @@ export default function Calendar({ date }) {
                     <div className="row week">
                         {weekValue.map((dayValue, dayIndex) =>{
                             return (
-                                <div className={`col weekDay ${date.date() === dayValue ? 'today' : ''}` }>
-                                    {dayValue ? dayValue : ''}
+                                <div className="col">
+                                    <span className={`weekDay ${weekDayClasses(dayValue, dayIndex)}` }>
+                                        {dayValue ? dayValue : ''}
+                                    </span>
                                 </div>
                             )
                         })}
