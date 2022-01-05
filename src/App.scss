@@ -336,9 +336,22 @@ $icon_ext: '@4x.png';
       }
 
       &.today {
-        background-color: $img-bk;
         border-radius: 50%;
         font-weight: 700;
+      }
+
+      &.pastDay {
+        text-decoration: line-through;
+      }
+
+      .day &.today {
+        background-color: $night-bk;
+        color:$night-font-color;
+      }
+
+      .night &.today {
+        background-color: $day-bk;
+        color:$day-font-color;
       }
     }
   }

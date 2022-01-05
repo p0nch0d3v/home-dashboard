@@ -25,7 +25,8 @@ export default function Calendar({ date }) {
     const weekDayClasses = (dayValue, weekDay) => {
         return 'weekDay' 
             + (date.date() === dayValue ? ' today' : '')
-            + (weekDay === 0 || weekDay === 6 ? ' weekend' : '');
+            + (weekDay === 0 || weekDay === 6 ? ' weekend' : '')
+            + (dayValue < date.date() ? ' pastDay' : '');
     } 
 
     return (
