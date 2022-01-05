@@ -416,6 +416,7 @@ export default function MainSlider(props) {
   useEffect(() => {
     getDate();
     getTime();
+    getWeatherConditions();
   }, [location]);
 
   useEffect(() => {
