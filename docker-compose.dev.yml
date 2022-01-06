@@ -7,6 +7,7 @@ services:
     command: >
       bash -c "cd /app &&
                npm install -f &&
+               cat .env.local &&
                npm run start"
     volumes:
       - .:/app
