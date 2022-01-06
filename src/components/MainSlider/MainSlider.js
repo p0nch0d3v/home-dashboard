@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
+import 'moment/locale/es';
 import 'moment-timezone';
-import { useInterval } from '../../helpers';
+import { useTranslation } from 'react-i18next'
+import { capitalize, consoleDebug, useInterval } from '../../helpers';
 
 import {
   getLocationInfo,
@@ -28,6 +30,7 @@ import Calendar from '../Calendar/Calendar';
 import MainHeader from '../MainHeader/MainHeader';
 
 export default function MainSlider(props) {
+  const [localeLang] = useState(process.env.REACT_APP_LOCALE_LANG || 'en');
   const [backgroundColor, set_backgroundColor] = useState('none');
   const [second] =  useState(1000);
   const [minute] = useState(second * 60);
@@ -58,6 +61,8 @@ export default function MainSlider(props) {
   const [forecastHourly, set_forecastHourly] = useState([]);
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
+
+  const { t } = useTranslation();
 
   // const [debug, set_debug] = useState({});
 
@@ -97,9 +102,13 @@ export default function MainSlider(props) {
 
   const getDate = () => {
     if (location?.timezone) {
+      moment.locale(localeLang);
       const newMomentDate = moment.utc().tz(location?.timezone);
-      const newDate = newMomentDate.format('DD / MMM / YYYY');
-      const newWeekDay = newMomentDate.format('dddd');
+      let newDate = newMomentDate.format('DD / MMM / YYYY');
+      newDate = newDate.replace(/\./g, '');
+      newDate = capitalize(newDate);
+      
+      const newWeekDay = capitalize(newMomentDate.format('dddd'));
       set(() => {
         set_date(newMomentDate);
         set_formattedDate(newDate);
@@ -145,6 +154,7 @@ export default function MainSlider(props) {
   const setupSliderItems = () => {
     const newSliderItems = [];
     const newSliderTimes = [];
+    const headerFormattedDate = capitalize(date.format('dddd')[0]) + ' ' + formattedDate;
     
     const onlyWeatherHeader = (weather ? (
       <MainHeader temp={weather?.temp?.formatted}
@@ -155,7 +165,7 @@ export default function MainSlider(props) {
     );
 
     const dateTimeHeader = (
-      <MainHeader date={formattedDate}
+      <MainHeader date={headerFormattedDate}
                   time={time} 
                   onTouchEnd={fullscreenHandler} />
     );
@@ -163,7 +173,7 @@ export default function MainSlider(props) {
     const fullHeader = (weather ? (
       <MainHeader temp={weather?.temp?.formatted}
                   feelTemp={weather?.feel?.formatted}
-                  date={formattedDate}
+                  date={headerFormattedDate}
                   time={time} 
                   iconCode={weather?.iconCode} 
                   onTouchEnd={fullscreenHandler} />
@@ -180,7 +190,6 @@ export default function MainSlider(props) {
         </>
       );
       newSliderTimes.push(30 * second);
-    
     }
 
     if (date) {
@@ -190,7 +199,7 @@ export default function MainSlider(props) {
           <Calendar date={date} />
         </>
       )
-      newSliderTimes.push(45 * second);
+      newSliderTimes.push(30 * second);
     }
 
     if (weather && currentForecast) {
@@ -267,7 +276,7 @@ export default function MainSlider(props) {
     force = force || (now - moment(lastUpdate)) >= intervals.conditions;
 
     if (location?.coordinates) {
-      let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+      let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
       if (currentWeather) {
         set(() => {
@@ -287,7 +296,7 @@ export default function MainSlider(props) {
     }
     
     if (location?.coordinates) {
-      const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+      const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
       if (forecast) {
         set(() => {
           set_forecastHourly(forecast);
@@ -306,7 +315,7 @@ export default function MainSlider(props) {
     }
 
     if (location?.coordinates) {
-      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, force);
+      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, force);
       if (forecast) {
         const todayForecast = forecast.find(f => f.isToday === true);
         forecast = forecast.filter(f => f.isToday === false);

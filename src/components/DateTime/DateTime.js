@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default function DateTime(props){
+export default function DateTime({ time, weekDay, date }){
     return (
         <div className="datetime">
-            <div className="time">{props.time}</div>
-            <div className="weekDay">{props.weekDay}</div>
-            <div className="date">{props.date}</div>
+            <div className="time">{time}</div>
+            <div className="weekDay">{weekDay}</div>
+            <div className="date">{date}</div>
         </div>
     )
 }

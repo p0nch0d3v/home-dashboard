@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation, withTranslation } from 'react-i18next';
 
-export default function WeatherCurrentComp({ weather, sunRise, sunSet, dayLight }){
+function WeatherCurrentComp({ weather, sunRise, sunSet, dayLight }) {
+    const { t } = useTranslation();
+
     return (
         <div className="weatherCurrentComp">
             <div className="weatherCurrentComp_item borderRight borderBottom">
@@ -11,18 +14,18 @@ export default function WeatherCurrentComp({ weather, sunRise, sunSet, dayLight 
                 }
             </div>
             <div className="weatherCurrentComp_item borderRight borderBottom">
-                <div>Humidity:</div>
+                <div>{t("Humidity")}:</div>
                 {
                     weather.humidity > 0 ?
                     <div>{weather.humidity} %</div> : <></>
                 }
             </div>
             <div className="weatherCurrentComp_item borderBottom">
-                <div>Pressure:</div>
+                <div>{t("Pressure")}:</div>
                 <div>{weather.pressure.value} {weather.pressure.unit}</div>
             </div>
             <div className="weatherCurrentComp_item borderRight">
-                <div>Wind:</div>
+                <div>{t("Wind")}:</div>
                 {
                     weather.wind.speed.value > 0 ?
                     (<>
@@ -33,18 +36,20 @@ export default function WeatherCurrentComp({ weather, sunRise, sunSet, dayLight 
             </div>
             <div className="weatherCurrentComp_double_width_item sunInfo">
                 <span className="sunrise">
-                    <span>Sunrise:</span>
+                    <span>{t("Sunrise")}:</span>
                     <span>{sunRise}</span>
                 </span>
                 <span className="sunset">
-                    <span>Sunset:</span>
+                    <span>{t("Sunset")}:</span>
                     <span>{sunSet}</span>
                 </span>
                 <span className="dayLight">
-                    <span>Day Ligth:</span>&nbsp;&nbsp;
+                    <span>{t("DayLigth")}:</span>&nbsp;&nbsp;
                     <span>{dayLight}</span>
                 </span>
             </div>
         </div>
     );
 }
+
+export default withTranslation()(WeatherCurrentComp); 

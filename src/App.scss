@@ -242,7 +242,7 @@ $icon_ext: '@4x.png';
   flex-wrap: wrap;
 
   &_item {
-    width: 20%;
+    width: 20vw;
     display: flex;
     justify-content: space-evenly;
     flex-direction: column;
@@ -261,6 +261,15 @@ $icon_ext: '@4x.png';
   .text_info {
     font-size: 4.5vw;
   }
+
+  .description {
+    font-size: 2.5vw;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 17.5vw;
+  }
 }
 
 .weatherForecastHourly {
@@ -269,7 +278,7 @@ $icon_ext: '@4x.png';
   flex-wrap: wrap;
 
   &_item {
-    width: 20%;
+    width: 20vw;
     display: flex;
     justify-content: space-evenly;
     flex-direction: column;
@@ -291,6 +300,15 @@ $icon_ext: '@4x.png';
 
   .text_info {
     font-size: 4vw;
+  }
+
+  .description {
+    font-size: 2.5vw;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 17.5vw;
   }
 }
 

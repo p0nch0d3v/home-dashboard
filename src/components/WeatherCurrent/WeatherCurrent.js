@@ -1,4 +1,5 @@
 import React from 'react';
+import { capitalize } from '../../helpers';
 
 export default function WeatherCurrent({ weather, currentForecast }) {
     const temp = (<span>{weather?.temp.value} °{weather?.temp.unit}</span>);
@@ -20,8 +21,8 @@ export default function WeatherCurrent({ weather, currentForecast }) {
                 </div>
             </div>
             <div className="weatherCurrent_doubleItem borderTop row m-0 p-0">
-                <div className="col-12 m-0 p-0" style={{  wordBreak: 'keep-all', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                    {weather?.text}
+                <div className="col-12 m-0 p-0" style={{ wordBreak: 'keep-all', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                    {capitalize(weather?.text)}
                 </div>
                 <div className="col-12 m-0 p-0">
                     {threshold}

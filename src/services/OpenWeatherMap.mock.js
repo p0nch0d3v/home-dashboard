@@ -22,7 +22,7 @@ export async function getLocationInfo(force = false){
     };
 }
 
-export async function getCurrentWeather(latitude, longitude, force = false) {
+export async function getCurrentWeather(latitude, longitude, translator, force = false) {
     let weatherText = ''
     for (let i = 0; i < rand(10, 50); i++) {         
         weatherText += (i % 2) ? String.fromCharCode(rand(65, 90)) : String.fromCharCode(rand(97, 122));
@@ -44,7 +44,7 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
         icon: 'https://openweathermap.org/img/wn/041@4x.png',
         uv: {
             index: rand(0, 12),
-            text: getUvIndexDescription(rand(0, 12))
+            text: getUvIndexDescription(rand(0, 12), translator)
         },
         pressure: {
             value: rand(870, 1085),
@@ -72,7 +72,7 @@ export async function getCurrentWeather(latitude, longitude, force = false) {
     };
 }
 
-export async function getForecastHourly(latitude, longitude, force = false) {
+export async function getForecastHourly(latitude, longitude, translator, force = false) {
     let forecastInfo = [];
 
     for (let i = 0; i < 5; i++) {
@@ -89,7 +89,7 @@ export async function getForecastHourly(latitude, longitude, force = false) {
             formattedDateTime: moment(Date.now()).format("hh A"),
             uv: {
                 index: rand(0, 12),
-                text: getUvIndexDescription(rand(0, 12))
+                text: getUvIndexDescription(rand(0, 12), translator)
             },
             iconCode: 'icon_01d',
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
