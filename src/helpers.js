@@ -52,7 +52,7 @@ export function getCardinalDirectionFromDegree (degree, t) {
       }
   } 
   return degree.toString();
-}
+};
 
 export function consoleDebug (message , ...optionalParams) {
   const extraMessage = optionalParams.join(', ');
@@ -86,4 +86,28 @@ export function capitalize (string) {
   }
 
   return words.join(' ');
-}
+};
+
+export function rand(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+};
+
+export function getRandomText(min, max) {
+  let text = ''
+  for (let i = 0; i < rand(min, max); i++) {    
+    switch (rand(1,3)) {
+      case 1:
+        text+= String.fromCharCode(rand(65, 90));
+        break;
+    case 2:
+        text += String.fromCharCode(rand(97, 122))
+        break;
+    case 3:
+        text += ' ';
+        break;
+    default:
+        break;
+    }     
+  }
+  return text;
+};

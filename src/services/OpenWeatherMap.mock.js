@@ -2,12 +2,12 @@ import moment from 'moment';
 
 import {
     getUvIndexDescription,
-    getCardinalDirectionFromDegree
+    getCardinalDirectionFromDegree,
+    rand,
+    getRandomText
 } from '../helpers';
 
-const rand = function(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
+
 
 export async function getLocationInfo(force = false){
     return {
@@ -23,12 +23,8 @@ export async function getLocationInfo(force = false){
 }
 
 export async function getCurrentWeather(latitude, longitude, translator, force = false) {
-    let weatherText = ''
-    for (let i = 0; i < rand(10, 50); i++) {         
-        weatherText += (i % 2) ? String.fromCharCode(rand(65, 90)) : String.fromCharCode(rand(97, 122));
-    }
     return {
-        text: weatherText,
+        text: getRandomText(10, 50),
         temp: {
             value: rand(0, 99),
             unit: 'C',
@@ -51,7 +47,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             unit: 'hPa'
         },
         wind: {
-            direction: getCardinalDirectionFromDegree(rand(0,359)),
+            direction: getCardinalDirectionFromDegree(rand(0,359), translator),
             speed: {
                 value: rand(0, 99),
                 unit: 'Km/h'
@@ -93,7 +89,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
             },
             iconCode: 'icon_01d',
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
-            text: '',
+            text: getRandomText(10, 50),
             precipitationProbability: rand(0, 100)
         });
     }
@@ -124,10 +120,11 @@ export async function getForecastDaily(latitude, longitude, force = false) {
             },
             iconCode: 'icon_01d',
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
-            text: '',
+            text: getRandomText(10, 50),
             precipitationProbability: rand(0, 100),
             isToday: i === 0
         });
     }
     return forecastInfo;
 }
+

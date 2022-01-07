@@ -154,7 +154,7 @@ export default function MainSlider(props) {
   const setupSliderItems = () => {
     const newSliderItems = [];
     const newSliderTimes = [];
-    const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 2) + ' / ' + formattedDate : '';
+    const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 3) + ' / ' + formattedDate : '';
     
     const onlyWeatherHeader = (weather ? (
       <MainHeader temp={weather?.temp?.formatted}
