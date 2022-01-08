@@ -1,4 +1,8 @@
 // @use 'icons';
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+body {
+  font-family: 'Open Sans', sans-serif;
+}
 
 $day-bk:#76a7e3;
 $day-font-color:#000;
@@ -155,7 +159,7 @@ $icon_ext: '@4x.png';
 
 .weatherCurrent {
     text-align: center;
-    font-size: 14vh;
+    font-size: 14.25vh;
     height: $item-max-height;
   
     &_item {
@@ -176,7 +180,7 @@ $icon_ext: '@4x.png';
       flex-direction: column;
     }
   
-    @include icon(49.9vh, 49.9vh);
+    @include icon(45vh, 45vh);
     
   }
   
@@ -184,7 +188,7 @@ $icon_ext: '@4x.png';
     height: $item-max-height;
     display: flex;
     flex-wrap: wrap;
-    font-size: 8.75vh;
+    font-size: 8vh;
     text-align: center;
   
     &_item {
@@ -278,7 +282,7 @@ $icon_ext: '@4x.png';
   }
 
   .main_text {
-    font-size: 6.5vh;
+    font-size: 6.25vh;
     width: 95%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -320,7 +324,7 @@ $icon_ext: '@4x.png';
 }
   
 .calendar {
-  font-size: 6.5vh;
+  font-size: 6.75vh;
   display: flex;
   flex-direction: column;
   text-align: center;
