@@ -262,7 +262,7 @@ export default function MainSlider(props) {
           <ExchangeRate rates={exchangeRates} />
         </>
       );
-      newSliderTimes.push(10 * second);
+      newSliderTimes.push(5 * second);
     }
 
     set(() => {

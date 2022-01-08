@@ -14,7 +14,7 @@ export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTou
                 temp && feelTemp && iconCode ? (
                     <div className="main-header_temp">
                         {
-                            iconCode ? <span style={{marginRight: '1rem'}} className={'icon ' + iconCode}></span>
+                            iconCode ? <span style={{marginRight: '0.5rem'}} className={'icon ' + iconCode}></span>
                             : <></>
                         }
                         <span>{temp}</span>
@@ -27,7 +27,6 @@ export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTou
                     <div className="main-header_date">{date}</div>
                 ) : <></>
             }
-            
          </div>
     )
 }

@@ -88,11 +88,6 @@ $icon_ext: '@4x.png';
   display: flex;
   flex-direction: row;
   height: 100vh;
-
-  &_left, &_right{
-    font-size: 10vw;
-    align-self: center;
-  }
 }
 
 .none {
@@ -113,7 +108,7 @@ $icon_ext: '@4x.png';
 .main-header {
   width: 100vw;
   height: 10vh;
-  font-size: 4vw;
+  font-size: 6.25vh;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -151,22 +146,16 @@ $icon_ext: '@4x.png';
   height: 100%;
   height: $item-max-height;
 
-  .weekDay {
-    font-size: 12vw;
-  }
-
-  .date {
-    font-size: 12vw;
-  }
-
+  .weekDay,
+  .date,
   .time {
-    font-size: 12vw;
+    font-size: 20vh;
   }
 }
 
 .weatherCurrent {
     text-align: center;
-    font-size: 8.5vw;
+    font-size: 14vh;
     height: $item-max-height;
   
     &_item {
@@ -195,7 +184,7 @@ $icon_ext: '@4x.png';
     height: $item-max-height;
     display: flex;
     flex-wrap: wrap;
-    font-size: 5vw;
+    font-size: 8.75vh;
     text-align: center;
   
     &_item {
@@ -253,17 +242,17 @@ $icon_ext: '@4x.png';
   }
 
   .main_text {
-    font-size: 4vw;
+    font-size: 6.25vh;
   }
 
   @include icon(17vw, 17vw);
 
   .text_info {
-    font-size: 4.5vw;
+    font-size: 7.5vh;
   }
 
   .description {
-    font-size: 2.5vw;
+    font-size: 4vh;
     word-break: keep-all;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -289,7 +278,7 @@ $icon_ext: '@4x.png';
   }
 
   .main_text {
-    font-size: 4vw;
+    font-size: 6.5vh;
     width: 95%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -299,11 +288,11 @@ $icon_ext: '@4x.png';
   @include icon(17vw, 17vw);
 
   .text_info {
-    font-size: 4vw;
+    font-size: 6.5vh;
   }
 
   .description {
-    font-size: 2.5vw;
+    font-size: 4vh;
     word-break: keep-all;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -318,7 +307,7 @@ $icon_ext: '@4x.png';
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-size: 12vh;
+  font-size: 15vh;
 
   &_item {
     width: 100vw; 
