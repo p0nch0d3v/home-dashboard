@@ -198,7 +198,7 @@ export default function MainSlider(props) {
                     weekDay={weekDay} /> 
         </>
       );
-      newSliderTimes.push(30 * second);
+      newSliderTimes.push(25 * second);
     }
 
     if (date) {
@@ -208,7 +208,7 @@ export default function MainSlider(props) {
           <Calendar date={date} />
         </>
       )
-      newSliderTimes.push(30 * second);
+      newSliderTimes.push(25 * second);
     }
 
     if (weather && currentForecast) {

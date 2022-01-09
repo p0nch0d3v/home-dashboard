@@ -16,12 +16,12 @@ export const StorageKeys = {
     local: 'local'
 };
 
-export function getStorageValue(key, storage = StorageKeys.session) {
+export function getStorageValue(key, storage = StorageKeys.local) {
     const value = storage === StorageKeys.local ? localStorage.getItem(key) : sessionStorage.getItem(key);
     return value ? JSON.parse(value) : null;
 }
 
-export function setStorageValue(key, value, storage = StorageKeys.session) {
+export function setStorageValue(key, value, storage = StorageKeys.local) {
     if (value) {
         if (storage === StorageKeys.local) { 
             localStorage.removeItem(key);

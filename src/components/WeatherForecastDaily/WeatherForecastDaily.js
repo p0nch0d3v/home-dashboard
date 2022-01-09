@@ -1,6 +1,9 @@
 import React from 'react';
 import { capitalize } from '../../helpers';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTint } from '@fortawesome/free-solid-svg-icons';
+
 export default function WeatherForecastDaily({ forecast }) {
     const borderClasses = ['borderRight', 'borderRight', 'borderRight', 'borderRight','borderNone'];
 
@@ -18,11 +21,11 @@ export default function WeatherForecastDaily({ forecast }) {
                   <span className={'icon ' + f.iconCode}></span>
                   <span className="description">{f.text}</span>
                   <span className="text_info">
-                    <div>{f.temp.min.value} °{f.temp.min.unit}</div>
-                    <div>{f.temp.max.value} °{f.temp.max.unit}</div>
+                    <div className="min">{f.temp.min.value} °{f.temp.min.unit}</div>
+                    <div className="max">{f.temp.max.value} °{f.temp.max.unit}</div>
                     {
                       (f.precipitationProbability && f.precipitationProbability > 0)
-                      ? <div>[{f.precipitationProbability} %]</div> : <div>&nbsp;</div>
+                      ? <div><FontAwesomeIcon icon={faTint} />  {f.precipitationProbability} %</div> : <div>&nbsp;</div>
                     }
                   </span>
                 </span>

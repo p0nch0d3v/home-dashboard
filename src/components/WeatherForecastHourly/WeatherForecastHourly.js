@@ -1,3 +1,8 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faSun,
+  faTint
+} from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 
 export default function WeatherForecastHourly({ forecast }) {
@@ -17,14 +22,15 @@ export default function WeatherForecastHourly({ forecast }) {
                           <div>({f.feel.value} °{f.feel.unit})</div> 
                           : <div>&nbsp;</div>
                       }
+                      
                       {
                         (f.uv.index > 0) ? 
-                          <div>UV: {f.uv.index}</div> 
+                          <div><FontAwesomeIcon icon={faSun} />  {f.uv.index}</div> 
                           : <div>&nbsp;</div>
                       }
                       {
                         (f.precipitationProbability && f.precipitationProbability > 0) ? 
-                          <div>[{f.precipitationProbability} %]</div> 
+                          <div><FontAwesomeIcon icon={faTint} />  {f.precipitationProbability} %</div> 
                           : <div>&nbsp;</div>
                       }
                     </span>

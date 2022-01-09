@@ -159,7 +159,7 @@ $icon_ext: '@4x.png';
 
 .weatherCurrent {
     text-align: center;
-    font-size: 14.25vh;
+    font-size: 13vh;
     height: $item-max-height;
   
     &_item {
@@ -250,11 +250,7 @@ $icon_ext: '@4x.png';
   }
 
   @include icon(17vw, 17vw);
-
-  .text_info {
-    font-size: 7.5vh;
-  }
-
+  
   .description {
     font-size: 4vh;
     word-break: keep-all;
@@ -263,6 +259,20 @@ $icon_ext: '@4x.png';
     white-space: nowrap;
     width: 17.5vw;
   }
+
+  .text_info {
+    font-size: 7.5vh;
+
+    .min {
+      font-weight: 100;
+    }
+
+    .max {
+
+    }
+  }
+
+  
 }
 
 .weatherForecastHourly {
@@ -279,29 +289,29 @@ $icon_ext: '@4x.png';
     padding: 0;
     align-items: center;
     text-align: center;
-  }
 
-  .main_text {
-    font-size: 6.25vh;
-    width: 95%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+    .main_text {
+      font-size: 6.25vh;
+      width: 95%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    @include icon(17vw, 17vw);
 
-  @include icon(17vw, 17vw);
+    .description {
+      font-size: 4vh;
+      word-break: keep-all;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 17.5vw;
+    }
 
-  .text_info {
-    font-size: 6.5vh;
-  }
-
-  .description {
-    font-size: 4vh;
-    word-break: keep-all;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 17.5vw;
+    .text_info {
+      font-size: 6.5vh;
+    }
   }
 }
 
@@ -348,7 +358,6 @@ $icon_ext: '@4x.png';
 
       &.today {
         border-radius: 50%;
-        font-weight: 700;
       }
 
       &.pastDay {
