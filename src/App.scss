@@ -116,7 +116,7 @@ $icon_ext: '@4x.png';
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  font-weight: bold;
+  font-weight: 700;
   
   &_time {
       margin-left: 1vw;
@@ -264,7 +264,7 @@ $icon_ext: '@4x.png';
     font-size: 7.5vh;
 
     .min {
-      font-weight: 100;
+      font-weight: 200;
     }
 
     .max {
@@ -353,7 +353,7 @@ $icon_ext: '@4x.png';
       display: inline-block;
 
       &.weekend {
-        font-weight: 100;
+        font-weight: 200;
       }
 
       &.today {
