@@ -19,6 +19,7 @@ import {
 } from '../../services/DataService';
 
 import { getExchangeRate } from '../../services/ExchangeRate';
+import { GetDate, GetTime } from '../../services/DateTimeService';
 
 import DateTime from '../DateTime/DateTime';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
@@ -101,26 +102,19 @@ export default function MainSlider(props) {
   }
 
   const getDate = () => {
-    if (location?.timezone) {
-      moment.locale(localeLang);
-      const newMomentDate = moment.utc().tz(location?.timezone);
-      let newDate = newMomentDate.format('DD / MMM / YYYY');
-      newDate = newDate.replace(/\./g, '');
-      newDate = capitalize(newDate);
-      
-      const newWeekDay = capitalize(newMomentDate.format('dddd'));
+    const newDate = GetDate(location?.timezone);
+    if (newDate) {
       set(() => {
-        set_date(newMomentDate);
-        set_formattedDate(newDate);
-        set_weekDay(newWeekDay);
-      });
+        set_date(newDate.date);
+        set_formattedDate(newDate.formattedDate);
+        set_weekDay(newDate.weekDay);
+      });  
     }
   };
 
   const getTime = () => {
-    if (location?.timezone) {
-      const now = moment.utc().tz(location?.timezone);
-      const newTime = now.format('hh:mm A');
+    const newTime = GetTime(location?.timezone);
+    if (newTime) {
       set(() => {
         set_time(newTime);
       });
