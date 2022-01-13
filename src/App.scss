@@ -2,6 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 body {
   font-family: 'Open Sans', sans-serif;
+  touch-action: none;
+  * {
+    touch-action: none;
+  }
 }
 
 $day-bk:#76a7e3;

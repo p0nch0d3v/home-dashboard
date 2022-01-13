@@ -14,7 +14,9 @@ import {
     setStorageValue
 } from './DataService';
 
-const apikey = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
+import { GetConfigurations } from './ConfigService';
+
+
 const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
@@ -225,8 +227,9 @@ export async function getForecastDaily(latitude, longitude, localeLang, force = 
     return forecastInfo;
 }
 
-function getBaseUrl(latitude, longitude){
-    const lang = process.env.REACT_APP_LOCALE_LANG || 'en';
+function getBaseUrl(latitude, longitude) {
+    const apikey = GetConfigurations().OPENWEATHERMAP_API_KEY;
+    const lang = GetConfigurations().language;
     const url = `${baseUrl}?appid=${apikey}&lat=${latitude}&lon=${longitude}&units=${units}&lang=${lang}`
     consoleDebug('url', url);
     return url;
@@ -242,8 +245,9 @@ async function getipInfo(force) {
     let ipInfo = getStorageValue(StorageKeys.ipInfo, StorageKeys.local);
     if (!ipInfo || force === true) {
         consoleDebug('Calling Ip Info');  
+        const ipinfoApiKey = GetConfigurations().IPINFO_API_KEY;
         ipInfo = await axios({
-            url: 'https://ipinfo.io/json',
+            url: `https://ipinfo.io?token=${ipinfoApiKey}`,
             method: 'GET',
             headers: {
                 "Accept": "application/json"  

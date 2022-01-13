@@ -1,3 +1,5 @@
+import { consoleDebug } from "../helpers";
+
 export const StorageKeys = {
     ipInfo: 'ipInfo',
     cityInfo: 'cityInfo',
@@ -13,7 +15,8 @@ export const StorageKeys = {
         exchangeRate: 'lastExchangeRateUpdate'
     },
     session: 'session',
-    local: 'local'
+    local: 'local',
+    configuration: 'configuration'
 };
 
 export function getStorageValue(key, storage = StorageKeys.local) {
@@ -29,7 +32,7 @@ export function setStorageValue(key, value, storage = StorageKeys.local) {
         }
         else {
             sessionStorage.removeItem(key);
-             sessionStorage.setItem(key, JSON.stringify(value));
+            sessionStorage.setItem(key, JSON.stringify(value));
         }
-    }
+    }     
 }
