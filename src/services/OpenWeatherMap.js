@@ -16,7 +16,6 @@ import {
 
 import { GetConfigurations } from './ConfigService';
 
-
 const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';

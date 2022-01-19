@@ -96,15 +96,6 @@ export default function MainSlider(props) {
     }
   };
 
-  const getLocation = async () => {
-    const newLocation = await getLocationInfo();
-    if (newLocation) {
-      set(() => {
-        set_location(newLocation);
-      });
-    }
-  }
-
   const getDate = () => {
     const newDate = GetDate(location?.timezone);
     if (newDate) {
@@ -187,7 +178,9 @@ export default function MainSlider(props) {
       ) : <></>
     );
 
-    if (date && time && configurations.wdigets.DateTime.isActive) {
+    if (date && 
+          time && 
+          configurations.widgets.DateTime.isActive) {
       newSliderItems.push(
         <>
           {onlyWeatherHeader}
@@ -199,7 +192,8 @@ export default function MainSlider(props) {
       newSliderTimes.push(25 * Times.second);
     }
 
-    if (date && configurations.wdigets.Calendar.isActive) {
+    if (date && 
+          configurations.widgets.Calendar.isActive) {
       newSliderItems.push(
         <>
           {timeWeatherHeader}
@@ -209,7 +203,10 @@ export default function MainSlider(props) {
       newSliderTimes.push(25 * Times.second);
     }
 
-    if (weather && currentForecast && configurations.wdigets.WeatherCurrent.isActive) {
+    if (weather && 
+          currentForecast && 
+          configurations.widgets.WeatherCurrent.isActive &&
+          configurations.services.WeatherCurrent) {
       newSliderItems.push(
         <>
           {dateTimeHeader}
@@ -220,7 +217,10 @@ export default function MainSlider(props) {
       newSliderTimes.push(20 * Times.second);
     }
     
-    if (weather && currentForecast && configurations.wdigets.WeatherCurrentComp.isActive) {
+    if (weather && 
+          currentForecast && 
+          configurations.widgets.WeatherCurrentComp.isActive &&
+          configurations.services.WeatherCurrent) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -233,7 +233,10 @@ export default function MainSlider(props) {
       newSliderTimes.push(20 * Times.second);
     }
 
-    if (forecastHourly && forecastHourly.length > 0 && configurations.wdigets.WeatherForecastHourly.isActive) {
+    if (forecastHourly && 
+          forecastHourly.length > 0 && 
+          configurations.widgets.WeatherForecastHourly.isActive &&
+          configurations.services.WeatherForecastHourly) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -243,7 +246,10 @@ export default function MainSlider(props) {
       newSliderTimes.push(30 * Times.second);
     }
     
-    if (forecastDaily && forecastDaily.length > 0 && configurations.wdigets.WeatherForecastDaily.isActive) {
+    if (forecastDaily && 
+          forecastDaily.length > 0 && 
+          configurations.widgets.WeatherForecastDaily.isActive &&
+          configurations.services.WeatherForecastDaily) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -253,7 +259,10 @@ export default function MainSlider(props) {
       newSliderTimes.push(30 * Times.second);
     }
     
-    if (exchangeRates && exchangeRates.length > 0 && configurations.wdigets.ExchangeRate.isActive) {
+    if (exchangeRates && 
+          exchangeRates.length > 0 && 
+          configurations.widgets.ExchangeRate.isActive &&
+          configurations.services.ExchangeRate) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -262,7 +271,7 @@ export default function MainSlider(props) {
       );
       newSliderTimes.push(5 * Times.second);
     }
-
+    
     set(() => {
       set_sliderItems(newSliderItems);
       set_sliderTimes(newSliderTimes);
@@ -276,6 +285,15 @@ export default function MainSlider(props) {
   };
 
   /* ASYNC */
+
+  const getLocation = async () => {
+    const newLocation = await getLocationInfo();
+    if (newLocation) {
+      set(() => {
+        set_location(newLocation);
+      });
+    }
+  }
 
   const getWeatherConditions = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
@@ -427,7 +445,8 @@ export default function MainSlider(props) {
     set(() => {
       SaveConfigurations(c);
       set_configurations(GetConfigurations());
-      set_showModalConfig(false);
+      // set_showModalConfig(false);
+      window.location.reload();
     });
   };
 
@@ -436,12 +455,22 @@ export default function MainSlider(props) {
   }, sliderTime);
 
   const mainAction = async () => {
-    getDate();
-    getTime();
-    await getWeatherConditions();
-    await getWeatherForecastHourly();
-    await getWeatherForecastDaily();
-    await getExchangeRates();
+    if (configurations.widgets.DateTime || configurations.widgets.Calendar) {
+      getDate();
+      getTime();
+    }
+    if (configurations.services.WeatherCurrent) {
+      await getWeatherConditions();
+    }
+    if (configurations.services.WeatherForecastHourly) {
+      await getWeatherForecastHourly();
+    }
+    if (configurations.services.WeatherForecastDaily) {
+      await getWeatherForecastDaily();
+    }
+    if (configurations.services.ExchangeRate) {
+      await getExchangeRates();
+    }
   };
 
   useInterval(async () =>{
@@ -450,16 +479,17 @@ export default function MainSlider(props) {
 
   useEffect(() => { // On load 
     (async () => {
-      await getLocation();
+      if (configurations.services.GeoLocation) {
+        await getLocation();
+      }
       await mainAction();
       setupSliderItems();
-      consoleDebug(configurations);
     })();
   }, []);
 
   useEffect(() => { 
     setupSliderItems();
-  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates])
+  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates, configurations])
 
   useEffect(() => {
     getDate();
@@ -495,7 +525,8 @@ export default function MainSlider(props) {
       <ModalConfig show={showModalConfig} 
                    onClose={onCloseModalConfig} 
                    onSave={saveConfigurations}
-                   configurations={configurations} />
+                   configurations={configurations} 
+                   locationInfo={getStorageValue(StorageKeys.locationInfo) } />
     </div>
   )
 }

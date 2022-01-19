@@ -3,3 +3,9 @@ export const Times = {
     minute: 1000 * 60,
     hour: (1000 * 60) * 60
 };
+
+export const TimeNames = {
+    second: "second",
+    minute: "minute",
+    hour: "hour"
+};
