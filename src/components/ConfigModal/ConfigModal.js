@@ -8,12 +8,11 @@ import {
   ButtonGroup,
   ToggleButton,
   Table,
-  DropdownButton,
-  Dropdown,
-  InputGroup
+  InputGroup,
+  Row,
+  Col
 } from "react-bootstrap";
-import { consoleDebug } from "../../helpers";
-import { TimeNames, Times } from "../../constants"
+import { Times } from "../../constants"
 
 export default function ConfigModal ({ show, onClose, onSave, configurations, locationInfo }) {
   const localConfig  = {...configurations};
@@ -76,16 +75,22 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
           </ButtonGroup>
         </td>
         <td>
-          <Form.Control type="text"
+          <Row>
+            <Col xs={12} sm={12} md={6}>
+            <Form.Control type="text"
                     placeholder="Time"
                     value={time.value} 
                     onChange={(e) => { setTime(e.target.value) }} />
-            <Form.Select onChange={(e) => {setTime(e.target.value) }}>
-              <option>Select Time {time.type}</option>
-              <option value="second" selected={time.type === "second"}>Seconds</option>
-              <option value="minute" selected={time.type === "minute"}>Minutes</option>
-              <option value="hour" selected={time.type === "hour"}>Hours</option>
-            </Form.Select>
+            </Col>
+            <Col xs={12} sm={12} md={6}>
+              <Form.Select onChange={(e) => {setTime(e.target.value) }}>
+                <option>Select Time {time.type}</option>
+                <option value="second" selected={time.type === "second"}>Seconds</option>
+                <option value="minute" selected={time.type === "minute"}>Minutes</option>
+                <option value="hour" selected={time.type === "hour"}>Hours</option>
+              </Form.Select>
+            </Col>
+          </Row>
         </td>
       </tr>);
   }
@@ -117,75 +122,80 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   };
 
   return (
-    <Modal show={show} centered size="lg">
+    <Modal show={show} 
+           size="xl" 
+           animation={false} 
+           centered={true} 
+           scrollable={true} 
+           style={{ overflow: 'scroll', width: '100%' }}>
       <Modal.Header>
         <Modal.Title>Configuration</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-      <Tabs defaultActiveKey="settings" className="mb-3">
-        <Tab eventKey="settings" title="Settings">
-          <Form.Label style={{ fontWeight: '900' }}>Language</Form.Label>
-          <br />
-          <ButtonGroup>
-            <ToggleButton type="radio"
-                          id="language-en" 
-                          name="language" 
-                          value="en"
-                          checked={language === 'en'}
-                          onChange={ (e) => { if(e.target.checked) set_language(e.target.value); } }
-                          variant="outline-primary" >
-              EN
-            </ToggleButton>
-            <ToggleButton type="radio"
-                          id="language-es"
-                          name="language" 
-                          value="es"
-                          checked={language === 'es'}
-                          onChange={ (e) => { if(e.target.checked) set_language(e.target.value); } }
-                          variant="outline-primary" >
-              ES
-            </ToggleButton>
-          </ButtonGroup>
-          <br /><br />
-            <InputGroup className="mb-3">
-              <InputGroup.Text id="basic-addon3">
-                IpInfo ApI Key
-              </InputGroup.Text>
-              <Form.Control type="text"
-                            placeholder="IpInfo ApI Key"
-                            value={ipInfoApiKey} 
-                            onChange={(e) => { set_ipInfoApiKey(e.target.value); }} />
-            </InputGroup>
-            <InputGroup className="mb-3">
-              <InputGroup.Text id="basic-addon3">OpenWeatherMap API Key</InputGroup.Text>
-              <Form.Control type="text" 
-                            placeholder="OpenWeatherMap API Key" 
-                            value={openWeatherMapApiKey} 
-                            onChange={(e) => { set_openWeatherMapApiKey(e.target.value); }} />
-            </InputGroup>
-            <InputGroup className="mb-3">
-              <InputGroup.Text id="basic-addon3">ExchangeRate API Key</InputGroup.Text>
-              <Form.Control type="text"
-                            placeholder="ExchangeRate API Key"
-                            value={exchangeRateApiKey} 
-                            onChange={(e) => { set_exchangeRateApiKey(e.target.value); }} />
-            </InputGroup>
-        </Tab>
-        <Tab eventKey="widgets" title="Widgets">
-          <Table>
-            <thead>
-              <tr>
-                <td>Widget</td>
-                <td>Active</td>
-                <td>Time</td>
-              </tr>
-            </thead>
-            <tbody> 
-              { widget('Date & Time', 
-                        widgets.DateTime.isActive, 
-                        ((value) => { widgetSetIsActive('DateTime', value); }), 
-                        widgets.DateTime.time,
-                        ((value) => { widgetSetTime('DateTime', value); })
+      <Modal.Body style={{ width: '100%' }}>
+        <Tabs defaultActiveKey="settings" className="mb-3" style={{ width: '100%' }} >
+          <Tab eventKey="settings" title="Settings">
+            <Form.Label style={{ fontWeight: '900' }}>Language</Form.Label>
+            <br />
+            <ButtonGroup>
+              <ToggleButton type="radio"
+                            id="language-en" 
+                            name="language" 
+                            value="en"
+                            checked={language === 'en'}
+                            onChange={ (e) => { if(e.target.checked) set_language(e.target.value); } }
+                            variant="outline-primary" >
+                EN
+              </ToggleButton>
+              <ToggleButton type="radio"
+                            id="language-es"
+                            name="language" 
+                            value="es"
+                            checked={language === 'es'}
+                            onChange={ (e) => { if(e.target.checked) set_language(e.target.value); } }
+                            variant="outline-primary" >
+                ES
+              </ToggleButton>
+            </ButtonGroup>
+            <br /><br />
+              <InputGroup className="mb-3">
+                <InputGroup.Text id="basic-addon3">
+                  IpInfo ApI Key
+                </InputGroup.Text>
+                <Form.Control type="text"
+                              placeholder="IpInfo ApI Key"
+                              value={ipInfoApiKey} 
+                              onChange={(e) => { set_ipInfoApiKey(e.target.value); }} />
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroup.Text id="basic-addon3">OpenWeatherMap API Key</InputGroup.Text>
+                <Form.Control type="text" 
+                              placeholder="OpenWeatherMap API Key" 
+                              value={openWeatherMapApiKey} 
+                              onChange={(e) => { set_openWeatherMapApiKey(e.target.value); }} />
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroup.Text id="basic-addon3">ExchangeRate API Key</InputGroup.Text>
+                <Form.Control type="text"
+                              placeholder="ExchangeRate API Key"
+                              value={exchangeRateApiKey} 
+                              onChange={(e) => { set_exchangeRateApiKey(e.target.value); }} />
+              </InputGroup>
+          </Tab>
+          <Tab eventKey="widgets" title="Widgets" style={{ width: '100%' }}>
+            <Table >
+              <thead>
+                <tr>
+                  <td>Widget</td>
+                  <td>Active</td>
+                  <td>Time</td>
+                </tr>
+              </thead>
+              <tbody> 
+                { widget('Date & Time', 
+                          widgets.DateTime.isActive, 
+                          ((value) => { widgetSetIsActive('DateTime', value); }), 
+                          widgets.DateTime.time,
+                          ((value) => { widgetSetTime('DateTime', value); })
                 )}
                 { widget('Calendar', 
                         widgets.Calendar.isActive, 
@@ -198,73 +208,73 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                         ((value) => { widgetSetIsActive('WeatherCurrent', value); }), 
                         widgets.WeatherCurrent.time,
                         ((value) => { widgetSetTime('WeatherCurrent', value); })
-                )},
+                )}
                 { widget('Current Weather Comp', 
                         widgets.WeatherCurrentComp.isActive, 
                         ((value) => { widgetSetIsActive('WeatherCurrentComp', value); }), 
                         widgets.WeatherCurrentComp.time,
                         ((value) => { widgetSetTime('WeatherCurrentComp', value); })
-                )},
+                )}
                 { widget('Hourly Forecast', 
                         widgets.WeatherForecastHourly.isActive, 
                         ((value) => { widgetSetIsActive('WeatherForecastHourly', value); }), 
                         widgets.WeatherForecastHourly.time,
                         ((value) => { widgetSetTime('WeatherForecastHourly', value); })
-                )},
+                )}
                 { widget('Daily Forecast', 
                         widgets.WeatherForecastDaily.isActive, 
                         ((value) => { widgetSetIsActive('WeatherForecastDaily', value); }), 
                         widgets.WeatherForecastDaily.time,
                         ((value) => { widgetSetTime('WeatherForecastDaily', value); })
-                )},
+                )}
                 { widget('Exchange Rates', 
                         widgets.ExchangeRate.isActive, 
                         ((value) => { widgetSetIsActive('ExchangeRate', value); }), 
                         widgets.ExchangeRate.time,
                         ((value) => { widgetSetTime('ExchangeRate', value); })
                 )}
-            </tbody>
-          </Table>
-        </Tab>
-        <Tab eventKey="services" title="Services">
-          <Table>
-            <thead>
-              <tr>
-                <td>Service</td>
-                <td>Active</td>
-              </tr>
-            </thead>
-            <tbody> 
-              { service('GeoLocation',
-                services.GeoLocation,
-                  ((value) => { serviceSetIsActive('GeoLocation', value); })
-              )}
-              { service('Current Weather', 
-                  services.WeatherCurrent, 
-                  ((value) => { serviceSetIsActive('WeatherCurrent', value); })
-              )}
-              { service('Hourly Forecast', 
-                  services.WeatherForecastHourly, 
-                  ((value) => { serviceSetIsActive('WeatherForecastHourly', value); })
-              )}
-              { service('Daily Forecast', 
-                  services.WeatherForecastDaily, 
-                  ((value) => { serviceSetIsActive('WeatherForecastDaily', value); })
-              )}
-              { service('Exchange Rates', 
-                  services.ExchangeRate, 
-                  ((value) => { serviceSetIsActive('ExchangeRate', value); })
-              )}
-            </tbody>
-          </Table>
-        </Tab>
-        <Tab eventKey="location" title="Location">
-          <pre style={{ maxHeight: '50vh' }}>{JSON.stringify(locationInfo, null, 2) }</pre>
-        </Tab>
-        <Tab eventKey="raw-config" title="RAW Config">
-          <pre style={{ maxHeight: '50vh' }}>{JSON.stringify(localConfig, null, 2) }</pre>
-        </Tab>
-      </Tabs>
+              </tbody>
+            </Table>
+          </Tab>
+          <Tab eventKey="services" title="Services">
+            <Table>
+              <thead>
+                <tr>
+                  <td>Service</td>
+                  <td>Active</td>
+                </tr>
+              </thead>
+              <tbody> 
+                { service('GeoLocation',
+                  services.GeoLocation,
+                    ((value) => { serviceSetIsActive('GeoLocation', value); })
+                )}
+                { service('Current Weather', 
+                    services.WeatherCurrent, 
+                    ((value) => { serviceSetIsActive('WeatherCurrent', value); })
+                )}
+                { service('Hourly Forecast', 
+                    services.WeatherForecastHourly, 
+                    ((value) => { serviceSetIsActive('WeatherForecastHourly', value); })
+                )}
+                { service('Daily Forecast', 
+                    services.WeatherForecastDaily, 
+                    ((value) => { serviceSetIsActive('WeatherForecastDaily', value); })
+                )}
+                { service('Exchange Rates', 
+                    services.ExchangeRate, 
+                    ((value) => { serviceSetIsActive('ExchangeRate', value); })
+                )}
+              </tbody>
+            </Table>
+          </Tab>
+          <Tab eventKey="location" title="Location">
+            <pre style={{ maxHeight: '50vh' }}>{JSON.stringify(locationInfo, null, 2) }</pre>
+          </Tab>
+          <Tab eventKey="raw-config" title="RAW Config">
+            <pre style={{ maxHeight: '50vh' }}>{JSON.stringify(localConfig, null, 2) }</pre>
+          </Tab>
+        </Tabs>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" 

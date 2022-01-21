@@ -284,6 +284,15 @@ export default function MainSlider(props) {
     }
   };
 
+  const removeIframe = () => {
+    const iframe = document.querySelector('iframe');
+    consoleDebug(iframe);
+    if (iframe) {
+      iframe.remove();
+    }
+    consoleDebug(document.querySelector('iframe'));
+  };
+
   /* ASYNC */
 
   const getLocation = async () => {
@@ -475,6 +484,7 @@ export default function MainSlider(props) {
 
   useInterval(async () =>{
     await mainAction();
+    removeIframe();
   }, Times.minute);
 
   useEffect(() => { // On load 
@@ -485,6 +495,7 @@ export default function MainSlider(props) {
       await mainAction();
       setupSliderItems();
     })();
+    removeIframe();
   }, []);
 
   useEffect(() => { 
@@ -511,22 +522,24 @@ export default function MainSlider(props) {
   }, [touchDiff]);
 
   return (
-    <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={keyHandker}>
-      <div className="mainSlider row m-0 p-0">
-        <div className="col-12 m-0 p-0 content" 
-             onTouchStart={touchStartHandler}
-             onTouchEnd={touchEndHandlers}
-             onDoubleClick={contentDoubleClick} > 
-            { sliderItems.map((value, index) => {
-              return currentSlider === index ? value : <></>;
-            }) }
-        </div>
+    <>
+      <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={keyHandker}>
+        <div className="mainSlider row m-0 p-0">
+          <div className="col-12 m-0 p-0 content" 
+              onTouchStart={touchStartHandler}
+              onTouchEnd={touchEndHandlers}
+              onDoubleClick={contentDoubleClick} > 
+              { sliderItems.map((value, index) => {
+                return currentSlider === index ? value : <></>;
+              }) }
+          </div>
+        </div>  
       </div>
       <ModalConfig show={showModalConfig} 
                    onClose={onCloseModalConfig} 
                    onSave={saveConfigurations}
                    configurations={configurations} 
                    locationInfo={getStorageValue(StorageKeys.locationInfo) } />
-    </div>
+    </>
   )
 }
