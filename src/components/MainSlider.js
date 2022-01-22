@@ -24,12 +24,12 @@ import { GetDate, GetTime } from '../services/DateTimeService';
 import { GetConfigurations, SaveConfigurations } from '../services/ConfigService';
 
 import DateTime from './DateTime';
-import WeatherCurrent from './WeatherCurrent/WeatherCurrent';
+import WeatherCurrent from './WeatherCurrent';
 import WeatherCurrentComp from './WeatherCurrentComp';
 import WeatherForecastHourly from './WeatherForecastHourly';
-import WeatherForecastDaily from  './WeatherForecastDaily/WeatherForecastDaily';
+import WeatherForecastDaily from  './WeatherForecastDaily';
 import ExchangeRate from './ExchangeRate';
-import Calendar from '../Calendar/Calendar';
+import Calendar from './Calendar';
 import MainHeader from './MainHeader';
 import ModalConfig from './ConfigModal/ConfigModal';
 

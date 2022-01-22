@@ -1,5 +1,5 @@
 import React from 'react';
-import { capitalize } from '../../helpers';
+import { capitalize } from '../helpers';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTint } from '@fortawesome/free-solid-svg-icons';
