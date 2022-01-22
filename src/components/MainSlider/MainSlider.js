@@ -56,7 +56,7 @@ export default function MainSlider(props) {
   const [isDay, set_isDay]= useState(null);
   const [isNight, set_isNight]= useState(null);
 
-  const [showModalConfig, set_showModalConfig] = useState(true);
+  const [showModalConfig, set_showModalConfig] = useState(false);
 
   const [location, set_location] = useState(null);
   const [weather, set_weather] = useState(null);
@@ -403,7 +403,7 @@ export default function MainSlider(props) {
 
       if (elapsed <= 250 && elapsed > 0) {
         set(() => {
-          set_showModalConfig(!showModalConfig);
+          set_showModalConfig(true);
         });
       }
     }
@@ -454,7 +454,7 @@ export default function MainSlider(props) {
     set(() => {
       SaveConfigurations(c);
       set_configurations(GetConfigurations());
-      // set_showModalConfig(false);
+      set_showModalConfig(false);
       window.location.reload();
     });
   };
