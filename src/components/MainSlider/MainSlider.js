@@ -4,6 +4,7 @@ import 'moment/locale/es';
 import 'moment-timezone';
 import { useTranslation } from 'react-i18next'
 import { capitalize, consoleDebug, useInterval } from '../../helpers';
+import { Times } from '../../constants';
 
 import {
   getLocationInfo,
@@ -18,8 +19,9 @@ import {
     setStorageValue
 } from '../../services/DataService';
 
-import { getExchangeRate } from '../../services/ExchangeRate';
+import { getExchangeRate } from '../../services/ExchangeRate.mock';
 import { GetDate, GetTime } from '../../services/DateTimeService';
+import { GetConfigurations, SaveConfigurations } from '../../services/ConfigService';
 
 import DateTime from '../DateTime/DateTime';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
@@ -29,24 +31,22 @@ import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily'
 import ExchangeRate from '../ExchangeRate/ExchangeRate';
 import Calendar from '../Calendar/Calendar';
 import MainHeader from '../MainHeader/MainHeader';
+import ModalConfig from '../ConfigModal/ConfigModal';
 
 export default function MainSlider(props) {
   const [localeLang] = useState(process.env.REACT_APP_LOCALE_LANG || 'en');
   const [backgroundColor, set_backgroundColor] = useState('none');
-  const [second] =  useState(1000);
-  const [minute] = useState(second * 60);
-  const [hour] = useState(minute * 60);
-
+  
   const [intervals] = useState({
-    conditions : minute * 10,
-    forecastHourly: hour,
-    forecastDaily: hour,
-    exchangeRate: hour * 6
+    conditions : Times.minute * 10,
+    forecastHourly: Times.hour,
+    forecastDaily: Times.hour,
+    exchangeRate: Times.hour * 6
   });
   const [currentSlider, set_currentSlider] = useState(0);
   const [sliderItems, set_sliderItems] = useState([]);
   const [sliderTimes, set_sliderTimes] = useState([]);
-  const [sliderTime, set_sliderTime] = useState(5 * second);
+  const [sliderTime, set_sliderTime] = useState(5 * Times.second);
   const [touchDiff, set_touchDiff] = useState(null);
 
   const [date, set_date]= useState(null);
@@ -56,12 +56,16 @@ export default function MainSlider(props) {
   const [isDay, set_isDay]= useState(null);
   const [isNight, set_isNight]= useState(null);
 
+  const [showModalConfig, set_showModalConfig] = useState(true);
+
   const [location, set_location] = useState(null);
   const [weather, set_weather] = useState(null);
   const [currentForecast, set_currentForecast] = useState(null);
   const [forecastHourly, set_forecastHourly] = useState([]);
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
+
+  const [configurations, set_configurations] = useState(GetConfigurations());
 
   const { t } = useTranslation();
 
@@ -91,15 +95,6 @@ export default function MainSlider(props) {
       });
     }
   };
-
-  const getLocation = async () => {
-    const newLocation = await getLocationInfo();
-    if (newLocation) {
-      set(() => {
-        set_location(newLocation);
-      });
-    }
-  }
 
   const getDate = () => {
     const newDate = GetDate(location?.timezone);
@@ -183,7 +178,9 @@ export default function MainSlider(props) {
       ) : <></>
     );
 
-    if (date && time) {
+    if (date && 
+          time && 
+          configurations.widgets.DateTime.isActive) {
       newSliderItems.push(
         <>
           {onlyWeatherHeader}
@@ -192,20 +189,24 @@ export default function MainSlider(props) {
                     weekDay={weekDay} /> 
         </>
       );
-      newSliderTimes.push(25 * second);
+      newSliderTimes.push(25 * Times.second);
     }
 
-    if (date) {
+    if (date && 
+          configurations.widgets.Calendar.isActive) {
       newSliderItems.push(
         <>
           {timeWeatherHeader}
           <Calendar date={date} />
         </>
       )
-      newSliderTimes.push(25 * second);
+      newSliderTimes.push(25 * Times.second);
     }
 
-    if (weather && currentForecast) {
+    if (weather && 
+          currentForecast && 
+          configurations.widgets.WeatherCurrent.isActive &&
+          configurations.services.WeatherCurrent) {
       newSliderItems.push(
         <>
           {dateTimeHeader}
@@ -213,10 +214,13 @@ export default function MainSlider(props) {
                           currentForecast={currentForecast} />
         </>
       );
-      newSliderTimes.push(20 * second);
+      newSliderTimes.push(20 * Times.second);
     }
     
-    if (weather) {
+    if (weather && 
+          currentForecast && 
+          configurations.widgets.WeatherCurrentComp.isActive &&
+          configurations.services.WeatherCurrent) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -226,39 +230,48 @@ export default function MainSlider(props) {
                               dayLight={weather?.formattedDayLight}/>
         </>
       );
-      newSliderTimes.push(20 * second);
+      newSliderTimes.push(20 * Times.second);
     }
 
-    if (forecastHourly && forecastHourly.length > 0) {
+    if (forecastHourly && 
+          forecastHourly.length > 0 && 
+          configurations.widgets.WeatherForecastHourly.isActive &&
+          configurations.services.WeatherForecastHourly) {
       newSliderItems.push(
         <>
           {fullHeader}
           <WeatherForecastHourly forecast={forecastHourly} />
         </>
       );
-      newSliderTimes.push(30 * second);
+      newSliderTimes.push(30 * Times.second);
     }
     
-    if (forecastDaily && forecastDaily.length > 0) {
+    if (forecastDaily && 
+          forecastDaily.length > 0 && 
+          configurations.widgets.WeatherForecastDaily.isActive &&
+          configurations.services.WeatherForecastDaily) {
       newSliderItems.push(
         <>
           {fullHeader}
           <WeatherForecastDaily forecast={forecastDaily}/>
         </>
       );
-      newSliderTimes.push(30 * second);
+      newSliderTimes.push(30 * Times.second);
     }
     
-    if (exchangeRates && exchangeRates.length > 0) {
+    if (exchangeRates && 
+          exchangeRates.length > 0 && 
+          configurations.widgets.ExchangeRate.isActive &&
+          configurations.services.ExchangeRate) {
       newSliderItems.push(
         <>
           {fullHeader}
           <ExchangeRate rates={exchangeRates} />
         </>
       );
-      newSliderTimes.push(5 * second);
+      newSliderTimes.push(5 * Times.second);
     }
-
+    
     set(() => {
       set_sliderItems(newSliderItems);
       set_sliderTimes(newSliderTimes);
@@ -271,7 +284,25 @@ export default function MainSlider(props) {
     }
   };
 
+  const removeIframe = () => {
+    const iframe = document.querySelector('iframe');
+    consoleDebug(iframe);
+    if (iframe) {
+      iframe.remove();
+    }
+    consoleDebug(document.querySelector('iframe'));
+  };
+
   /* ASYNC */
+
+  const getLocation = async () => {
+    const newLocation = await getLocationInfo();
+    if (newLocation) {
+      set(() => {
+        set_location(newLocation);
+      });
+    }
+  }
 
   const getWeatherConditions = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
@@ -362,13 +393,26 @@ export default function MainSlider(props) {
     }
   };
 
-  const touchstartHandler = (e) => {
+  const touchStartHandler = (e) => {
     var touchobj = e.changedTouches[0];
     setStorageValue('startTouch', touchobj.clientX);
+    
+    if (getStorageValue("startTouchTime")) {
+      const now = new Date().getTime();
+      const elapsed = (now - getStorageValue("startTouchTime"));
+
+      if (elapsed <= 250 && elapsed > 0) {
+        set(() => {
+          set_showModalConfig(!showModalConfig);
+        });
+      }
+    }
+
+    setStorageValue("startTouchTime", new Date().getTime());
     e.preventDefault();
   };
 
-  const touchendHandlers = (e) => {
+  const touchEndHandlers = (e) => {
     var touchobj = e.changedTouches[0];
     setStorageValue('endTouchX', touchobj.clientX);
     const diff = parseInt(getStorageValue('startTouch')) - parseInt(getStorageValue('endTouchX'));
@@ -392,38 +436,71 @@ export default function MainSlider(props) {
       rfs.call(el);
     }
   };
+
+  const onCloseModalConfig = (e) => {
+    e.preventDefault();
+    set(() => {
+      set_showModalConfig(false);
+    });
+  };
+
+  const contentDoubleClick = (e) => {
+    set(() => {
+      set_showModalConfig(!showModalConfig);
+    });
+  };
   
+  const saveConfigurations = (c) => {
+    set(() => {
+      SaveConfigurations(c);
+      set_configurations(GetConfigurations());
+      // set_showModalConfig(false);
+      window.location.reload();
+    });
+  };
+
   useInterval(() => {
     moveSlider(true);
   }, sliderTime);
 
   const mainAction = async () => {
-    getDate();
-    getTime();
-    await getWeatherConditions();
-    await getWeatherForecastHourly();
-    await getWeatherForecastDaily();
-    await getExchangeRates();
+    if (configurations.widgets.DateTime || configurations.widgets.Calendar) {
+      getDate();
+      getTime();
+    }
+    if (configurations.services.WeatherCurrent) {
+      await getWeatherConditions();
+    }
+    if (configurations.services.WeatherForecastHourly) {
+      await getWeatherForecastHourly();
+    }
+    if (configurations.services.WeatherForecastDaily) {
+      await getWeatherForecastDaily();
+    }
+    if (configurations.services.ExchangeRate) {
+      await getExchangeRates();
+    }
   };
 
-  useInterval(async ()=>{
+  useInterval(async () =>{
     await mainAction();
-  }, minute);
+    removeIframe();
+  }, Times.minute);
 
-  useEffect(() => {
+  useEffect(() => { // On load 
     (async () => {
-      await getLocation();
+      if (configurations.services.GeoLocation) {
+        await getLocation();
+      }
       await mainAction();
       setupSliderItems();
     })();
-
-    document.body.addEventListener('touchstart', touchstartHandler, false);
-    document.body.addEventListener('touchend', touchendHandlers, false);
+    removeIframe();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     setupSliderItems();
-  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates])
+  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates, configurations])
 
   useEffect(() => {
     getDate();
@@ -445,14 +522,24 @@ export default function MainSlider(props) {
   }, [touchDiff]);
 
   return (
-    <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={keyHandker}>
-      <div className="mainSlider row m-0 p-0">
-        <div className="col-12 m-0 p-0 content">
-            { sliderItems.map((value, index) => {
-              return currentSlider === index ? value : <></>;
-            }) }
-        </div>
+    <>
+      <div className={'container-fliud m-0 p-0 ' + backgroundColor} onKeyDown={keyHandker}>
+        <div className="mainSlider row m-0 p-0">
+          <div className="col-12 m-0 p-0 content" 
+              onTouchStart={touchStartHandler}
+              onTouchEnd={touchEndHandlers}
+              onDoubleClick={contentDoubleClick} > 
+              { sliderItems.map((value, index) => {
+                return currentSlider === index ? value : <></>;
+              }) }
+          </div>
+        </div>  
       </div>
-    </div>
+      <ModalConfig show={showModalConfig} 
+                   onClose={onCloseModalConfig} 
+                   onSave={saveConfigurations}
+                   configurations={configurations} 
+                   locationInfo={getStorageValue(StorageKeys.locationInfo) } />
+    </>
   )
 }
