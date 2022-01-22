@@ -4,10 +4,9 @@ import {
     getUvIndexDescription,
     getCardinalDirectionFromDegree,
     rand,
-    getRandomText
+    getRandomText,
+    getMoonPhaseText
 } from '../helpers';
-
-
 
 export async function getLocationInfo(force = false){
     return {
@@ -64,7 +63,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
         sunSet: Date.now(),
         sunRise: Date.now(),
         dayLight: Date.now(),
-        formattedDayLight: `${rand(0, 12)}:${rand(0, 59)}:${rand(0, 59)}`
+        formattedDayLight: `${rand(0, 12)}:${rand(0, 59)}`
     };
 }
 
@@ -96,7 +95,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
     return forecastInfo;
 }
 
-export async function getForecastDaily(latitude, longitude, force = false) {
+export async function getForecastDaily(latitude, longitude, localeLang, translator, force = false) {
     let forecastInfo = [];
 
     for (let i = 0; i < 6; i++) {
@@ -122,6 +121,12 @@ export async function getForecastDaily(latitude, longitude, force = false) {
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
             text: getRandomText(10, 50),
             precipitationProbability: rand(0, 100),
+            moon: {
+                phase: rand(0, 100) / 100,
+                moonRise: Date.now(),
+                moonSet: Date.now(),
+                text: getMoonPhaseText(rand(0, 100) / 100, translator)
+            },
             isToday: i === 0
         });
     }

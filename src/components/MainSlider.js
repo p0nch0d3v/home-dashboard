@@ -11,7 +11,7 @@ import {
   getCurrentWeather,
   getForecastHourly,
   getForecastDaily
-} from '../services/OpenWeatherMap';
+} from '../services/OpenWeatherMap.mock';
 
 import {
     StorageKeys,
@@ -61,6 +61,7 @@ export default function MainSlider(props) {
   const [location, set_location] = useState(null);
   const [weather, set_weather] = useState(null);
   const [currentForecast, set_currentForecast] = useState(null);
+  const [currentMoon, set_currentMoon] = useState(null);
   const [forecastHourly, set_forecastHourly] = useState([]);
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
@@ -189,7 +190,7 @@ export default function MainSlider(props) {
                     weekDay={weekDay} /> 
         </>
       );
-      newSliderTimes.push(25 * Times.second);
+      newSliderTimes.push(configurations.widgets.DateTime.time.total);
     }
 
     if (date && 
@@ -200,7 +201,7 @@ export default function MainSlider(props) {
           <Calendar date={date} />
         </>
       )
-      newSliderTimes.push(25 * Times.second);
+      newSliderTimes.push(configurations.widgets.Calendar.time.total);
     }
 
     if (weather && 
@@ -210,27 +211,31 @@ export default function MainSlider(props) {
       newSliderItems.push(
         <>
           {dateTimeHeader}
-          <WeatherCurrent weather={weather} 
+          <WeatherCurrent weather={weather}
                           currentForecast={currentForecast} />
         </>
       );
-      newSliderTimes.push(20 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherCurrent.time.total);
     }
     
     if (weather && 
-          currentForecast && 
           configurations.widgets.WeatherCurrentComp.isActive &&
           configurations.services.WeatherCurrent) {
       newSliderItems.push(
         <>
           {fullHeader}
-          <WeatherCurrentComp weather={weather} 
+          <WeatherCurrentComp uv={weather?.uv} 
+                              humidity={weather?.humidity}
+                              pressure={weather?.pressure}
+                              wind={weather?.wind}
                               sunRise={moment(weather?.sunRise).format('hh:mm A')}
                               sunSet={moment(weather?.sunSet).format('hh:mm A')} 
-                              dayLight={weather?.formattedDayLight}/>
+                              dayLight={weather?.formattedDayLight}
+                              moon={currentMoon}
+                              />
         </>
       );
-      newSliderTimes.push(20 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherCurrentComp.time.total);
     }
 
     if (forecastHourly && 
@@ -243,7 +248,7 @@ export default function MainSlider(props) {
           <WeatherForecastHourly forecast={forecastHourly} />
         </>
       );
-      newSliderTimes.push(30 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherForecastHourly.time.total);
     }
     
     if (forecastDaily && 
@@ -256,7 +261,7 @@ export default function MainSlider(props) {
           <WeatherForecastDaily forecast={forecastDaily}/>
         </>
       );
-      newSliderTimes.push(30 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherForecastDaily.time.total);
     }
     
     if (exchangeRates && 
@@ -269,7 +274,7 @@ export default function MainSlider(props) {
           <ExchangeRate rates={exchangeRates} />
         </>
       );
-      newSliderTimes.push(5 * Times.second);
+      newSliderTimes.push(configurations.widgets.ExchangeRate.time.total);
     }
     
     set(() => {
@@ -349,7 +354,7 @@ export default function MainSlider(props) {
     }
 
     if (location?.coordinates) {
-      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, force);
+      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, t, force);
       if (forecast) {
         const todayForecast = forecast.find(f => f.isToday === true);
         forecast = forecast.filter(f => f.isToday === false);
@@ -365,6 +370,10 @@ export default function MainSlider(props) {
               tempMin: todayForecast?.temp.min,
               precipitationProbability: todayForecast?.precipitationProbability
             });
+          });
+          
+          set(() => {
+            set_currentMoon({ ...todayForecast?.moon });
           });
         }
       }

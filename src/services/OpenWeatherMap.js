@@ -5,7 +5,8 @@ import {
     getUvIndexDescription,
     getCardinalDirectionFromDegree,
     consoleDebug,
-    capitalize
+    capitalize,
+    getMoonPhaseText
 } from '../helpers';
 
 import {
@@ -113,7 +114,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
             dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
 
-            conditionsInfo.formattedDayLight = dayLight.format("hh:mm:ss");
+            conditionsInfo.formattedDayLight = dayLight.format("hh:mm");
             
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
@@ -172,7 +173,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
     return forecastInfo;
 }
 
-export async function getForecastDaily(latitude, longitude, localeLang, force = false) {
+export async function getForecastDaily(latitude, longitude, localeLang, translator, force = false) {
     let forecastInfo = getStorageValue(StorageKeys.forecastDaily);
     if (forecastInfo && force === false){
         return forecastInfo;
@@ -215,6 +216,12 @@ export async function getForecastDaily(latitude, longitude, localeLang, force = 
                         iconCode: `icon_${f.weather[0].icon}`,
                         text: capitalize(f.weather[0].description),
                         precipitationProbability: Math.round(f.pop * 100),
+                        moon: {
+                            phase: f.moon_phase,
+                            moonRise: f.moonrise,
+                            moonSet: f.moonset,
+                            text: getMoonPhaseText(f.moon_phase, translator)
+                        },
                         isToday: now === moment(date).format('YYYY-MM-DD')
                     });
                 }
