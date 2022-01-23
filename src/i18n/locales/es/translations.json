@@ -28,9 +28,9 @@
     "NewMoon": "Luna Nueva",
     "WaxingCrescent": "Luna Creciente",
     "FirstQuarterMoon": "Cuarto Cresciente",
-    "Waxing Gibbous": "Luna Creciente",
+    "WaxingGibbous": "Luna Creciente",
     "FullMoon": "Luna Llena",
     "WaningGibbous": "Luna Menguante",
-    "Last Quarter Moon": "Cuarto Menguante",
-    "Waning Crescent": "Luna Menguante"
+    "LastQuarterMoon": "Cuarto Menguante",
+    "WaningCrescent": "Luna Menguante"
 }

@@ -33,7 +33,7 @@ function WeatherCurrentComp(
                     <div>{uv?.text}</div> : <></>
                 }
             </div> }
-            {humidity && <div className="weatherCurrentComp_item borderAll">
+            { humidity && <div className="weatherCurrentComp_item borderAll">
                 <div><FontAwesomeIcon icon={faTint} /> {t("Humidity")}</div>
                 {
                     humidity > 0 ?
@@ -55,7 +55,7 @@ function WeatherCurrentComp(
                     </>) : <></>
                 }
             </div> }
-            <div className="weatherCurrentComp_item sunInfo borderAll">
+            { (sunRise || sunSet || dayLight) && <div className="weatherCurrentComp_item sunInfo borderAll">
                 <div>{t("DayLigth")}</div>
                 <div className="sunrise">
                     <span><FontAwesomeIcon icon={faSun} /> {}</span>
@@ -69,11 +69,13 @@ function WeatherCurrentComp(
                     <span><FontAwesomeIcon icon={faAdjust} /> {}</span>
                     <span>{dayLight}</span>
                 </span>
-            </div>
-            { moon && <div className='weatherCurrentComp_item borderAll'>
-                <div className="">{moon?.phase}</div>
-                <div className="">{moon?.text}</div>
-            </div>}
+            </div> }
+            { moon && <div className='weatherCurrentComp_item moonInfo borderAll'>
+                <div className={'moon ' + moon.class}>
+                    <div className='disc'></div>
+                </div>
+                <div className="">{moon.text}</div>
+            </div> }
         </div>
     );
 }

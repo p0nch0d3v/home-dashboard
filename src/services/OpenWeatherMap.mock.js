@@ -5,7 +5,7 @@ import {
     getCardinalDirectionFromDegree,
     rand,
     getRandomText,
-    getMoonPhaseText
+    getMoonPhaseTextAndClass
 } from '../helpers';
 
 export async function getLocationInfo(force = false){
@@ -125,7 +125,8 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                 phase: rand(0, 100) / 100,
                 moonRise: Date.now(),
                 moonSet: Date.now(),
-                text: getMoonPhaseText(rand(0, 100) / 100, translator)
+                text: getMoonPhaseTextAndClass(rand(0, 100) / 100, translator).text,
+                class: getMoonPhaseTextAndClass(rand(0, 100) / 100, translator).class,
             },
             isToday: i === 0
         });

@@ -6,7 +6,7 @@ import {
     getCardinalDirectionFromDegree,
     consoleDebug,
     capitalize,
-    getMoonPhaseText
+    getMoonPhaseTextAndClass
 } from '../helpers';
 
 import {
@@ -54,7 +54,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
     if (conditionsInfo && force === false){
         return conditionsInfo;
     }
-    else {
+    else if (latitude && longitude){
         consoleDebug('Calling Current Weather');
         let conditions = await axios({
             method: 'GET',
@@ -128,7 +128,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
     if (forecastInfo && force === false){
         return forecastInfo;
     }
-    else {
+    else if (latitude && longitude) {
         consoleDebug('Calling Forecast Hourly');
         let forecast = await axios({
             method: 'GET',
@@ -178,7 +178,7 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
     if (forecastInfo && force === false){
         return forecastInfo;
     }
-    else {
+    else if (latitude && longitude) {
         consoleDebug('Calling Forecast Daily');
         let forecast = await axios({
             method: 'GET',
@@ -220,7 +220,8 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                             phase: f.moon_phase,
                             moonRise: f.moonrise,
                             moonSet: f.moonset,
-                            text: getMoonPhaseText(f.moon_phase, translator)
+                            text: getMoonPhaseTextAndClass(f.moon_phase, translator).text,
+                            class: getMoonPhaseTextAndClass(f.moon_phase, translator).class
                         },
                         isToday: now === moment(date).format('YYYY-MM-DD')
                     });

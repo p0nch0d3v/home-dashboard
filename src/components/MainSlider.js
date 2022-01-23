@@ -11,7 +11,7 @@ import {
   getCurrentWeather,
   getForecastHourly,
   getForecastDaily
-} from '../services/OpenWeatherMap.mock';
+} from '../services/OpenWeatherMap';
 
 import {
     StorageKeys,
@@ -19,7 +19,7 @@ import {
     setStorageValue
 } from '../services/DataService';
 
-import { getExchangeRate } from '../services/ExchangeRate.mock';
+import { getExchangeRate } from '../services/ExchangeRate';
 import { GetDate, GetTime } from '../services/DateTimeService';
 import { GetConfigurations, SaveConfigurations } from '../services/ConfigService';
 
@@ -34,7 +34,9 @@ import MainHeader from './MainHeader';
 import ModalConfig from './ConfigModal/ConfigModal';
 
 export default function MainSlider(props) {
-  const [localeLang] = useState(process.env.REACT_APP_LOCALE_LANG || 'en');
+  const [configurations, set_configurations] = useState(GetConfigurations());
+
+  const [localeLang] = useState(configurations.language || 'en');
   const [backgroundColor, set_backgroundColor] = useState('none');
   
   const [intervals] = useState({
@@ -65,8 +67,6 @@ export default function MainSlider(props) {
   const [forecastHourly, set_forecastHourly] = useState([]);
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
-
-  const [configurations, set_configurations] = useState(GetConfigurations());
 
   const { t } = useTranslation();
 
@@ -291,11 +291,9 @@ export default function MainSlider(props) {
 
   const removeIframe = () => {
     const iframe = document.querySelector('iframe');
-    consoleDebug(iframe);
     if (iframe) {
       iframe.remove();
     }
-    consoleDebug(document.querySelector('iframe'));
   };
 
   /* ASYNC */
@@ -312,78 +310,73 @@ export default function MainSlider(props) {
   const getWeatherConditions = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.conditions;
+    force = force || ((now - moment(lastUpdate)) >= intervals.conditions) || !lastUpdate;
 
-    if (location?.coordinates) {
-      let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
+    let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
-      if (currentWeather) {
-        set(() => {
-          set_weather(currentWeather);
-        });
-      }
+    if (currentWeather) {
+      set(() => {
+        set_weather(currentWeather);
+      });
     }
   };
 
   const getWeatherForecastHourly = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.forecastHourly;
+    force = force || ((now - moment(lastUpdate)) >= intervals.forecastHourly) || !lastUpdate;
     
     if (forecastHourly && forecastHourly.length > 0) {
       force = force || Date.now() > forecastHourly[0].dateTime;
     }
     
-    if (location?.coordinates) {
-      const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
-      if (forecast) {
-        set(() => {
-          set_forecastHourly(forecast);
-        });
-      }
+    const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
+    if (forecast) {
+      set(() => {
+        set_forecastHourly(forecast);
+      });
     }
   };
 
   const getWeatherForecastDaily = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.forecastDaily;
+    force = force || ((now - moment(lastUpdate)) >= intervals.forecastDaily) || !lastUpdate;
     
     if (forecastDaily && forecastDaily.length > 0) {
-      force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastHourly[0].dateTime).format('YYYY-MM-DD'));
+      force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastDaily[0].dateTime).format('YYYY-MM-DD'));
     }
-
-    if (location?.coordinates) {
-      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, t, force);
-      if (forecast) {
-        const todayForecast = forecast.find(f => f.isToday === true);
-        forecast = forecast.filter(f => f.isToday === false);
-        
+    
+    let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, t, force);
+    if (forecast) {
+      const todayForecast = forecast.find(f => f.isToday === true);
+      forecast = forecast.filter(f => f.isToday === false);
+      
+      set(() => {
+        set_forecastDaily(forecast);
+      });
+      
+      if (todayForecast) {
         set(() => {
-          set_forecastDaily(forecast);
+          set_currentForecast({
+            tempMax: todayForecast?.temp.max,
+            tempMin: todayForecast?.temp.min,
+            precipitationProbability: todayForecast?.precipitationProbability
+          });
         });
         
-        if (todayForecast) {
-          set(() => {
-            set_currentForecast({
-              tempMax: todayForecast?.temp.max,
-              tempMin: todayForecast?.temp.min,
-              precipitationProbability: todayForecast?.precipitationProbability
-            });
-          });
-          
-          set(() => {
-            set_currentMoon({ ...todayForecast?.moon });
-          });
-        }
+        set(() => {
+          set_currentMoon({ ...todayForecast?.moon });
+        });
       }
     }
+    
   };
 
   const getExchangeRates = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.exchangeRate;
+    force = force || ((now - moment(lastUpdate)) >= intervals.exchangeRate) || !lastUpdate;
 
     let rates = await getExchangeRate(force);
     set(() => {
