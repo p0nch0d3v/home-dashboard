@@ -10,7 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
-import { consoleDebug } from '../helpers';
 
 function WeatherCurrentComp(
     {   uv,
@@ -40,7 +39,7 @@ function WeatherCurrentComp(
                     <div>{humidity} %</div> : <></>
                 }
             </div> }
-            { pressure && <div className="weatherCurrentComp_item borderBottom">
+            { pressure && <div className="weatherCurrentComp_item borderAll">
                 <div><FontAwesomeIcon icon={faCompressArrowsAlt} /> {t("Pressure")}</div>
                 <div>{pressure?.value} {pressure?.unit}</div>
             </div> }
@@ -55,21 +54,23 @@ function WeatherCurrentComp(
                     </>) : <></>
                 }
             </div> }
-            { (sunRise || sunSet || dayLight) && <div className="weatherCurrentComp_item sunInfo borderAll">
-                <div>{t("DayLigth")}</div>
-                <div className="sunrise">
-                    <span><FontAwesomeIcon icon={faSun} /> {}</span>
-                    <span>{sunRise}</span>
-                </div>
-                <span className="sunset">
-                    <span><FontAwesomeIcon icon={faMoon} /> {}</span>
-                    <span>{sunSet}</span>
-                </span>
-                <span className="dayLight">
-                    <span><FontAwesomeIcon icon={faAdjust} /> {}</span>
-                    <span>{dayLight}</span>
-                </span>
-            </div> }
+            { (sunRise || sunSet || dayLight) && 
+                <div className="weatherCurrentComp_item sunInfo borderAll">
+                    <div>{t("DayLigth")}</div>
+                    <div className="sunrise">
+                        <span><FontAwesomeIcon icon={faSun} /> {}</span>
+                        <span>{sunRise}</span>
+                    </div>
+                    <span className="sunset">
+                        <span><FontAwesomeIcon icon={faMoon} /> {}</span>
+                        <span>{sunSet}</span>
+                    </span>
+                    <span className="dayLight">
+                        <span><FontAwesomeIcon icon={faAdjust} /> {}</span>
+                        <span>{dayLight}</span>
+                    </span>
+                </div> 
+            }
             { moon && <div className='weatherCurrentComp_item moonInfo borderAll'>
                 <div className={'moon ' + moon.class}>
                     <div className='disc'></div>

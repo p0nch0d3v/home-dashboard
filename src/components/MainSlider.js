@@ -3,7 +3,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import 'moment-timezone';
 import { useTranslation } from 'react-i18next'
-import { capitalize, consoleDebug, useInterval } from '../helpers';
+import { capitalize, useInterval } from '../helpers';
 import { Times } from '../constants';
 
 import {
