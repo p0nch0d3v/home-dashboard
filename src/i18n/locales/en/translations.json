@@ -22,5 +22,13 @@
     "Moderate": "Moderate",
     "High": "High",
     "VeryHigh": "Very High",
-    "Extreme": "Extreme"
+    "Extreme": "Extreme",
+    "NewMoon": "New Moon",
+    "WaxingCrescent": "Waxing Crescent",
+    "FirstQuarterMoon": "First Quarter Moon",
+    "Waxing Gibbous": "Waxing Gibbous",
+    "FullMoon": "Full Moon",
+    "WaningGibbous": "Waning Gibbous",
+    "LastQuarterMoon": "Last Quarter Moon",
+    "WaningCrescent": "Waning Crescent"
 }

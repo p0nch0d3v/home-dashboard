@@ -1,6 +1,5 @@
 import { StorageKeys, getStorageValue, setStorageValue } from './DataService';
 import { Times } from '../constants';
-import { consoleDebug } from '../helpers';
 
 export function GetConfigurations () {
     let config = getStorageValue(StorageKeys.configuration);

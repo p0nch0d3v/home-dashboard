@@ -3,38 +3,40 @@ import moment from 'moment';
 import 'moment/locale/es';
 import 'moment-timezone';
 import { useTranslation } from 'react-i18next'
-import { capitalize, consoleDebug, useInterval } from '../../helpers';
-import { Times } from '../../constants';
+import { capitalize, useInterval } from '../helpers';
+import { Times } from '../constants';
 
 import {
   getLocationInfo,
   getCurrentWeather,
   getForecastHourly,
   getForecastDaily
-} from '../../services/OpenWeatherMap';
+} from '../services/OpenWeatherMap';
 
 import {
     StorageKeys,
     getStorageValue,
     setStorageValue
-} from '../../services/DataService';
+} from '../services/DataService';
 
-import { getExchangeRate } from '../../services/ExchangeRate.mock';
-import { GetDate, GetTime } from '../../services/DateTimeService';
-import { GetConfigurations, SaveConfigurations } from '../../services/ConfigService';
+import { getExchangeRate } from '../services/ExchangeRate';
+import { GetDate, GetTime } from '../services/DateTimeService';
+import { GetConfigurations, SaveConfigurations } from '../services/ConfigService';
 
-import DateTime from '../DateTime/DateTime';
-import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
-import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
-import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
-import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
-import ExchangeRate from '../ExchangeRate/ExchangeRate';
-import Calendar from '../Calendar/Calendar';
-import MainHeader from '../MainHeader/MainHeader';
-import ModalConfig from '../ConfigModal/ConfigModal';
+import DateTime from './DateTime';
+import WeatherCurrent from './WeatherCurrent';
+import WeatherCurrentComp from './WeatherCurrentComp';
+import WeatherForecastHourly from './WeatherForecastHourly';
+import WeatherForecastDaily from  './WeatherForecastDaily';
+import ExchangeRate from './ExchangeRate';
+import Calendar from './Calendar';
+import MainHeader from './MainHeader';
+import ModalConfig from './ConfigModal/ConfigModal';
 
 export default function MainSlider(props) {
-  const [localeLang] = useState(process.env.REACT_APP_LOCALE_LANG || 'en');
+  const [configurations, set_configurations] = useState(GetConfigurations());
+
+  const [localeLang] = useState(configurations.language || 'en');
   const [backgroundColor, set_backgroundColor] = useState('none');
   
   const [intervals] = useState({
@@ -61,11 +63,10 @@ export default function MainSlider(props) {
   const [location, set_location] = useState(null);
   const [weather, set_weather] = useState(null);
   const [currentForecast, set_currentForecast] = useState(null);
+  const [currentMoon, set_currentMoon] = useState(null);
   const [forecastHourly, set_forecastHourly] = useState([]);
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
-
-  const [configurations, set_configurations] = useState(GetConfigurations());
 
   const { t } = useTranslation();
 
@@ -189,7 +190,7 @@ export default function MainSlider(props) {
                     weekDay={weekDay} /> 
         </>
       );
-      newSliderTimes.push(25 * Times.second);
+      newSliderTimes.push(configurations.widgets.DateTime.time.total);
     }
 
     if (date && 
@@ -200,7 +201,7 @@ export default function MainSlider(props) {
           <Calendar date={date} />
         </>
       )
-      newSliderTimes.push(25 * Times.second);
+      newSliderTimes.push(configurations.widgets.Calendar.time.total);
     }
 
     if (weather && 
@@ -210,27 +211,31 @@ export default function MainSlider(props) {
       newSliderItems.push(
         <>
           {dateTimeHeader}
-          <WeatherCurrent weather={weather} 
+          <WeatherCurrent weather={weather}
                           currentForecast={currentForecast} />
         </>
       );
-      newSliderTimes.push(20 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherCurrent.time.total);
     }
     
     if (weather && 
-          currentForecast && 
           configurations.widgets.WeatherCurrentComp.isActive &&
           configurations.services.WeatherCurrent) {
       newSliderItems.push(
         <>
           {fullHeader}
-          <WeatherCurrentComp weather={weather} 
+          <WeatherCurrentComp uv={weather?.uv} 
+                              humidity={weather?.humidity}
+                              pressure={weather?.pressure}
+                              wind={weather?.wind}
                               sunRise={moment(weather?.sunRise).format('hh:mm A')}
                               sunSet={moment(weather?.sunSet).format('hh:mm A')} 
-                              dayLight={weather?.formattedDayLight}/>
+                              dayLight={weather?.formattedDayLight}
+                              moon={currentMoon}
+                              />
         </>
       );
-      newSliderTimes.push(20 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherCurrentComp.time.total);
     }
 
     if (forecastHourly && 
@@ -243,7 +248,7 @@ export default function MainSlider(props) {
           <WeatherForecastHourly forecast={forecastHourly} />
         </>
       );
-      newSliderTimes.push(30 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherForecastHourly.time.total);
     }
     
     if (forecastDaily && 
@@ -256,7 +261,7 @@ export default function MainSlider(props) {
           <WeatherForecastDaily forecast={forecastDaily}/>
         </>
       );
-      newSliderTimes.push(30 * Times.second);
+      newSliderTimes.push(configurations.widgets.WeatherForecastDaily.time.total);
     }
     
     if (exchangeRates && 
@@ -269,7 +274,7 @@ export default function MainSlider(props) {
           <ExchangeRate rates={exchangeRates} />
         </>
       );
-      newSliderTimes.push(5 * Times.second);
+      newSliderTimes.push(configurations.widgets.ExchangeRate.time.total);
     }
     
     set(() => {
@@ -286,11 +291,9 @@ export default function MainSlider(props) {
 
   const removeIframe = () => {
     const iframe = document.querySelector('iframe');
-    consoleDebug(iframe);
     if (iframe) {
       iframe.remove();
     }
-    consoleDebug(document.querySelector('iframe'));
   };
 
   /* ASYNC */
@@ -307,74 +310,73 @@ export default function MainSlider(props) {
   const getWeatherConditions = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.conditions;
+    force = force || ((now - moment(lastUpdate)) >= intervals.conditions) || !lastUpdate;
 
-    if (location?.coordinates) {
-      let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
+    let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
-      if (currentWeather) {
-        set(() => {
-          set_weather(currentWeather);
-        });
-      }
+    if (currentWeather) {
+      set(() => {
+        set_weather(currentWeather);
+      });
     }
   };
 
   const getWeatherForecastHourly = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.forecastHourly;
+    force = force || ((now - moment(lastUpdate)) >= intervals.forecastHourly) || !lastUpdate;
     
     if (forecastHourly && forecastHourly.length > 0) {
       force = force || Date.now() > forecastHourly[0].dateTime;
     }
     
-    if (location?.coordinates) {
-      const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
-      if (forecast) {
-        set(() => {
-          set_forecastHourly(forecast);
-        });
-      }
+    const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
+    if (forecast) {
+      set(() => {
+        set_forecastHourly(forecast);
+      });
     }
   };
 
   const getWeatherForecastDaily = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.forecastDaily;
+    force = force || ((now - moment(lastUpdate)) >= intervals.forecastDaily) || !lastUpdate;
     
     if (forecastDaily && forecastDaily.length > 0) {
-      force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastHourly[0].dateTime).format('YYYY-MM-DD'));
+      force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastDaily[0].dateTime).format('YYYY-MM-DD'));
     }
-
-    if (location?.coordinates) {
-      let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, force);
-      if (forecast) {
-        const todayForecast = forecast.find(f => f.isToday === true);
-        forecast = forecast.filter(f => f.isToday === false);
-        
+    
+    let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, t, force);
+    if (forecast) {
+      const todayForecast = forecast.find(f => f.isToday === true);
+      forecast = forecast.filter(f => f.isToday === false);
+      
+      set(() => {
+        set_forecastDaily(forecast);
+      });
+      
+      if (todayForecast) {
         set(() => {
-          set_forecastDaily(forecast);
+          set_currentForecast({
+            tempMax: todayForecast?.temp.max,
+            tempMin: todayForecast?.temp.min,
+            precipitationProbability: todayForecast?.precipitationProbability
+          });
         });
         
-        if (todayForecast) {
-          set(() => {
-            set_currentForecast({
-              tempMax: todayForecast?.temp.max,
-              tempMin: todayForecast?.temp.min,
-              precipitationProbability: todayForecast?.precipitationProbability
-            });
-          });
-        }
+        set(() => {
+          set_currentMoon({ ...todayForecast?.moon });
+        });
       }
     }
+    
   };
 
   const getExchangeRates = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
     const now = moment(Date.now());
-    force = force || (now - moment(lastUpdate)) >= intervals.exchangeRate;
+    force = force || ((now - moment(lastUpdate)) >= intervals.exchangeRate) || !lastUpdate;
 
     let rates = await getExchangeRate(force);
     set(() => {

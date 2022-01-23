@@ -11,16 +11,26 @@
     "Wind": "Viento",
     "Sunrise": "Amanecer",
     "Sunset": "Atardecer",
-    "DayLigth": "Luz",
+    "DayLigth": "Luz de Dia",
     "North": "Norte",
     "East": "Este",
     "South": "Sur",
     "West": "Oeste",
     "SW": "SO",
     "NW": "NO",
+    
     "Low": "Bajo",
     "Moderate": "Moderado",
     "High": "Alto",
     "VeryHigh": "Muy Alto",
-    "Extreme": "Extremo"
+    "Extreme": "Extremo",
+    
+    "NewMoon": "Luna Nueva",
+    "WaxingCrescent": "Luna Creciente",
+    "FirstQuarterMoon": "Cuarto Cresciente",
+    "WaxingGibbous": "Luna Creciente",
+    "FullMoon": "Luna Llena",
+    "WaningGibbous": "Luna Menguante",
+    "LastQuarterMoon": "Cuarto Menguante",
+    "WaningCrescent": "Luna Menguante"
 }

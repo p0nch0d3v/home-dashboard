@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.scss';
 
-import MainSlider from './components/MainSlider/MainSlider';
+import MainSlider from './components/MainSlider';
 
 function App() {
   return (

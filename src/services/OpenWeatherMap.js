@@ -5,7 +5,8 @@ import {
     getUvIndexDescription,
     getCardinalDirectionFromDegree,
     consoleDebug,
-    capitalize
+    capitalize,
+    getMoonPhaseTextAndClass
 } from '../helpers';
 
 import {
@@ -53,7 +54,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
     if (conditionsInfo && force === false){
         return conditionsInfo;
     }
-    else {
+    else if (latitude && longitude){
         consoleDebug('Calling Current Weather');
         let conditions = await axios({
             method: 'GET',
@@ -113,7 +114,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
             dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
 
-            conditionsInfo.formattedDayLight = dayLight.format("hh:mm:ss");
+            conditionsInfo.formattedDayLight = dayLight.format("hh:mm");
             
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
@@ -127,7 +128,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
     if (forecastInfo && force === false){
         return forecastInfo;
     }
-    else {
+    else if (latitude && longitude) {
         consoleDebug('Calling Forecast Hourly');
         let forecast = await axios({
             method: 'GET',
@@ -172,12 +173,12 @@ export async function getForecastHourly(latitude, longitude, translator, force =
     return forecastInfo;
 }
 
-export async function getForecastDaily(latitude, longitude, localeLang, force = false) {
+export async function getForecastDaily(latitude, longitude, localeLang, translator, force = false) {
     let forecastInfo = getStorageValue(StorageKeys.forecastDaily);
     if (forecastInfo && force === false){
         return forecastInfo;
     }
-    else {
+    else if (latitude && longitude) {
         consoleDebug('Calling Forecast Daily');
         let forecast = await axios({
             method: 'GET',
@@ -215,6 +216,13 @@ export async function getForecastDaily(latitude, longitude, localeLang, force = 
                         iconCode: `icon_${f.weather[0].icon}`,
                         text: capitalize(f.weather[0].description),
                         precipitationProbability: Math.round(f.pop * 100),
+                        moon: {
+                            phase: f.moon_phase,
+                            moonRise: f.moonrise,
+                            moonSet: f.moonset,
+                            text: getMoonPhaseTextAndClass(f.moon_phase, translator).text,
+                            class: getMoonPhaseTextAndClass(f.moon_phase, translator).class
+                        },
                         isToday: now === moment(date).format('YYYY-MM-DD')
                     });
                 }

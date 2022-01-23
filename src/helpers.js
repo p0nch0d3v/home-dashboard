@@ -111,3 +111,44 @@ export function getRandomText(min, max) {
   }
   return text;
 };
+
+export function getMoonPhaseTextAndClass(moonPhase, t) {
+  let text = '';
+  let clas = '';
+  if (moonPhase === 0 || moonPhase === 1) {
+    text = t('NewMoon');
+    clas = 'NewMoon';
+  }
+  else if (moonPhase > 0 && moonPhase < 0.25) {
+    text = t('WaxingCrescent');
+    clas = 'WaxingCrescent';
+  }
+  else if (moonPhase === 0.25) {
+    text = t('FirstQuarterMoon');
+    clas = 'FirstQuarterMoon';
+  }
+  else if (moonPhase > 0.25 && moonPhase < 0.5) {
+    text = t('WaxingGibbous');
+    clas = 'WaxingGibbous';
+  }
+  else if (moonPhase === 0.5) {
+    text = t('FullMoon');
+    clas = 'FullMoon';
+  }
+  else if (moonPhase > 0.5 && moonPhase < 0.75) {
+    text = t('WaningGibbous');
+    clas = 'WaningGibbous';
+  }
+  else if (moonPhase === 0.75) {
+    text = t('LastQuarterMoon');
+    clas = 'LastQuarterMoon';
+  }
+  else if (moonPhase > 0.75) {
+    text = t('WaningCrescent');
+    clas = 'WaningCrescent';
+  }
+  return {
+    text: text,
+    class: clas
+  };
+}
