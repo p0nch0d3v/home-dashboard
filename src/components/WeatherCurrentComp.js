@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
+import { shuffle_array } from '../helpers.js';
 
 function WeatherCurrentComp(
     {   uv,
@@ -23,27 +24,25 @@ function WeatherCurrentComp(
     }) {
     const { t } = useTranslation();
 
-    return (
-        <div className="weatherCurrentComp">
-            { uv && <div className="weatherCurrentComp_item borderAll">
+    const uv_item = ( uv && <div className="weatherCurrentComp_item borderAll">
                 <div><FontAwesomeIcon icon={faUmbrella} /> UV {uv?.index}</div>
                 {
                     uv?.index > 0 ? 
                     <div>{uv?.text}</div> : <></>
                 }
-            </div> }
-            { humidity && <div className="weatherCurrentComp_item borderAll">
+            </div> );
+    const humidity_item = ( humidity && <div className="weatherCurrentComp_item borderAll">
                 <div><FontAwesomeIcon icon={faTint} /> {t("Humidity")}</div>
                 {
                     humidity > 0 ?
                     <div>{humidity} %</div> : <></>
                 }
-            </div> }
-            { pressure && <div className="weatherCurrentComp_item borderAll">
+            </div> )
+    const pressure_item = ( pressure && <div className="weatherCurrentComp_item borderAll">
                 <div><FontAwesomeIcon icon={faCompressArrowsAlt} /> {t("Pressure")}</div>
                 <div>{pressure?.value} {pressure?.unit}</div>
-            </div> }
-            { wind && <div className="weatherCurrentComp_item borderAll">
+            </div> );
+    const wind_item = ( wind && <div className="weatherCurrentComp_item borderAll">
                 <div><FontAwesomeIcon icon={faWind} /> {t("Wind")}:</div>
                 {
                     wind?.speed?.value > 0 ?
@@ -53,8 +52,8 @@ function WeatherCurrentComp(
                         <div>{wind?.direction}</div>
                     </>) : <></>
                 }
-            </div> }
-            { (sunRise || sunSet || dayLight) && 
+            </div> );
+    const sunInfo_item = ( (sunRise || sunSet || dayLight) && 
                 <div className="weatherCurrentComp_item sunInfo borderAll">
                     <div>{t("DayLigth")}</div>
                     <div className="sunrise">
@@ -69,9 +68,8 @@ function WeatherCurrentComp(
                         <span><FontAwesomeIcon icon={faAdjust} /> {}</span>
                         <span>{dayLight} Hrs</span>
                     </span>
-                </div> 
-            }
-            { moon && <div className='weatherCurrentComp_item moonInfo borderAll'>
+                </div> );
+    const moonInfo_item = ( moon && <div className='weatherCurrentComp_item moonInfo borderAll'>
                 <div className="d-flex w-100 align-items-center justify-content-evenly">
                     <div className={'moon ' + moon.class}>
                         <div className='disc'></div>
@@ -79,7 +77,16 @@ function WeatherCurrentComp(
                     <span>{(moon.phase * 100) + '%'}</span>
                 </div>
                 <div>{moon.text}</div>
-            </div> }
+            </div> );
+    
+    let items_array = [uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item];
+    items_array = shuffle_array(items_array);
+    
+    return (
+        <div className="weatherCurrentComp">
+            { items_array.map((v, i) => {
+                { return v}
+            })}
         </div>
     );
 }
