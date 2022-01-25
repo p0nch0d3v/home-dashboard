@@ -67,15 +67,18 @@ function WeatherCurrentComp(
                     </span>
                     <span className="dayLight">
                         <span><FontAwesomeIcon icon={faAdjust} /> {}</span>
-                        <span>{dayLight}</span>
+                        <span>{dayLight} Hrs</span>
                     </span>
                 </div> 
             }
             { moon && <div className='weatherCurrentComp_item moonInfo borderAll'>
-                <div className={'moon ' + moon.class}>
-                    <div className='disc'></div>
+                <div className="d-flex w-100 align-items-center justify-content-evenly">
+                    <div className={'moon ' + moon.class}>
+                        <div className='disc'></div>
+                    </div>
+                    <span>{(moon.phase * 100) + '%'}</span>
                 </div>
-                <div className="">{moon.text}</div>
+                <div>{moon.text}</div>
             </div> }
         </div>
     );

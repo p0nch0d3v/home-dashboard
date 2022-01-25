@@ -220,8 +220,8 @@ $icon_ext: '@4x.png';
     .sunrise, .sunset {
       display: flex;
       flex-direction: row;
-      align-content: space-evenly;
-      justify-content: space-evenly;
+      align-content: space-around;
+      justify-content: space-around;
       align-items: center;
     }
 
@@ -229,12 +229,13 @@ $icon_ext: '@4x.png';
       display: flex;
       flex-direction: row;
       width: 100%;
-      align-content: space-evenly;
-      justify-content: space-evenly;
+      align-content: space-around;
+      justify-content: space-around;
       align-items: center;
     }
 
     .moonInfo {
+      font-size: 7vh;
       display: flex;
       flex-direction: column;
       align-items: center;
