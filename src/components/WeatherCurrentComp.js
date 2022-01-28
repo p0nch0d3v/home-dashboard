@@ -6,7 +6,7 @@ import {
     faWind, 
     faUmbrella, 
     faMoon, 
-    faAdjust 
+    faClock
 } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
@@ -65,7 +65,7 @@ function WeatherCurrentComp(
                         <span>{sunSet}</span>
                     </span>
                     <span className="dayLight">
-                        <span><FontAwesomeIcon icon={faAdjust} /> {}</span>
+                        <span><FontAwesomeIcon icon={faClock} /> {}</span>
                         <span>{dayLight} Hrs</span>
                     </span>
                 </div> );
@@ -74,7 +74,6 @@ function WeatherCurrentComp(
                     <div className={'moon ' + moon.class}>
                         <div className='disc'></div>
                     </div>
-                    <span>{(moon.phase * 100) + '%'}</span>
                 </div>
                 <div>{moon.text}</div>
             </div> );
