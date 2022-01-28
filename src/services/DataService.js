@@ -34,3 +34,12 @@ export function setStorageValue(key, value, storage = StorageKeys.local) {
         }
     }     
 }
+
+export function clearStorageValue(key, storage = StorageKeys.local) {
+    if (storage === StorageKeys.local) { 
+        localStorage.removeItem(key);
+    }
+    else {
+        sessionStorage.removeItem(key);
+    }
+}

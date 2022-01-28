@@ -13,6 +13,7 @@ import {
   Col
 } from "react-bootstrap";
 import { Times } from "../../constants"
+import { StorageKeys, getStorageValue, clearStorageValue } from '../../services/DataService';
 
 export default function ConfigModal ({ show, onClose, onSave, configurations, locationInfo }) {
   const localConfig  = {...configurations};
@@ -22,6 +23,8 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   const [exchangeRateApiKey, set_exchangeRateApiKey] = useState(localConfig.EXCHANGERATE_API_KEY || ''); 
   const [widgets, set_widgets] = useState({...localConfig.widgets});
   const [services, set_services] = useState({...localConfig.services});
+
+  const [storageDisplay, set_storageDisplay] = useState({});
   
   const isSettingsValid = () => {
     return true;
@@ -121,12 +124,44 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
     );
   };
 
+  const storageElement = (storageKey) => {
+    return (
+      <section className="mb-2">
+          <button className="btn btn-secondary btn-sm" 
+                  onClick={ () => { onStorageLabelClick(storageKey) } }>
+                    {storageDisplay[storageKey] === true ? 'Close' : 'Open'}
+          </button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <label>
+            <strong>{storageKey}</strong>
+          </label>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <button className="btn btn-danger btn-sm"
+          onClick={ () => { onStorageClearClick(storageKey) }}>Clear</button>
+          { storageDisplay[storageKey] === true && <pre className="mb-1 mt-1 storageValue" id={'storage_' + storageKey} >
+            { JSON.stringify(getStorageValue(StorageKeys[storageKey]), null, 2) }
+          </pre> }
+        </section>
+      );
+  };
+
+  const onStorageLabelClick = (key) => {
+    const _storageDisplay = {...storageDisplay};
+    _storageDisplay[key] = !_storageDisplay[key];
+    set_storageDisplay(_storageDisplay);
+  };
+
+  const onStorageClearClick = (key) => {
+    clearStorageValue(key);
+  };
+
   return (
     <Modal show={show} 
            size="xl" 
            animation={false} 
            centered={true} 
            scrollable={true} 
+           className="modalConfig"
            style={{ overflow: 'scroll', width: '100%' }}>
       <Modal.Header>
         <Modal.Title>Configuration</Modal.Title>
@@ -268,11 +303,15 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
               </tbody>
             </Table>
           </Tab>
-          <Tab eventKey="location" title="Location">
-            <pre style={{ maxHeight: '50vh' }}>{JSON.stringify(locationInfo, null, 2) }</pre>
-          </Tab>
-          <Tab eventKey="raw-config" title="RAW Config">
-            <pre style={{ maxHeight: '50vh' }}>{JSON.stringify(localConfig, null, 2) }</pre>
+          <Tab eventKey="storage" title="Storage">
+            { storageElement(StorageKeys.configuration) }
+            { storageElement(StorageKeys.ipInfo) }
+            { storageElement(StorageKeys.cityInfo) }
+            { storageElement(StorageKeys.locationInfo) }
+            { storageElement(StorageKeys.currentConditions) }
+            { storageElement(StorageKeys.forecastHourly) }
+            { storageElement(StorageKeys.forecastDaily) }
+            { storageElement(StorageKeys.exchangeRate) }
           </Tab>
         </Tabs>
       </Modal.Body>

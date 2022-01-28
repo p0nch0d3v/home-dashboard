@@ -253,8 +253,10 @@ async function getipInfo(force) {
     if (!ipInfo || force === true) {
         consoleDebug('Calling Ip Info');  
         const ipinfoApiKey = GetConfigurations().IPINFO_API_KEY;
+        const url = `https://ipinfo.io?token=${ipinfoApiKey}`
+        consoleDebug('getipInfo', 'url', url);
         ipInfo = await axios({
-            url: `https://ipinfo.io?token=${ipinfoApiKey}`,
+            url: url,
             method: 'GET',
             headers: {
                 "Accept": "application/json"  

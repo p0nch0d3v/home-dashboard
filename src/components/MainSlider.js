@@ -507,7 +507,9 @@ export default function MainSlider(props) {
   useEffect(() => {
     getDate();
     getTime();
-    getWeatherConditions();
+    if (configurations.services.WeatherCurrent) {
+      getWeatherConditions();
+    }
   }, [location]);
 
   useEffect(() => {
