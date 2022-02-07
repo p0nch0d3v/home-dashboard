@@ -1,4 +1,5 @@
 import React from 'react';
+import './ExchangeRate.scss'
 
 export default function ExchangeRate(props) {
   const height = 90;

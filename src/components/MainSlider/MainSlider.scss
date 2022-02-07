@@ -1,0 +1,22 @@
+@import '../../common.scss';
+
+.mainSlider {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.none {
+  background-color: #7F7F7F;
+  color: #555555;
+}
+
+.day {
+  background-color: $day-bk;
+  color: #000;
+}
+
+.night {
+  background-color: $night-bk;
+  color: #fff;
+}

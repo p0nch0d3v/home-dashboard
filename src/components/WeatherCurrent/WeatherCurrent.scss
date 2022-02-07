@@ -1,0 +1,29 @@
+@import '../../common.scss';
+
+.weatherCurrent {
+    text-align: center;
+    font-size: 13vh;
+    height: $item-max-height;
+  
+    &_item {
+      max-height: $item-mid-height;
+      height: $item-mid-height;
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+  
+    &_doubleItem {
+      max-height: $item-mid-height;
+      height: $item-mid-height;
+      width: 100% !important;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+  
+    @include icon(45vh, 45vh);
+    
+  }
+  

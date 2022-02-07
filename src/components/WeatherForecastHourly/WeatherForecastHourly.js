@@ -4,6 +4,7 @@ import {
   faTint
 } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
+import './WeatherForecastHourly.scss';
 
 export default function WeatherForecastHourly({ forecast }) {
     const borderClasses = ['borderRight', 'borderRight', 'borderRight', 'borderRight', 'borderNone'];

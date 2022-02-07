@@ -1,0 +1,104 @@
+
+$day-bk:#76a7e3;
+$day-font-color:#000;
+
+$night-bk:#1f4371;
+$night-font-color:#FFF;
+
+$img-bk:#4B75AA;
+$item-max-height:90vh;
+$item-mid-height:45vh;
+$icon_url: 'https://openweathermap.org/img/wn/';
+$icon_ext: '@4x.png';
+
+@mixin icon($max-width: 1px, $max-height: 1px, $width: 95%, $height: 95%) {
+  .icon {
+    width: $width;
+    height: $height;
+    border-radius: 20%;
+    max-width: $max-width;
+    max-height: $max-height;
+    background-color: $img-bk;
+    align-self: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 145%;
+    display: inline-block;
+    
+    &.icon_01d {
+      background-image: url($icon_url + '01d' + $icon_ext);
+    }
+    &.icon_02d { 
+      background-image: url($icon_url + '02d' + $icon_ext); 
+    }
+    &.icon_03d { 
+      background-image: url($icon_url + '03d' + $icon_ext); 
+    } 
+    &.icon_04d { 
+      background-image: url($icon_url + '04d' + $icon_ext); 
+    }
+    &.icon_09d { 
+      background-image: url($icon_url + '09d' + $icon_ext); 
+    }
+    &.icon_10d { 
+      background-image: url($icon_url + '10d' + $icon_ext); 
+    }
+    &.icon_11d { 
+      background-image: url($icon_url + '11d' + $icon_ext); 
+    }
+    &.icon_13d { 
+      background-image: url($icon_url + '13d' + $icon_ext); 
+    }
+    &.icon_50d { 
+      background-image: url($icon_url + '50d' + $icon_ext); 
+    }
+
+    &.icon_01n {
+      background-image: url($icon_url + '01n' + $icon_ext); 
+    }
+    &.icon_02n{ 
+      background-image: url($icon_url + '02n' + $icon_ext); 
+    }
+    &.icon_03n{ 
+      background-image: url($icon_url + '03n' + $icon_ext); 
+    }
+    &.icon_04n{ 
+      background-image: url($icon_url + '04n' + $icon_ext); 
+    }
+    &.icon_09n { 
+      background-image: url($icon_url + '09n' + $icon_ext); 
+    }
+    &.icon_10n { 
+      background-image: url($icon_url + '10n' + $icon_ext); 
+    }
+    &.icon_11n { 
+      background-image: url($icon_url + '11n' + $icon_ext); 
+    }
+    &.icon_13n { 
+      background-image: url($icon_url + '13n' + $icon_ext); 
+    }
+    &.icon_50n { 
+      background-image: url($icon_url + '50n' + $icon_ext); 
+    }
+  }
+}
+  
+.borderTop {
+  border-top: 1px solid $img-bk !important;
+}
+.borderRight {
+  border-right: 1px solid $img-bk !important;
+}
+.borderBottom {
+  border-bottom: 1px solid $img-bk !important;
+}
+.borderLeft {
+  border-left: 1px solid $img-bk !important;
+}
+.borderNone {
+  border: 1px solid transparent !important;
+}
+.borderAll {
+  border: 1px solid $img-bk !important;
+}
+  
