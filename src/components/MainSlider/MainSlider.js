@@ -3,35 +3,36 @@ import moment from 'moment';
 import 'moment/locale/es';
 import 'moment-timezone';
 import { useTranslation } from 'react-i18next'
-import { capitalize, useInterval } from '../helpers';
-import { Times } from '../constants';
+import { capitalize, useInterval } from '../../helpers';
+import { Times } from '../../constants';
+import './MainSlider.scss';
 
 import {
   getLocationInfo,
   getCurrentWeather,
   getForecastHourly,
   getForecastDaily
-} from '../services/OpenWeatherMap';
+} from '../../services/OpenWeatherMap';
 
 import {
     StorageKeys,
     getStorageValue,
     setStorageValue
-} from '../services/DataService';
+} from '../../services/DataService';
 
-import { getExchangeRate } from '../services/ExchangeRate';
-import { GetDate, GetTime } from '../services/DateTimeService';
-import { GetConfigurations, SaveConfigurations } from '../services/ConfigService';
+import { getExchangeRate } from '../../services/ExchangeRate';
+import { GetDate, GetTime } from '../../services/DateTimeService';
+import { GetConfigurations, SaveConfigurations } from '../../services/ConfigService';
 
-import DateTime from './DateTime';
-import WeatherCurrent from './WeatherCurrent';
-import WeatherCurrentComp from './WeatherCurrentComp';
-import WeatherForecastHourly from './WeatherForecastHourly';
-import WeatherForecastDaily from  './WeatherForecastDaily';
-import ExchangeRate from './ExchangeRate';
-import Calendar from './Calendar';
-import MainHeader from './MainHeader';
-import ModalConfig from './ConfigModal/ConfigModal';
+import DateTime from '../DateTime/DateTime';
+import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
+import WeatherCurrentComp from '../WeatherCurrentComp/WeatherCurrentComp';
+import WeatherForecastHourly from '../WeatherForecastHourly/WeatherForecastHourly';
+import WeatherForecastDaily from  '../WeatherForecastDaily/WeatherForecastDaily';
+import ExchangeRate from '../ExchangeRate/ExchangeRate';
+import Calendar from '../Calendar/Calendar';
+import MainHeader from '../MainHeader/MainHeader';
+import ModalConfig from '../ConfigModal/ConfigModal';
 
 export default function MainSlider(props) {
   const [configurations, set_configurations] = useState(GetConfigurations());

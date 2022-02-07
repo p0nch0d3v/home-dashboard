@@ -10,7 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
-import { shuffle_array } from '../helpers.js';
+import './WeatherCurrentComp.scss';
 
 function WeatherCurrentComp(
     {   uv,
@@ -79,7 +79,7 @@ function WeatherCurrentComp(
             </div> );
     
     let items_array = [uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item];
-    items_array = shuffle_array(items_array);
+    // items_array = shuffle_array(items_array);
     
     return (
         <div className="weatherCurrentComp">

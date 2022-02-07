@@ -1,7 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { useTranslation, withTranslation } from 'react-i18next';
-import { capitalize } from '../helpers';
+import { capitalize } from '../../helpers';
+import './Calendar.scss';
 
 function Calendar({ date }) {
     const startOfMonth = moment(date).startOf('month');

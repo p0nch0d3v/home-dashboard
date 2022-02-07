@@ -1,0 +1,34 @@
+@import '../../common.scss';
+
+.main-header {
+  width: 100vw;
+  height: 10vh;
+  font-size: 6.25vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-weight: 700;
+  
+  &_time {
+      margin-left: 1vw;
+  }
+  &_temp {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    @include icon(7.5vh, 7.5vh, 7.5vh, 7.5vh);
+  }
+  &_date {
+      margin-right: 1vw;
+  }
+}
+
+.day .main-header {
+  background-color: $night-bk;
+  color:$night-font-color;
+}
+
+.night .main-header {
+  background-color: $day-bk;
+  color:$day-font-color;
+}

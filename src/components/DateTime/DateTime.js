@@ -1,4 +1,5 @@
 import React from 'react';
+import './DateTime.scss';
 
 export default function DateTime({ time, weekDay, date }){
     return (

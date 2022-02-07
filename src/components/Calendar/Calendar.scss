@@ -1,0 +1,45 @@
+@import '../../common.scss';
+
+.calendar {
+  font-size: 6.75vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  
+  .header {
+    font-weight: 700;
+  }
+
+  .week {
+    border: 1px solid transparent;
+    
+    .weekDay {
+      border: 1px solid transparent;
+      width: 10vh;
+      height: 10vh;
+      display: inline-block;
+
+      &.weekend {
+        font-weight: 200;
+      }
+
+      &.today {
+        border-radius: 50%;
+      }
+
+      &.pastDay {
+        text-decoration: line-through;
+      }
+
+      .day &.today {
+        background-color: $night-bk;
+        color:$night-font-color;
+      }
+
+      .night &.today {
+        background-color: $day-bk;
+        color:$day-font-color;
+      }
+    }
+  }
+}

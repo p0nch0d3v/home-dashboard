@@ -1,8 +1,9 @@
 import React from 'react';
-import { capitalize } from '../helpers';
+import { capitalize } from '../../helpers';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTint } from '@fortawesome/free-solid-svg-icons';
+import './WeatherForecastDaily.scss';
 
 export default function WeatherForecastDaily({ forecast }) {
     const borderClasses = ['borderRight', 'borderRight', 'borderRight', 'borderRight','borderNone'];

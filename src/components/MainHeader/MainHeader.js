@@ -1,4 +1,5 @@
 import React from 'react';
+import './MainHeader.scss';
 
 export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd }){
     return (

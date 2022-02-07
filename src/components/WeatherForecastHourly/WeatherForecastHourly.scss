@@ -1,0 +1,41 @@
+@import '../../common.scss';
+
+.weatherForecastHourly {
+    height: $item-max-height;
+    display: flex;
+    flex-wrap: wrap;
+  
+    &_item {
+      width: 20vw;
+      display: flex;
+      justify-content: space-evenly;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+      text-align: center;
+  
+      .main_text {
+        font-size: 6.25vh;
+        width: 95%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      
+      @include icon(17vw, 17vw);
+  
+      .description {
+        font-size: 4vh;
+        word-break: keep-all;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 17.5vw;
+      }
+  
+      .text_info {
+        font-size: 6.5vh;
+      }
+    }
+  }

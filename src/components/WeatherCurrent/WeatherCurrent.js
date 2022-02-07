@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudRain, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
-import { capitalize } from '../helpers';
+import { capitalize } from '../../helpers';
+import './WeatherCurrent.scss';
 
 export default function WeatherCurrent({ weather, currentForecast }) {
     const temp = (<span>{weather?.temp.value} °{weather?.temp.unit}</span>);
