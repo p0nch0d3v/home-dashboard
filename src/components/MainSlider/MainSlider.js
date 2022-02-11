@@ -40,12 +40,6 @@ export default function MainSlider(props) {
   const [localeLang] = useState(configurations.language || 'en');
   const [backgroundColor, set_backgroundColor] = useState('none');
   
-  const [intervals] = useState({
-    conditions : Times.minute * 10,
-    forecastHourly: Times.hour,
-    forecastDaily: Times.hour,
-    exchangeRate: Times.hour * 6
-  });
   const [currentSlider, set_currentSlider] = useState(0);
   const [sliderItems, set_sliderItems] = useState([]);
   const [sliderTimes, set_sliderTimes] = useState([]);
@@ -311,7 +305,8 @@ export default function MainSlider(props) {
   const getWeatherConditions = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
     const now = moment(Date.now());
-    force = force || ((now - moment(lastUpdate)) >= intervals.conditions) || !lastUpdate;
+    
+    force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherCurrent.time.total) || !lastUpdate;
 
     let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
@@ -325,7 +320,8 @@ export default function MainSlider(props) {
   const getWeatherForecastHourly = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
     const now = moment(Date.now());
-    force = force || ((now - moment(lastUpdate)) >= intervals.forecastHourly) || !lastUpdate;
+    
+    force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherForecastHourly.time.total) || !lastUpdate;
     
     if (forecastHourly && forecastHourly.length > 0) {
       force = force || Date.now() > forecastHourly[0].dateTime;
@@ -342,7 +338,8 @@ export default function MainSlider(props) {
   const getWeatherForecastDaily = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
     const now = moment(Date.now());
-    force = force || ((now - moment(lastUpdate)) >= intervals.forecastDaily) || !lastUpdate;
+    
+    force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherForecastDaily.time.total) || !lastUpdate;
     
     if (forecastDaily && forecastDaily.length > 0) {
       force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastDaily[0].dateTime).format('YYYY-MM-DD'));
@@ -377,7 +374,8 @@ export default function MainSlider(props) {
   const getExchangeRates = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
     const now = moment(Date.now());
-    force = force || ((now - moment(lastUpdate)) >= intervals.exchangeRate) || !lastUpdate;
+    
+    force = force || ((now - moment(lastUpdate)) >= configurations.services.ExchangeRate.time.total) || !lastUpdate;
 
     let rates = await getExchangeRate(force);
     set(() => {

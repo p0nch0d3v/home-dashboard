@@ -47,11 +47,26 @@ export function GetDefaultConfigurations () {
             }
         },
         services: {
-            GeoLocation: false,
-            WeatherCurrent: false,
-            WeatherForecastHourly: false,
-            WeatherForecastDaily: false,
-            ExchangeRate: false
+            GeoLocation: {
+                time: { value: 24, type: "hour", total: (24 * Times.hour) }, 
+                isActive: false
+            },
+            WeatherCurrent: {
+                time: { value: 10, type: "minute", total: (10 * Times.minute) }, 
+                isActive: false
+            },
+            WeatherForecastHourly: {
+                time: { value: 30, type: "minute", total: (30 * Times.minute) }, 
+                isActive: false
+            },
+            WeatherForecastDaily: {
+                time: { value: 30, type: "minute", total: (30 * Times.minute) }, 
+                isActive: false
+            },
+            ExchangeRate: {
+                time: { value: 12, type: "hour", total: (12 * Times.hour) }, 
+                isActive: false
+            }
         }
     }
 };

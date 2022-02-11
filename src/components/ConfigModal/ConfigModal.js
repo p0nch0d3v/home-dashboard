@@ -98,13 +98,27 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
       </tr>);
   }
 
-  const serviceSetIsActive = (widgetName, value) => {
+  const serviceSetIsActive = (serviceName, value) => {
     const _services = {...services};
-    _services[widgetName] = value;
+    _services[serviceName].isActive = value;
     set_services(_services);
   };
 
-  const service = (name, isActive, setIsActive) => {
+  const serviceSetTime = (serviceName, value) => {
+    const _services = {...services};
+                          
+    if (isNaN(parseInt(value))) {
+      _services[serviceName].time.type = value;
+    }
+    else {
+      _services[serviceName].time.value = parseInt(value);
+    }
+
+    _services[serviceName].time.total = _services[serviceName].time.value * Times[_services[serviceName].time.type];
+    set_services(_services);
+  };
+
+  const service = (name, isActive, setIsActive, time, setTime) => {
     return (
       <tr>
         <td>{name}</td>
@@ -119,6 +133,24 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
             {isActive ? 'Yes': 'No'}
             </ToggleButton>
           </ButtonGroup>
+        </td>
+        <td>
+          <Row>
+            <Col xs={12} sm={12} md={6}>
+            <Form.Control type="text"
+                    placeholder="Time"
+                    value={time.value} 
+                    onChange={(e) => { setTime(e.target.value) }} />
+            </Col>
+            <Col xs={12} sm={12} md={6}>
+              <Form.Select onChange={(e) => {setTime(e.target.value) }}>
+                <option>Select Time {time.type}</option>
+                <option value="second" selected={time.type === "second"}>Seconds</option>
+                <option value="minute" selected={time.type === "minute"}>Minutes</option>
+                <option value="hour" selected={time.type === "hour"}>Hours</option>
+              </Form.Select>
+            </Col>
+          </Row>
         </td>
       </tr>
     );
@@ -277,28 +309,39 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                 <tr>
                   <td>Service</td>
                   <td>Active</td>
+                  <td>Time</td>
                 </tr>
               </thead>
               <tbody> 
                 { service('GeoLocation',
-                  services.GeoLocation,
-                    ((value) => { serviceSetIsActive('GeoLocation', value); })
+                    services.GeoLocation.isActive,
+                    ((value) => { serviceSetIsActive('GeoLocation', value); }),
+                    services.GeoLocation.time,
+                    ((value) => { serviceSetTime('GeoLocation', value); })
                 )}
                 { service('Current Weather', 
-                    services.WeatherCurrent, 
-                    ((value) => { serviceSetIsActive('WeatherCurrent', value); })
+                    services.WeatherCurrent.isActive, 
+                    ((value) => { serviceSetIsActive('WeatherCurrent', value); }),
+                    services.WeatherCurrent.time,
+                    ((value) => { serviceSetTime('WeatherCurrent', value); })
                 )}
                 { service('Hourly Forecast', 
-                    services.WeatherForecastHourly, 
-                    ((value) => { serviceSetIsActive('WeatherForecastHourly', value); })
+                    services.WeatherForecastHourly.isActive, 
+                    ((value) => { serviceSetIsActive('WeatherForecastHourly', value); }),
+                    services.WeatherForecastHourly.time,
+                    ((value) => { serviceSetTime('WeatherForecastHourly', value); })
                 )}
                 { service('Daily Forecast', 
-                    services.WeatherForecastDaily, 
-                    ((value) => { serviceSetIsActive('WeatherForecastDaily', value); })
+                    services.WeatherForecastDaily.isActive, 
+                    ((value) => { serviceSetIsActive('WeatherForecastDaily', value); }),
+                    services.WeatherForecastDaily.time,
+                    ((value) => { serviceSetTime('WeatherForecastDaily', value); })
                 )}
                 { service('Exchange Rates', 
-                    services.ExchangeRate, 
-                    ((value) => { serviceSetIsActive('ExchangeRate', value); })
+                    services.ExchangeRate.isActive, 
+                    ((value) => { serviceSetIsActive('ExchangeRate', value); }),
+                    services.ExchangeRate.time,
+                    ((value) => { serviceSetTime('ExchangeRate', value); })
                 )}
               </tbody>
             </Table>
