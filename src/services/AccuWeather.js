@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 
-const apikey = process.env.REACT_APP_ACCUWEATHER_API_KEY;
+const apikey = import.meta.env.REACT_APP_ACCUWEATHER_API_KEY;
 const language = 'en-us';
 const baseUrl = 'http://dataservice.accuweather.com';
 let defaultParams = {

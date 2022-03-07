@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { capitalize } from '../helpers';
 
-const localeLang = process.env.REACT_APP_LOCALE_LANG || 'en';
+const localeLang =  import.meta.env.REACT_APP_LOCALE_LANG || 'en';
 moment.locale(localeLang);
 
 export function GetDate(timezone) {
