@@ -10,7 +10,7 @@ export async function getExchangeRate(force = false) {
     if (exchangeRates && force === false) {
         return exchangeRates;
     } else {
-        const apikey = process.env.REACT_APP_EXCHANGERATE_API_KEY;
+        const apikey = import.meta.env.REACT_APP_EXCHANGERATE_API_KEY;
         const url = `https://v6.exchangerate-api.com/v6/${apikey}/latest/MXN`;
         var r = await axios({
             method: 'GET',
