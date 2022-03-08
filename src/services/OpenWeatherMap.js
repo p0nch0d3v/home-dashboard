@@ -1,5 +1,8 @@
 import axios from 'axios';
 import moment from 'moment';
+import 'moment/locale/es';
+import 'moment/dist/locale/es';
+import 'moment-timezone';
 
 import {
     getUvIndexDescription,
@@ -50,6 +53,7 @@ export async function getLocationInfo(force = false){
 }
 
 export async function getCurrentWeather(latitude, longitude, translator, force = false) {
+    moment.locale(GetConfigurations().language);
     let conditionsInfo = getStorageValue(StorageKeys.currentConditions);
     if (conditionsInfo && force === false){
         return conditionsInfo;
@@ -124,6 +128,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
 }
 
 export async function getForecastHourly(latitude, longitude, translator, force = false) {
+    moment.locale(GetConfigurations().language);
     let forecastInfo = getStorageValue(StorageKeys.forecastHourly);
     if (forecastInfo && force === false){
         return forecastInfo;
@@ -174,6 +179,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
 }
 
 export async function getForecastDaily(latitude, longitude, localeLang, translator, force = false) {
+    moment.locale(GetConfigurations().language);
     let forecastInfo = getStorageValue(StorageKeys.forecastDaily);
     if (forecastInfo && force === false){
         return forecastInfo;
@@ -190,7 +196,7 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
         if (forecast) {
             const limit = 6;
             const now = moment(Date.now()).format('YYYY-MM-DD');
-            moment.locale(localeLang);
+
             forecast.forEach(f => {
                 if (forecastInfo.length < limit) {
                     const date = f.dt * 1000;

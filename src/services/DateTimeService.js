@@ -1,10 +1,12 @@
 import moment from 'moment';
+import 'moment/locale/es';
+import 'moment/dist/locale/es';
+import 'moment-timezone';
 import { capitalize } from '../helpers';
-
-const localeLang =  import.meta.env.REACT_APP_LOCALE_LANG || 'en';
-moment.locale(localeLang);
+import { GetConfigurations } from './ConfigService';
 
 export function GetDate(timezone) {
+    moment.locale(GetConfigurations().language);
     let newMomentDate = moment();
     if (timezone) {
         newMomentDate = moment.utc().tz(timezone);
@@ -23,6 +25,7 @@ export function GetDate(timezone) {
 }
 
 export function GetTime(timezone) {
+    moment.locale(GetConfigurations().language);
     let now = moment();
     if (timezone) {
         now = moment.utc().tz(timezone);

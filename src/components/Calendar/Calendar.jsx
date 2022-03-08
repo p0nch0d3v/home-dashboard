@@ -1,10 +1,14 @@
 import React from 'react';
 import moment from 'moment';
+import 'moment/locale/es';
+import 'moment/dist/locale/es';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { capitalize } from '../../helpers';
 import './Calendar.scss';
+import { GetConfigurations } from '../../services/ConfigService';
 
 function Calendar({ date }) {
+    moment.locale(GetConfigurations().language);
     const startOfMonth = moment(date).startOf('month');
     const endOfMonth = moment(date).endOf('month');
     let rows = [];
@@ -32,7 +36,7 @@ function Calendar({ date }) {
             + (dayValue < date.date() ? ' pastDay' : '');
     } 
 
-    let formattedDate = date.format('MMM / YYYY');
+    let formattedDate = date.format('MMMM / YYYY');
     formattedDate = formattedDate.replace(/\./g, '');
     formattedDate = capitalize(formattedDate);
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import 'moment/locale/es';
+import 'moment/dist/locale/es';
 import 'moment-timezone';
 import { useTranslation } from 'react-i18next'
 import { capitalize, useInterval } from '../../helpers';
@@ -137,6 +138,7 @@ export default function MainSlider(props) {
   };
 
   const setupSliderItems = () => {
+    moment().locale(configurations.language);
     const newSliderItems = [];
     const newSliderTimes = [];
     const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 3) + ' / ' + formattedDate : '';
@@ -336,6 +338,7 @@ export default function MainSlider(props) {
   };
 
   const getWeatherForecastDaily = async (force = false) => {
+    moment().locale(configurations.language);
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
     const now = moment(Date.now());
     
