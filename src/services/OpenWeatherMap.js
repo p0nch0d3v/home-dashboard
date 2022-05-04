@@ -118,7 +118,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
             dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
 
-            conditionsInfo.formattedDayLight = dayLight.format("hh:mm");
+            conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
             
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
