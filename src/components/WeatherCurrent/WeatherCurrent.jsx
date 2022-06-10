@@ -18,7 +18,7 @@ export default function WeatherCurrent({ weather, currentForecast }) {
                     <span className={'icon ' + weather?.iconCode}></span>
                 </div>
                 <div className="weatherCurrent_item col-6 m-0 p-0">
-                    {weather?.temp.value > weather?.feel.value ? <>{temp}{feelTemp}</> : <>{feelTemp}{temp}</>}  
+                    <>{temp}{feelTemp}</>
                 </div>
             </div>
             <div className="weatherCurrent_doubleItem borderTop row m-0 p-0">
