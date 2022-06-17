@@ -142,8 +142,8 @@ export function getForecaseDaily(forescastResult) {
                 },
                 icon: `https://www.accuweather.com/images/weathericons/${f.Day.Icon}.svg`,
                 text: f.Day.IconPhrase,
-                sunRise: moment(f.Sun.Rise),
-                sunSet: moment(f.Sun.Set),
+                sunrise: moment(f.Sun.Rise),
+                sunset: moment(f.Sun.Set),
                 precipitationProbability: f.Day.PrecipitationProbability
             });
         }

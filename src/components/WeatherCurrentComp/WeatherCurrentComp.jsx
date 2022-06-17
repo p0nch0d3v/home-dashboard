@@ -17,8 +17,8 @@ function WeatherCurrentComp(
         humidity,
         pressure,
         wind,
-        sunRise, 
-        sunSet, 
+        sunrise, 
+        sunset, 
         dayLight,
         moon 
     }) {
@@ -53,16 +53,16 @@ function WeatherCurrentComp(
                     </>) : <></>
                 }
             </div> );
-    const sunInfo_item = ( (sunRise || sunSet || dayLight) && 
+    const sunInfo_item = ( (sunrise || sunset || dayLight) && 
                 <div className="weatherCurrentComp_item sunInfo borderAll">
                     <div>{t("DayLigth")}</div>
                     <div className="sunrise">
                         <span><FontAwesomeIcon icon={faSun} /> {}</span>
-                        <span>{sunRise}</span>
+                        <span>{sunrise}</span>
                     </div>
                     <span className="sunset">
                         <span><FontAwesomeIcon icon={faMoon} /> {}</span>
-                        <span>{sunSet}</span>
+                        <span>{sunset}</span>
                     </span>
                     <span className="dayLight">
                         <span><FontAwesomeIcon icon={faClock} /> {}</span>

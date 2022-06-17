@@ -60,10 +60,11 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
     }
     else if (latitude && longitude){
         consoleDebug('Calling Current Weather');
+        const url = `${getBaseUrl(latitude, longitude)}&exclude=minutely,hourly,daily,alerts`;
         let conditions = await axios({
             method: 'GET',
-            url: `${getBaseUrl(latitude, longitude)}&exclude=minutely,hourly,daily,alerts`
-        }).then(r => { return r.data.current; })
+            url: url
+        }).then(r => { return  {...r.data.current, timezone: r.data.timezone}; })
         .catch(e => { console.warn(e); return null; });
 
         if (conditions) {
@@ -105,21 +106,23 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
                     value: null,
                     unit: null
                 },
-                sunSet: conditions.sunset * 1000,
-                sunRise: conditions.sunrise * 1000,
+                sunset:  moment.utc(conditions.sunset, 'X', true),
+                sunrise: moment.utc(conditions.sunrise, 'X', true),
                 
             };
-            conditionsInfo.dayLight = (conditionsInfo.sunSet - conditionsInfo.sunRise) * 1000;
+            conditionsInfo.formattedSunset = moment.tz(conditionsInfo.sunset.utc(), conditions.timezone).format('hh:mm A');
+            conditionsInfo.formattedSunrise = moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone).format('hh:mm A');
+
+            conditionsInfo.dayLight = (conditionsInfo.sunset - conditionsInfo.sunrise);
             
-            const sunrise = moment(conditionsInfo.sunRise);
-            const sunset = moment(conditionsInfo.sunSet) 
-            
+            const sunrise =  moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone);
+            const sunset =  moment.tz(conditionsInfo.sunset.utc(), conditions.timezone); 
+
             let dayLight = sunset.subtract(sunrise.hours(), 'hours');
             dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
             dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
-
             conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
-            
+
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
         }
