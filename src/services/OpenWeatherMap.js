@@ -59,6 +59,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
         return conditionsInfo;
     }
     else if (latitude && longitude){
+        consoleDebug('Calling Current Weather');
         const url = `${getBaseUrl(latitude, longitude)}&exclude=minutely,hourly,daily,alerts`;
         let conditions = await axios({
             method: 'GET',
@@ -120,7 +121,6 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             let dayLight = sunset.subtract(sunrise.hours(), 'hours');
             dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
             dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
-            
             conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
 
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
