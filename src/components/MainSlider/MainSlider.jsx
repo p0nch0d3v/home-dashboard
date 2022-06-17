@@ -118,8 +118,8 @@ export default function MainSlider(props) {
     let newIsDay = isDay;
     let newIsNight = isNight;
 
-    if (weather?.sunRise && weather?.sunSet) {
-      if (now >= moment(weather?.sunRise) && now <= moment(weather?.sunSet)) {
+    if (weather?.sunrise && weather?.sunset) {
+      if (now >= moment(weather?.sunrise) && now <= moment(weather?.sunset)) {
         newIsDay = true;
         newIsNight = false;        
       }
@@ -141,7 +141,7 @@ export default function MainSlider(props) {
     moment().locale(configurations.language);
     const newSliderItems = [];
     const newSliderTimes = [];
-    const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 5) + ' ' + formattedDate : '';
+    const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 3) + ' ' + formattedDate : '';
 
     const onlyWeatherHeader = (weather ? (
       <MainHeader temp={weather?.temp?.formatted}
@@ -225,8 +225,8 @@ export default function MainSlider(props) {
                               humidity={weather?.humidity}
                               pressure={weather?.pressure}
                               wind={weather?.wind}
-                              sunRise={moment(weather?.sunRise).format('hh:mm A')}
-                              sunSet={moment(weather?.sunSet).format('hh:mm A')} 
+                              sunrise={weather.formattedSunrise}
+                              sunset={weather.formattedSunset} 
                               dayLight={weather?.formattedDayLight}
                               moon={currentMoon}
                               />
