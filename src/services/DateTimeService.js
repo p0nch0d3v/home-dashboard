@@ -12,15 +12,20 @@ export function GetDate(timezone) {
         newMomentDate = moment.utc().tz(timezone);
     }
 
-    let newDate = newMomentDate.format('DD / MMM / YYYY');
-    newDate = newDate.replace(/\./g, '');
-    newDate = capitalize(newDate);
-    const newWeekDay = capitalize(newMomentDate.format('dddd'));
+    let formattedDate = newMomentDate.format('DD / MMM / YYYY');
+    formattedDate = formattedDate.replace(/\./g, '');
+    formattedDate = capitalize(formattedDate);
+    const weekDay = capitalize(newMomentDate.format('dddd'));
+
+    const dayOfYear = newMomentDate.dayOfYear();
+    const remainingDaysOfYear = newMomentDate.endOf('year').dayOfYear() - dayOfYear;
 
     return {
         date: newMomentDate,
-        formattedDate: newDate,
-        weekDay: newWeekDay
+        formattedDate,
+        weekDay,
+        dayOfYear,
+        remainingDaysOfYear
     }
 }
 

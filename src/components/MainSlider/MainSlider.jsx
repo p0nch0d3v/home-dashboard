@@ -51,6 +51,8 @@ export default function MainSlider(props) {
   const [formattedDate, set_formattedDate]= useState(null);
   const [time, set_time]= useState(null);
   const [weekDay, set_weekDay]= useState(null);
+  const [dayOfYear, set_dayOfYear] = useState(null);
+  const [remainingDaysOfYear, set_remainingDaysOfYear] = useState(null);
   const [isDay, set_isDay]= useState(null);
   const [isNight, set_isNight]= useState(null);
 
@@ -100,6 +102,8 @@ export default function MainSlider(props) {
         set_date(newDate.date);
         set_formattedDate(newDate.formattedDate);
         set_weekDay(newDate.weekDay);
+        set_dayOfYear(newDate.dayOfYear);
+        set_remainingDaysOfYear(newDate.remainingDaysOfYear);
       });  
     }
   };
@@ -184,7 +188,9 @@ export default function MainSlider(props) {
           {onlyWeatherHeader}
           <DateTime date={formattedDate}
                     time={time}
-                    weekDay={weekDay} /> 
+                    weekDay={weekDay} 
+                    dayOfYear={dayOfYear}
+                    remainingDaysOfYear={remainingDaysOfYear} /> 
         </>
       );
       newSliderTimes.push(configurations.widgets.DateTime.time.total);
