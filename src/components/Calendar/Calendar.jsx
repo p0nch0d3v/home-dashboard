@@ -7,7 +7,7 @@ import { capitalize } from '../../helpers';
 import './Calendar.scss';
 import { GetConfigurations } from '../../services/ConfigService';
 
-function Calendar({ date }) {
+function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
     moment.locale(GetConfigurations().language);
     const startOfMonth = moment(date).startOf('month');
     const endOfMonth = moment(date).endOf('month');
@@ -47,6 +47,9 @@ function Calendar({ date }) {
             <div className="row">
                 <div className="col">
                     {formattedDate}
+                </div>
+                <div className="col dayOfYear">
+                    {t("Day")} {dayOfYear}, {t("Remaining")} {remainingDaysOfYear}
                 </div>
             </div>
             

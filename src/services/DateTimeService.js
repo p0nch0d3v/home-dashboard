@@ -8,8 +8,10 @@ import { GetConfigurations } from './ConfigService';
 export function GetDate(timezone) {
     moment.locale(GetConfigurations().language);
     let newMomentDate = moment();
+    let dayOfYearMoment = moment();
     if (timezone) {
         newMomentDate = moment.utc().tz(timezone);
+        dayOfYearMoment = moment.utc().tz(timezone);
     }
 
     let formattedDate = newMomentDate.format('DD / MMM / YYYY');
@@ -17,8 +19,8 @@ export function GetDate(timezone) {
     formattedDate = capitalize(formattedDate);
     const weekDay = capitalize(newMomentDate.format('dddd'));
 
-    const dayOfYear = newMomentDate.dayOfYear();
-    const remainingDaysOfYear = newMomentDate.endOf('year').dayOfYear() - dayOfYear;
+    const dayOfYear = dayOfYearMoment.dayOfYear();
+    const remainingDaysOfYear = dayOfYearMoment.endOf('year').dayOfYear() - dayOfYear;
 
     return {
         date: newMomentDate,

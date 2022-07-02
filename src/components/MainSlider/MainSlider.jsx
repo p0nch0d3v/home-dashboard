@@ -188,9 +188,7 @@ export default function MainSlider(props) {
           {onlyWeatherHeader}
           <DateTime date={formattedDate}
                     time={time}
-                    weekDay={weekDay} 
-                    dayOfYear={dayOfYear}
-                    remainingDaysOfYear={remainingDaysOfYear} /> 
+                    weekDay={weekDay} /> 
         </>
       );
       newSliderTimes.push(configurations.widgets.DateTime.time.total);
@@ -201,7 +199,9 @@ export default function MainSlider(props) {
       newSliderItems.push(
         <>
           {timeWeatherHeader}
-          <Calendar date={date} />
+          <Calendar date={date}
+                    dayOfYear={dayOfYear}
+                    remainingDaysOfYear={remainingDaysOfYear} />
         </>
       )
       newSliderTimes.push(configurations.widgets.Calendar.time.total);
