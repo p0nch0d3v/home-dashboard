@@ -32,5 +32,8 @@
     "FullMoon": "Luna Llena",
     "WaningGibbous": "Luna Menguante",
     "LastQuarterMoon": "Cuarto Menguante",
-    "WaningCrescent": "Luna Menguante"
+    "WaningCrescent": "Luna Menguante",
+
+    "Day": "Dia",
+    "Remaining": "quedan"
 }

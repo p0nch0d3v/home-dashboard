@@ -30,5 +30,8 @@
     "FullMoon": "Full Moon",
     "WaningGibbous": "Waning Gibbous",
     "LastQuarterMoon": "Last Quarter Moon",
-    "WaningCrescent": "Waning Crescent"
+    "WaningCrescent": "Waning Crescent",
+    
+    "Day": "Day",
+    "Remaining": "remaining"
 }
