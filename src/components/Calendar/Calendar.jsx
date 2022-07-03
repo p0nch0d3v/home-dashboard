@@ -49,7 +49,7 @@ function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
                     {formattedDate}
                 </div>
                 <div className="col dayOfYear">
-                    {t("Day")} {dayOfYear}, {t("Remaining")} {remainingDaysOfYear}
+                    {t("Day")} <strong>{dayOfYear}</strong>, {t("Remaining")} <strong>{remainingDaysOfYear}</strong>
                 </div>
             </div>
             
