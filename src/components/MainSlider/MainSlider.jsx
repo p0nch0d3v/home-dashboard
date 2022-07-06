@@ -478,16 +478,16 @@ export default function MainSlider(props) {
       getDate();
       getTime();
     }
-    if (configurations.services.WeatherCurrent) {
+    if (configurations.services.WeatherCurrent.isActive) {
       await getWeatherConditions();
     }
-    if (configurations.services.WeatherForecastHourly) {
+    if (configurations.services.WeatherForecastHourly.isActive) {
       await getWeatherForecastHourly();
     }
-    if (configurations.services.WeatherForecastDaily) {
+    if (configurations.services.WeatherForecastDaily.isActive) {
       await getWeatherForecastDaily();
     }
-    if (configurations.services.ExchangeRate) {
+    if (configurations.services.ExchangeRate.isActive) {
       await getExchangeRates();
     }
   };
@@ -499,7 +499,7 @@ export default function MainSlider(props) {
 
   useEffect(() => { // On load 
     (async () => {
-      if (configurations.services.GeoLocation) {
+      if (configurations.services.GeoLocation.isActive) {
         await getLocation();
       }
       await mainAction();
