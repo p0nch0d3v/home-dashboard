@@ -12,7 +12,7 @@ export default function DateTime({ time, weekDay, date }){
                     <div className="date">{date}</div>
                 ]).map((v, i) => {
                     return v    
-            })
+                })
             }
         </div>
     )
