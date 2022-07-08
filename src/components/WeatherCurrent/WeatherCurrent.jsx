@@ -13,7 +13,7 @@ export default function WeatherCurrent({ weather, currentForecast }) {
     
     return(
         <div className="weatherCurrent container-fluid m-0 p-0">
-            <div className="row">
+            <div className="row m-0 p-0">
                 <div className="weatherCurrent_item borderRight col-6 m-0 p-0">
                     <span className={'icon ' + weather?.iconCode}></span>
                 </div>

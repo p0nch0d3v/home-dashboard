@@ -208,9 +208,8 @@ export default function MainSlider(props) {
     }
 
     if (weather && 
-          currentForecast && 
           configurations.widgets.WeatherCurrent.isActive &&
-          configurations.services.WeatherCurrent) {
+          configurations.services.WeatherCurrent.isActive) {
       newSliderItems.push(
         <>
           {dateTimeHeader}
