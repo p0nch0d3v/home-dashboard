@@ -77,6 +77,7 @@ function WeatherCurrentComp(
                     </div>
                 </div>
                 <div>{moon.text}</div>
+                <div>{moon.percentage} %</div>
             </div> );
     
     let items_array = shuffle_array([uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item]);
