@@ -161,7 +161,7 @@ export default function MainSlider(props) {
                   onTouchEnd={fullscreenHandler} />
     );
 
-    const timeWeatherHeader = (time && weather ? (
+    const timeWeatherHeader = (weather ? (
         <MainHeader temp={weather?.temp?.formatted}
                   feelTemp={weather?.feel?.formatted}
                   time={time} 
@@ -180,9 +180,8 @@ export default function MainSlider(props) {
       ) : <></>
     );
 
-    if (date && 
-          time && 
-          configurations.widgets.DateTime.isActive) {
+    if (date && time && 
+        configurations.widgets.DateTime.isActive) {
       newSliderItems.push(
         <>
           {onlyWeatherHeader}
@@ -195,7 +194,7 @@ export default function MainSlider(props) {
     }
 
     if (date && 
-          configurations.widgets.Calendar.isActive) {
+        configurations.widgets.Calendar.isActive) {
       newSliderItems.push(
         <>
           {timeWeatherHeader}
@@ -222,7 +221,7 @@ export default function MainSlider(props) {
     
     if (weather && 
           configurations.widgets.WeatherCurrentComp.isActive &&
-          configurations.services.WeatherCurrent) {
+          configurations.services.WeatherCurrent.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -233,17 +232,15 @@ export default function MainSlider(props) {
                               sunrise={weather.formattedSunrise}
                               sunset={weather.formattedSunset} 
                               dayLight={weather?.formattedDayLight}
-                              moon={currentMoon}
-                              />
+                              moon={currentMoon} />
         </>
       );
       newSliderTimes.push(configurations.widgets.WeatherCurrentComp.time.total);
     }
 
-    if (forecastHourly && 
-          forecastHourly.length > 0 && 
-          configurations.widgets.WeatherForecastHourly.isActive &&
-          configurations.services.WeatherForecastHourly) {
+    if (forecastHourly && forecastHourly.length > 0 && 
+        configurations.widgets.WeatherForecastHourly.isActive &&
+        configurations.services.WeatherForecastHourly.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -253,10 +250,9 @@ export default function MainSlider(props) {
       newSliderTimes.push(configurations.widgets.WeatherForecastHourly.time.total);
     }
     
-    if (forecastDaily && 
-          forecastDaily.length > 0 && 
-          configurations.widgets.WeatherForecastDaily.isActive &&
-          configurations.services.WeatherForecastDaily) {
+    if (forecastDaily && forecastDaily.length > 0 && 
+        configurations.widgets.WeatherForecastDaily.isActive &&
+        configurations.services.WeatherForecastDaily.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -266,10 +262,9 @@ export default function MainSlider(props) {
       newSliderTimes.push(configurations.widgets.WeatherForecastDaily.time.total);
     }
     
-    if (exchangeRates && 
-          exchangeRates.length > 0 && 
+    if (exchangeRates && exchangeRates.length > 0 && 
           configurations.widgets.ExchangeRate.isActive &&
-          configurations.services.ExchangeRate) {
+          configurations.services.ExchangeRate.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -473,7 +468,11 @@ export default function MainSlider(props) {
   }, sliderTime);
 
   const mainAction = async () => {
-    if (configurations.widgets.DateTime || configurations.widgets.Calendar) {
+    if (!location && configurations.services.GeoLocation.isActive) {
+      await getLocation();
+    }
+
+    if (configurations.widgets.DateTime.isActive || configurations.widgets.Calendar.isActive) {
       getDate();
       getTime();
     }
@@ -514,7 +513,7 @@ export default function MainSlider(props) {
   useEffect(() => {
     getDate();
     getTime();
-    if (configurations.services.WeatherCurrent) {
+    if (configurations.services.WeatherCurrent.isActive) {
       getWeatherConditions();
     }
   }, [location]);
