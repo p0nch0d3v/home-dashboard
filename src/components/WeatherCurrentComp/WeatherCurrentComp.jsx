@@ -25,7 +25,7 @@ function WeatherCurrentComp(
     }) {
     const { t } = useTranslation();
 
-    const uv_item = ( uv && <div className="weatherCurrentComp_item borderAll">
+    const uv_item = ( uv && <div className="weatherCurrentComp_item borderAll" style={{ backgroundColor: uv?.color }}>
                 <div><FontAwesomeIcon icon={faUmbrella} /> UV {uv?.index}</div>
                 {
                     uv?.index > 0 ? 

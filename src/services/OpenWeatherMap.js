@@ -9,7 +9,8 @@ import {
     getCardinalDirectionFromDegree,
     consoleDebug,
     capitalize,
-    getMoonPhaseTextAndClass
+    getMoonPhaseTextAndClass,
+    getUvIndexColor
 } from '../helpers';
 
 import {
@@ -85,7 +86,8 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
                 iconCode: `icon_${conditions.weather[0].icon}`,
                 uv: {
                     index: Math.round(conditions.uvi),
-                    text: getUvIndexDescription(Math.round(conditions.uvi), translator)
+                    text: getUvIndexDescription(Math.round(conditions.uvi), translator),
+                    color: getUvIndexColor(Math.round(conditions.uvi))
                 },
                 pressure: {
                     value: conditions.pressure,
