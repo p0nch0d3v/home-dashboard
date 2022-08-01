@@ -21,6 +21,27 @@ export function getUvIndexDescription(uv, t) {
   }
 }
 
+export function getUvIndexColor(uv) {
+  if (uv >=1 && uv <= 2){
+    return "#00800080"; //Green
+  }
+  else if (uv >= 3 && uv <= 5){
+      return "#FFFF0080"; // Yellow
+  }
+  else if (uv >= 6 && uv <= 7){
+      return "#FFA50080"; // Orange
+  }
+  else if (uv >= 8 && uv <= 10){
+      return "#FF000080"; // Red
+  }
+  else if (uv >= 11 ){
+      return "#FF00FF80"; // Magenta;
+  }
+  else {
+      return "";
+  }
+}
+
 export function getCardinalDirectionFromDegree (degree, t) {
   var degreeAndCardinal = [];
   
