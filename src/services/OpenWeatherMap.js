@@ -167,7 +167,8 @@ export async function getForecastHourly(latitude, longitude, translator, force =
                         formattedDateTime: moment(dateTime).format("hh A"),
                         uv: {
                             index: Math.round(f.uvi),
-                            text: getUvIndexDescription(Math.round(f.uvi), translator)
+                            text: getUvIndexDescription(Math.round(f.uvi), translator),
+                            color: getUvIndexColor(Math.round(f.uvi))
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
                         iconCode: `icon_${f.weather[0].icon}`,
