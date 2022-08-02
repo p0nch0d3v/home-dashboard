@@ -26,7 +26,7 @@ export default function WeatherForecastHourly({ forecast }) {
                       
                       {
                         (f.uv.index > 0) ? 
-                          <div><FontAwesomeIcon icon={faSun} />  {f.uv.index}</div> 
+                          <div style={{ backgroundColor: f.uv.color }}><FontAwesomeIcon icon={faSun} />  {f.uv.index}</div> 
                           : <div>&nbsp;</div>
                       }
                       {
