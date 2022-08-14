@@ -2,24 +2,46 @@
 
 .main-header {
   width: 100vw;
-  height: 10vh;
-  font-size: 6.25vh;
+  height: $header-height;
+  font-size: 7.25vh;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   font-weight: 700;
   
-  &_time {
-      margin-left: 1vw;
+  & > .time {
+    margin-left: 1vw;
   }
-  &_temp {
+
+  & > .temp {
     text-align: center;
     display: flex;
     align-items: center;
-    @include icon(7.5vh, 7.5vh, 7.5vh, 7.5vh);
+    @include icon(11vh, 11vh, 11vh, 11vh);
   }
-  &_date {
+
+  & > .date {
       margin-right: 1vw;
+  }
+
+  &.only-weather {
+    justify-content: center;
+    font-size: 10vh;
+  }
+
+  &.date-time {
+    justify-content: space-between;
+    font-size: 11vh;
+  }
+
+  &.time-weather {
+    justify-content: space-between;
+    font-size: 11vh;
+  }
+
+  &.full {
+    justify-content: space-between;
+    font-size: 7.25vh;
   }
 }
 

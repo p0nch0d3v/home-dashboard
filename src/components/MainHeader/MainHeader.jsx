@@ -1,19 +1,18 @@
 import React from 'react';
 import './MainHeader.scss';
 
-export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd }){
+export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd, className }){
     return (
-        <div className="main-header" 
-        style={{ justifyContent: (!time && !date ? 'center': (!date || !time || !temp ? 'space-evenly': 'space-between')) }}
+        <div className={ className +  ' main-header' }
             onTouchEnd={onTouchEnd}>
             {
                 time ? (
-                    <div className="main-header_time">{time}</div>
+                    <div className="time">{time}</div>
                 ) : <></>
             }
             {
                 temp && feelTemp && iconCode ? (
-                    <div className="main-header_temp">
+                    <div className="temp">
                         {
                             iconCode ? <span style={{marginRight: '0.5rem'}} className={'icon ' + iconCode}></span>
                             : <></>
@@ -25,7 +24,7 @@ export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTou
             }
             {
                 date ? (
-                    <div className="main-header_date">{date}</div>
+                    <div className="date">{date}</div>
                 ) : <></>
             }
          </div>
