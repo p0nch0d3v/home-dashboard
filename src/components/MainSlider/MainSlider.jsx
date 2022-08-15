@@ -148,7 +148,8 @@ export default function MainSlider(props) {
     const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 3) + ' ' + formattedDate : '';
 
     const onlyWeatherHeader = (weather ? (
-      <MainHeader temp={weather?.temp?.formatted}
+      <MainHeader className="only-weather" 
+                  temp={weather?.temp?.formatted}
                   feelTemp={weather?.feel?.formatted} 
                   iconCode={weather?.iconCode} 
                   onTouchEnd={fullscreenHandler} /> 
@@ -156,13 +157,15 @@ export default function MainSlider(props) {
     );
 
     const dateTimeHeader = (
-      <MainHeader date={headerFormattedDate}
+      <MainHeader className="date-time"
+                  date={headerFormattedDate}
                   time={time} 
                   onTouchEnd={fullscreenHandler} />
     );
 
     const timeWeatherHeader = (weather ? (
-        <MainHeader temp={weather?.temp?.formatted}
+        <MainHeader className="time-weather"
+                    temp={weather?.temp?.formatted}
                   feelTemp={weather?.feel?.formatted}
                   time={time} 
                   iconCode={weather?.iconCode} 
@@ -171,7 +174,8 @@ export default function MainSlider(props) {
     );
 
     const fullHeader = (weather ? (
-      <MainHeader temp={weather?.temp?.formatted}
+      <MainHeader className="full" 
+                  temp={weather?.temp?.formatted}
                   feelTemp={weather?.feel?.formatted}
                   date={headerFormattedDate}
                   time={time} 

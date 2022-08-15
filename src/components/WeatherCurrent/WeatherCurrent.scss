@@ -2,7 +2,7 @@
 
 .weatherCurrent {
     text-align: center;
-    font-size: 13vh;
+    font-size: 14vh;
     height: $item-max-height;
   
     &_item {
@@ -22,8 +22,8 @@
       justify-content: center;
       flex-direction: column;
     }
-  
-    @include icon(45vh, 45vh);
+
+    @include icon(42vh, 42vh, 42vh, 42vh);
     
   }
   

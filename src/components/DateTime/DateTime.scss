@@ -6,12 +6,12 @@
   text-align: center;
   justify-content: space-evenly;
   height: 100%;
-  height: $item-max-height;
+  height: $content-height;
 
   .weekDay,
   .date,
   .time {
-    font-size: 20vh;
+    font-size: 19vh;
     margin-top: 0;
     margin-bottom: 0;
   }

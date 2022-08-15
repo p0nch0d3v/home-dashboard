@@ -5,7 +5,8 @@ import {
     getCardinalDirectionFromDegree,
     rand,
     getRandomText,
-    getMoonPhaseTextAndClass
+    getMoonPhaseTextAndClass,
+    getUvIndexColor
 } from '../helpers';
 
 export async function getLocationInfo(force = false){
@@ -22,7 +23,7 @@ export async function getLocationInfo(force = false){
 }
 
 export async function getCurrentWeather(latitude, longitude, translator, force = false) {
-    return {
+    let conditionsInfo = {
         text: getRandomText(10, 50),
         temp: {
             value: rand(0, 99),
@@ -39,7 +40,8 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
         icon: 'https://openweathermap.org/img/wn/041@4x.png',
         uv: {
             index: rand(0, 12),
-            text: getUvIndexDescription(rand(0, 12), translator)
+            text: getUvIndexDescription(rand(   0, 12), translator),
+            color: getUvIndexColor(rand(0, 12))
         },
         pressure: {
             value: rand(870, 1085),
@@ -60,11 +62,24 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             value: null,
             unit: null
         },
-        sunset: Date.now(),
-        sunrise: Date.now(),
-        dayLight: Date.now(),
-        formattedDayLight: `${rand(0, 12)}:${rand(0, 59)}`
+        sunset: moment.utc(Date.now()),
+        sunrise: moment.utc(Date.now())
     };
+
+    conditionsInfo.formattedSunset = moment.tz(conditionsInfo.sunset.utc(), 'UTC').format('hh:mm A');
+    conditionsInfo.formattedSunrise = moment.tz(conditionsInfo.sunrise.utc(), 'UTC').format('hh:mm A');
+
+    conditionsInfo.dayLight = (conditionsInfo.sunset - conditionsInfo.sunrise);
+
+    const sunrise =  moment.tz(conditionsInfo.sunrise.utc(), 'UTC');
+    const sunset =  moment.tz(conditionsInfo.sunset.utc(), 'UTC'); 
+
+    let dayLight = sunset.subtract(sunrise.hours(), 'hours');
+    dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
+    dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
+    conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
+
+    return conditionsInfo;
 }
 
 export async function getForecastHourly(latitude, longitude, translator, force = false) {
@@ -84,10 +99,11 @@ export async function getForecastHourly(latitude, longitude, translator, force =
             formattedDateTime: moment(Date.now()).format("hh A"),
             uv: {
                 index: rand(0, 12),
-                text: getUvIndexDescription(rand(0, 12), translator)
+                text: getUvIndexDescription(rand(0, 12), translator),
+                color: getUvIndexColor(rand(0, 12))
             },
-            iconCode: 'icon_01d',
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
+            iconCode: 'icon_01d',
             text: getRandomText(10, 50),
             precipitationProbability: rand(0, 100)
         });
@@ -117,8 +133,8 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                 dayNumber: moment(date).format('DD'),
                 dayWeek: moment(date).format('ddd')
             },
-            iconCode: 'icon_01d',
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
+            iconCode: 'icon_01d',
             text: getRandomText(10, 50),
             precipitationProbability: rand(0, 100),
             moon: {
@@ -127,6 +143,8 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                 moonSet: Date.now(),
                 text: getMoonPhaseTextAndClass(rand(0, 100) / 100, translator).text,
                 class: getMoonPhaseTextAndClass(rand(0, 100) / 100, translator).class,
+                percentage: rand(0.1, 0.9),
+                moon_phase: rand(0.1, 0.9)
             },
             isToday: i === 0
         });
