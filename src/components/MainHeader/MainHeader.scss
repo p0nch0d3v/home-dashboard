@@ -30,17 +30,17 @@
   }
 
   &.date-time {
-    justify-content: space-between;
+    justify-content: space-evenly;
     font-size: 11vh;
   }
 
   &.time-weather {
-    justify-content: space-between;
+    justify-content: space-evenly;
     font-size: 11vh;
   }
 
   &.full {
-    justify-content: space-between;
+    justify-content: space-evenly;
     font-size: 7.25vh;
   }
 }
