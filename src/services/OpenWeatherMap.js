@@ -153,7 +153,11 @@ export async function getForecastHourly(latitude, longitude, translator, force =
             
             forecast.forEach(f => {
                 const dateTime = f.dt * 1000;
-                if (dateTime > now && forecastInfo.length < limit){
+                if (( moment(dateTime).hour() >= moment(now).hour() 
+                        || moment(dateTime).day() > moment(now).day()
+                        || moment(dateTime).month() > moment(now).month()
+                        || moment(dateTime).year() > moment(now).year() )
+                      && forecastInfo.length < limit){
                     forecastInfo.push({
                         temp: {
                             value: Math.round(f.temp),

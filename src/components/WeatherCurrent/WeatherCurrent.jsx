@@ -14,18 +14,18 @@ export default function WeatherCurrent({ weather, currentForecast }) {
     return(
         <div className="weatherCurrent container-fluid m-0 p-0">
             <div className="row m-0 p-0">
-                <div className="weatherCurrent_item borderRight col-6 m-0 p-0">
+                <div className="weatherCurrent_item weather-icon borderRight col-6 m-0 p-0">
                     <span className={'icon ' + weather?.iconCode}></span>
                 </div>
-                <div className="weatherCurrent_item col-6 m-0 p-0">
+                <div className="weatherCurrent_item weather-temp col-6 m-0 p-0">
                     <>{temp}{feelTemp}</>
                 </div>
             </div>
             <div className="weatherCurrent_doubleItem borderTop row m-0 p-0">
-                <div className="col-12 m-0 p-0" style={{ wordBreak: 'keep-all', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                <div className="weather-text col-12 m-0 p-0">
                     {capitalize(weather?.text)}
                 </div>
-                <div className="col-12 m-0 p-0 d-flex flex-row justify-content-around">
+                <div className="weather-forecast col-12 m-0 p-0">
                     <span>
                         <FontAwesomeIcon icon={faAngleDown} /> {currentForecast?.tempMin.value} °{currentForecast?.tempMin.unit}
                     </span>
