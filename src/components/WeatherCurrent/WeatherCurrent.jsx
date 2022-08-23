@@ -9,7 +9,7 @@ export default function WeatherCurrent({ weather, currentForecast }) {
     
     const feelTemp = (weather?.temp.value !== weather?.feel.value ? <span>({weather?.feel.value} °{weather?.feel.unit})</span> : <></>)
         
-    const precipitation = currentForecast?.precipitationProbability && currentForecast?.precipitationProbability >= 0 ? (<><FontAwesomeIcon icon={faCloudRain} /> {currentForecast?.precipitationProbability} %</>) : <></>;
+    const precipitation = currentForecast?.precipitationProbability && currentForecast?.precipitationProbability > 1 ? (<><FontAwesomeIcon icon={faCloudRain} /> {currentForecast?.precipitationProbability} %</>) : <></>;
     
     return(
         <div className="weatherCurrent container-fluid m-0 p-0">

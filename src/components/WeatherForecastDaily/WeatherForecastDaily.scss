@@ -17,13 +17,13 @@
     }
   
     .main_text {
-      font-size: 6.25vh;
+      font-size: 6vh;
     }
   
     @include icon(17vw, 17vw);
     
     .description {
-      font-size: 4vh;
+      font-size: 3.75vh;
       word-break: keep-all;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -32,7 +32,7 @@
     }
   
     .text_info {
-      font-size: 7.5vh;
+      font-size: 7.25vh;
   
       .min {
         font-weight: 200;

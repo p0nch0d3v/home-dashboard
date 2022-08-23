@@ -4,7 +4,7 @@
     height: $item-max-height;
     display: flex;
     flex-wrap: wrap;
-    font-size: 8vh;
+    font-size: 7.75vh;
     text-align: center;
   
     &_item {
@@ -26,7 +26,7 @@
     .sunInfo {
       flex-wrap: wrap;
       flex-direction: column;
-      font-size: 7vh;
+      font-size: 6.75vh;
     }
 
     .sunrise, .sunset {
@@ -47,7 +47,7 @@
     }
 
     .moonInfo {
-      font-size: 6.5vh;
+      font-size: 6.25vh;
       display: flex;
       flex-direction: column;
       align-items: center;

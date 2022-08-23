@@ -30,7 +30,7 @@ export default function WeatherForecastHourly({ forecast }) {
                           : <div>&nbsp;</div>
                       }
                       {
-                        (f.precipitationProbability && f.precipitationProbability > 0) ? 
+                        (f.precipitationProbability && f.precipitationProbability > 1) ? 
                           <div><FontAwesomeIcon icon={faTint} />  {f.precipitationProbability} %</div> 
                           : <div>&nbsp;</div>
                       }
