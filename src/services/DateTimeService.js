@@ -14,9 +14,8 @@ export function GetDate(timezone) {
         dayOfYearMoment = moment.utc().tz(timezone);
     }
 
-    let formattedDate = newMomentDate.format('DD / MMM / YYYY');
+    let formattedDate = newMomentDate.format('DD') + '/' + capitalize(newMomentDate.format('MMM')) + '/' + newMomentDate.format('YYYY');
     formattedDate = formattedDate.replace(/\./g, '');
-    formattedDate = capitalize(formattedDate);
     const weekDay = capitalize(newMomentDate.format('dddd'));
 
     const dayOfYear = dayOfYearMoment.dayOfYear();

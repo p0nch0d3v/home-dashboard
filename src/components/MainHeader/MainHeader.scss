@@ -8,20 +8,28 @@
   align-items: center;
   justify-content: space-evenly;
   font-weight: 700;
+  text-align: center;
   
   & > .time {
     margin-left: 1vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   & > .temp {
-    text-align: center;
-    display: flex;
     align-items: center;
+    display: flex;
+    height: 100%;
+
     @include icon(8vh, 8vh, 8vh, 8vh);
   }
 
   & > .date {
       margin-right: 1vw;
+      height: 100%;
+      display: flex;
+      align-items: center;
   }
 
   &.only-weather {
@@ -32,16 +40,37 @@
   &.date-time {
     justify-content: space-around;
     font-size: 10vh;
+
+    & > .date {
+    }
+
+    & > .time {
+    }
   }
 
   &.time-weather {
     justify-content: space-around;
     font-size: 10vh;
+
+    & > .time {
+    }
+
+    & > .temp {
+    }
   }
 
   &.full {
     justify-content: space-around;
     font-size: 7.25vh;
+
+    & > .time {
+    }
+
+    & > .temp {
+    }
+
+    & > .date {
+    }
   }
 }
 
