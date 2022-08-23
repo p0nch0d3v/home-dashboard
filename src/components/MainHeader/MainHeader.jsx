@@ -2,6 +2,7 @@ import React from 'react';
 import './MainHeader.scss';
 
 export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd, className }){
+    const separator = <span className='v-separator'></span>;
     const items = [];
     if (time) {
         items.push(<div className="time">{time}</div>);
@@ -28,7 +29,7 @@ export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTou
              { items.map((value, index) => {
                 return <>
                         {value}
-                        {value && items.length > 1 && (index + 1) < items.length ? '|' : ''}
+                        {value && items.length > 1 && (index + 1) < items.length ? separator : <></>}
                     </>
               }) }
          </div>

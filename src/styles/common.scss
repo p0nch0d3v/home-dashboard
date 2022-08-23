@@ -10,7 +10,8 @@ $night-font-color:#FFF;
 
 $img-bk:#4B75AA;
 $item-max-height: $content-height;
-$item-mid-height: $content-height / 2;
+$item-mid-height: calc($content-height / 2);
+
 $icon_url: 'https://openweathermap.org/img/wn/';
 $icon_ext: '@4x.png';
 
