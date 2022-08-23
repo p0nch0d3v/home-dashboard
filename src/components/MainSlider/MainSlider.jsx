@@ -330,7 +330,10 @@ export default function MainSlider(props) {
     force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherForecastHourly.time.total) || !lastUpdate;
     
     if (forecastHourly && forecastHourly.length > 0) {
-      force = force || Date.now() > forecastHourly[0].dateTime;
+      force = force || moment(now).hour() > moment(forecastHourly[0].dateTime).hour() 
+          || moment(now).day() > moment(forecastHourly[0].dateTime).day()
+          || moment(now).month() > moment(forecastHourly[0].dateTime).month()
+          || moment(now).year() > moment(forecastHourly[0].dateTime).year();
     }
     
     const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
