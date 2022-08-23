@@ -17,7 +17,7 @@
     text-align: center;
     display: flex;
     align-items: center;
-    @include icon(11vh, 11vh, 11vh, 11vh);
+    @include icon(8vh, 8vh, 8vh, 8vh);
   }
 
   & > .date {
@@ -30,17 +30,17 @@
   }
 
   &.date-time {
-    justify-content: space-evenly;
-    font-size: 11vh;
+    justify-content: space-around;
+    font-size: 10vh;
   }
 
   &.time-weather {
-    justify-content: space-evenly;
-    font-size: 11vh;
+    justify-content: space-around;
+    font-size: 10vh;
   }
 
   &.full {
-    justify-content: space-evenly;
+    justify-content: space-around;
     font-size: 7.25vh;
   }
 }

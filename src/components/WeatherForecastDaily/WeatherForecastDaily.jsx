@@ -25,7 +25,7 @@ export default function WeatherForecastDaily({ forecast }) {
                     <div className="min">{f.temp.min.value} °{f.temp.min.unit}</div>
                     <div className="max">{f.temp.max.value} °{f.temp.max.unit}</div>
                     {
-                      (f.precipitationProbability && f.precipitationProbability > 0)
+                      (f.precipitationProbability && f.precipitationProbability > 1)
                       ? <div><FontAwesomeIcon icon={faTint} />  {f.precipitationProbability} %</div> : <div>&nbsp;</div>
                     }
                   </span>

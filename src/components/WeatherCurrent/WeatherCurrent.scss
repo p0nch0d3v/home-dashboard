@@ -23,6 +23,29 @@
       flex-direction: column;
     }
 
+    .weather-icon {
+
+    }
+
+    .weather-temp {
+      font-size: 14vh;  
+    }
+
+    .weather-text {
+      font-size: 13vh;
+      word-break: keep-all;
+      text-overflow: ellipsis; 
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .weather-forecast {
+      font-size: 12vh; 
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+
     @include icon(42vh, 42vh, 42vh, 42vh);
     
   }
