@@ -25,17 +25,25 @@ export default function WeatherCurrent({ weather, currentForecast }) {
                 <div className="weather-text col-12 m-0 p-0">
                     {capitalize(weather?.text)}
                 </div>
-                <div className="weather-forecast col-12 m-0 p-0">
-                    <span>
-                        <FontAwesomeIcon icon={faAngleDown} /> {currentForecast?.tempMin.value} °{currentForecast?.tempMin.unit}
-                    </span>
-                    <span>
-                        <FontAwesomeIcon icon={faAngleUp} /> {currentForecast?.tempMax.value} °{currentForecast?.tempMax.unit}
-                    </span>
-                    <span>
-                        {precipitation}
-                    </span>
-                </div>
+                {currentForecast && 
+                    <div className="weather-forecast col-12 m-0 p-0">
+                        {currentForecast?.tempMin && 
+                            <span>
+                                <FontAwesomeIcon icon={faAngleDown} /> {currentForecast?.tempMin.value} °{currentForecast?.tempMin.unit}
+                            </span>
+                        }
+                        {currentForecast?.tempMax && 
+                            <span>
+                                <FontAwesomeIcon icon={faAngleUp} /> {currentForecast?.tempMax.value} °{currentForecast?.tempMax.unit}
+                            </span>
+                        }
+                        {precipitation &&
+                            <span>
+                                {precipitation}
+                            </span>
+                        }
+                    </div>
+                }
             </div>
         </div>
     );
