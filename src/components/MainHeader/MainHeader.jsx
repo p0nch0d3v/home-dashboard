@@ -1,9 +1,10 @@
 import React from 'react';
+import { shuffle_array } from '../../helpers';
 import './MainHeader.scss';
 
 export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd, className }){
     const separator = <span className='v-separator'></span>;
-    const items = [];
+    let items = [];
     if (time) {
         items.push(<div className="time">{time}</div>);
     }
@@ -23,6 +24,8 @@ export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTou
         items.push(<div className="date">{date}</div>);
     }
     
+    items = shuffle_array(items);
+
     return (
         <div className={ className +  ' main-header' }
             onTouchEnd={onTouchEnd}>
