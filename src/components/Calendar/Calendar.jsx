@@ -15,26 +15,72 @@ function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
     let pivotWeek = [null, null, null, null, null, null, null];
     let week = [...pivotWeek];
     let pivotDate = moment(startOfMonth);
-    
+
+    // Set previous month days
+    while(pivotDate.day() > 0)
+    {
+        pivotDate = pivotDate.add(-1, 'day');
+        week[pivotDate.day()] = {year: pivotDate.year(), month: pivotDate.month(), day: pivotDate.date()};
+    }
+    pivotDate = moment(startOfMonth);
+
+    // Set current month days
     do {
-        week[pivotDate.day()] = pivotDate.date();
+        week[pivotDate.day()] = {year: pivotDate.year(), month: pivotDate.month(), day: pivotDate.date()};
         pivotDate = pivotDate.add(1, 'day');
         if (pivotDate.day() === 0) {
             rows.push(week);
             week = [...pivotWeek];
         }
     } while (pivotDate <= endOfMonth);
-
-    if (week.indexOf(null) > 0) {
-        rows.push(week);
+    pivotDate = pivotDate.add(-1, 'day'); 
+    
+    // Set next month days
+    if (pivotDate.day() >= 0 && pivotDate.day() < 6) {
+        while (pivotDate.day() < 6) {
+            pivotDate = pivotDate.add(1, 'day');
+            week[pivotDate.day()] = {year: pivotDate.year(), month: 
+            pivotDate.month(), day: pivotDate.date()};
+        }
     }
 
-    const weekDayClasses = (dayValue, weekDay) => {
-        return 'weekDay' 
-            + (date.date() === dayValue ? ' today' : '')
-            + (weekDay === 0 || weekDay === 6 ? ' weekend' : '')
-            + (dayValue < date.date() ? ' pastDay' : '');
+    rows.push(week);
+
+    const weekDayClasses = (day, weekDay) => {
+        let className = 'weekDay';
+
+        if (date.date() === day?.day && date.month() === day?.month && date.year() === day?.year) {
+            className += ' today';
+        }
+        if (weekDay === 0 || weekDay === 6) {
+            className += ' weekend';
+        }
+        if ((day?.day < date.date() && day?.month === date.month() && day?.year === date.year()) ||
+            (day?.month < date.month() && day?.year === date.year()) || 
+            (day?.year < date.year())) {
+            className += ' pastDay';
+        }
+
+        return className;
     } 
+
+    const weekDayWrapperClasses = (day, weekDay) => {
+        let className = '';
+        
+        if (day?.month < date.month() || day?.year < date.year()) {
+            className += ' borderBottom';
+        }
+        if (day?.month > date.month() || day?.year > date.year()) {
+            className += ' borderTop';
+        }
+        if (day?.day === new moment(startOfMonth).add(-1, 'day').date() && day?.month < date.month()) {
+            className += ' borderRight';
+        }
+        if (day?.day === 1 && day?.month > date.month()) {
+            className += ' borderLeft';
+        }
+        return className;
+    }
 
     let formattedDate = date.format('MMMM / YYYY');
     formattedDate = formattedDate.replace(/\./g, '');
@@ -66,11 +112,11 @@ function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
             {rows.map((weekValue, weekIndex) => {
                 return (
                     <div className="row week">
-                        {weekValue.map((dayValue, dayIndex) =>{
+                        {weekValue.map((day, dayIndex) =>{
                             return (
-                                <div className="col">
-                                    <span className={`weekDay ${weekDayClasses(dayValue, dayIndex)}` }>
-                                        {dayValue ? dayValue : ''}
+                                <div className={'col ' + weekDayWrapperClasses(day, dayIndex)}>
+                                    <span className={`weekDay ${weekDayClasses(day, dayIndex)}` }>
+                                        {day?.day ? day.day : ''}
                                     </span>
                                 </div>
                             )
