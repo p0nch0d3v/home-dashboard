@@ -146,7 +146,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
         }).then(r => { return r.data.hourly; })
         .catch(e => { console.warn(e); return null; });
         forecastInfo = [];
-        
+
         if (forecast) {
             const limit = 5;
             const now = Date.now();
@@ -154,10 +154,11 @@ export async function getForecastHourly(latitude, longitude, translator, force =
             forecast.forEach(f => {
                 const dateTime = f.dt * 1000;
                 if (( moment(dateTime).hour() >= moment(now).hour() 
-                        || moment(dateTime).day() > moment(now).day()
+                        || moment(dateTime).date() > moment(now).date()
                         || moment(dateTime).month() > moment(now).month()
                         || moment(dateTime).year() > moment(now).year() )
-                      && forecastInfo.length < limit){
+                      && forecastInfo.length < limit) {
+
                     forecastInfo.push({
                         temp: {
                             value: Math.round(f.temp),

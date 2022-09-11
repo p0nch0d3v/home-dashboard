@@ -331,7 +331,7 @@ export default function MainSlider(props) {
     
     if (forecastHourly && forecastHourly.length > 0) {
       force = force || moment(now).hour() > moment(forecastHourly[0].dateTime).hour() 
-          || moment(now).day() > moment(forecastHourly[0].dateTime).day()
+          || moment(now).date() > moment(forecastHourly[0].dateTime).date()
           || moment(now).month() > moment(forecastHourly[0].dateTime).month()
           || moment(now).year() > moment(forecastHourly[0].dateTime).year();
     }
