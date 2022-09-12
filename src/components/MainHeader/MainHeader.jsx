@@ -1,5 +1,4 @@
 import React from 'react';
-import { shuffle_array } from '../../helpers';
 import './MainHeader.scss';
 
 export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd, className }){
@@ -23,8 +22,6 @@ export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTou
     if (date) {
         items.push(<div className="date">{date}</div>);
     }
-    
-    items = shuffle_array(items);
 
     return (
         <div className={ className +  ' main-header' }

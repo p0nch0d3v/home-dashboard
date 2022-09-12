@@ -11,7 +11,6 @@ import {
 import React from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
 import './WeatherCurrentComp.scss';
-import { shuffle_array } from '../../helpers'
 
 function WeatherCurrentComp(
     {   uv,
@@ -82,9 +81,10 @@ function WeatherCurrentComp(
                     : null }
                 
             </div> );
-    
-    let items_array = shuffle_array([uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item]);
-    
+
+    let items_array = [uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item];
+
+
     return (
         <div className="weatherCurrentComp">
             { items_array.map((v, i) => {
