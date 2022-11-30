@@ -1,8 +1,14 @@
 node_modules
+node_modules/
+node_modules/*
 build
+build/
+build/*
 .dockerignore
 Dockerfile
 .git
+.git/
+.git/*
 .gitignore
 .env
 .env.local
