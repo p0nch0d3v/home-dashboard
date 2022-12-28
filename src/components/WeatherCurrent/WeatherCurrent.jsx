@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudRain, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import { capitalize } from '../../helpers';
 import './WeatherCurrent.scss';
@@ -29,12 +29,12 @@ export default function WeatherCurrent({ weather, currentForecast }) {
                     <div className="weather-forecast col-12 m-0 p-0">
                         {currentForecast?.tempMin && 
                             <span>
-                                <FontAwesomeIcon icon={faAngleDown} /> {currentForecast?.tempMin.value} °{currentForecast?.tempMin.unit}
+                                <sub>MIN</sub> {currentForecast?.tempMin.value} °{currentForecast?.tempMin.unit}
                             </span>
                         }
                         {currentForecast?.tempMax && 
                             <span>
-                                <FontAwesomeIcon icon={faAngleUp} /> {currentForecast?.tempMax.value} °{currentForecast?.tempMax.unit}
+                                <sup>MAX</sup> {currentForecast?.tempMax.value} °{currentForecast?.tempMax.unit}
                             </span>
                         }
                         {precipitation &&
