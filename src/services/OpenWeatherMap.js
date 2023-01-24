@@ -238,8 +238,7 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                             moonRise: f.moonrise,
                             moonSet: f.moonset,
                             text: getMoonPhaseTextAndClass(f.moon_phase, translator).text,
-                            class: getMoonPhaseTextAndClass(f.moon_phase, translator).class,
-                            percentage: (((f.moon_phase < 0.5 ? f.moon_phase : 1 - f.moon_phase) * 2) * 100).toFixed(0)
+                            class: getMoonPhaseTextAndClass(f.moon_phase, translator).class
                         },
                         isToday: now === moment(date).format('YYYY-MM-DD')
                     });

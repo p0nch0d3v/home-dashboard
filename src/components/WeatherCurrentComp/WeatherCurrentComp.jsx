@@ -76,10 +76,6 @@ function WeatherCurrentComp(
                     </div>
                 </div>
                 <div>{moon.text}</div>
-                { moon.percentage > 0 && moon.percentage < 100 ?
-                    <div>{moon.percentage} %</div>
-                    : null }
-                
             </div> );
 
     let items_array = [uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item];
