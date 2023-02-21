@@ -25,34 +25,6 @@ const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
-export async function getLocationInfo(force = false){
-    let locationInfo = getStorageValue(StorageKeys.locationInfo, StorageKeys.local);
-    if (locationInfo && force === false) {
-        return locationInfo;
-    }
-    else {
-        consoleDebug('Calling Location Info');
-        locationInfo = {};
-        const ipInfo = await getipInfo(force);
-
-        locationInfo.ip = ipInfo.ip;
-        locationInfo.city = ipInfo.city;
-        locationInfo.region = ipInfo.region;
-        locationInfo.timezone = ipInfo.timezone;
-
-        const position = await getPosition();
-
-        locationInfo.coordinates = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-        };
-
-        setStorageValue(StorageKeys.locationInfo, locationInfo, StorageKeys.local);
-    }
-
-    return locationInfo;
-}
-
 export async function getCurrentWeather(latitude, longitude, translator, force = false) {
     moment.locale(GetConfigurations().language);
     let conditionsInfo = getStorageValue(StorageKeys.currentConditions);
@@ -257,33 +229,4 @@ function getBaseUrl(latitude, longitude) {
     const url = `${baseUrl}?appid=${apikey}&lat=${latitude}&lon=${longitude}&units=${units}&lang=${lang}`
     consoleDebug('url', url);
     return url;
-}
-
-function getPosition(options) {
-    return new Promise((resolve, reject) => 
-        navigator.geolocation.getCurrentPosition(resolve, reject, options)
-    );
-}
-
-async function getipInfo(force) {
-    let ipInfo = getStorageValue(StorageKeys.ipInfo, StorageKeys.local);
-    if (!ipInfo || force === true) {
-        consoleDebug('Calling Ip Info');  
-        const ipinfoApiKey = GetConfigurations().IPINFO_API_KEY;
-        const url = `https://ipinfo.io?token=${ipinfoApiKey}`
-        consoleDebug('getipInfo', 'url', url);
-        ipInfo = await axios({
-            url: url,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json"  
-            }
-        }).then(r => {
-            return r.data;
-        }).catch(e => { 
-            console.error(e); return null; 
-        });
-        setStorageValue(StorageKeys.ipInfo, ipInfo, StorageKeys.local);
-    }
-    return ipInfo
 }

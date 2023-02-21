@@ -9,11 +9,12 @@ import { Times } from '../../constants';
 import './MainSlider.scss';
 
 import {
-  getLocationInfo,
   getCurrentWeather,
   getForecastHourly,
   getForecastDaily
 } from '../../services/OpenWeatherMap';
+
+import { getLocationInfo } from '../../services/LocationService'
 
 import {
     StorageKeys,
