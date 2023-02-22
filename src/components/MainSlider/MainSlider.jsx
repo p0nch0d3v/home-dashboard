@@ -236,6 +236,7 @@ export default function MainSlider(props) {
                               wind={weather?.wind}
                               sunrise={weather.formattedSunrise}
                               sunset={weather.formattedSunset} 
+                              dayLigthData={weather.dayLigthData}
                               dayLight={weather?.formattedDayLight}
                               moon={currentMoon} />
         </>
