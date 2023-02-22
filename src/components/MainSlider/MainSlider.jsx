@@ -9,11 +9,12 @@ import { Times } from '../../constants';
 import './MainSlider.scss';
 
 import {
-  getLocationInfo,
   getCurrentWeather,
   getForecastHourly,
   getForecastDaily
 } from '../../services/OpenWeatherMap';
+
+import { getLocationInfo } from '../../services/LocationService'
 
 import {
     StorageKeys,
@@ -235,6 +236,7 @@ export default function MainSlider(props) {
                               wind={weather?.wind}
                               sunrise={weather.formattedSunrise}
                               sunset={weather.formattedSunset} 
+                              dayLigthData={weather.dayLigthData}
                               dayLight={weather?.formattedDayLight}
                               moon={currentMoon} />
         </>

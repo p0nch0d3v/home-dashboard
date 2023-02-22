@@ -25,48 +25,20 @@ const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
-export async function getLocationInfo(force = false){
-    let locationInfo = getStorageValue(StorageKeys.locationInfo, StorageKeys.local);
-    if (locationInfo && force === false) {
-        return locationInfo;
-    }
-    else {
-        consoleDebug('Calling Location Info');
-        locationInfo = {};
-        const ipInfo = await getipInfo(force);
-
-        locationInfo.ip = ipInfo.ip;
-        locationInfo.city = ipInfo.city;
-        locationInfo.region = ipInfo.region;
-        locationInfo.timezone = ipInfo.timezone;
-
-        const position = await getPosition();
-
-        locationInfo.coordinates = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-        };
-
-        setStorageValue(StorageKeys.locationInfo, locationInfo, StorageKeys.local);
-    }
-
-    return locationInfo;
-}
-
 export async function getCurrentWeather(latitude, longitude, translator, force = false) {
     moment.locale(GetConfigurations().language);
     let conditionsInfo = getStorageValue(StorageKeys.currentConditions);
-    if (conditionsInfo && force === false){
+    if (conditionsInfo && force === false) {
         return conditionsInfo;
     }
-    else if (latitude && longitude){
+    else if (latitude && longitude) {
         consoleDebug('Calling Current Weather');
         const url = `${getBaseUrl(latitude, longitude)}&exclude=minutely,hourly,daily,alerts`;
         let conditions = await axios({
             method: 'GET',
             url: url
-        }).then(r => { return  {...r.data.current, timezone: r.data.timezone}; })
-        .catch(e => { console.warn(e); return null; });
+        }).then(r => { return { ...r.data.current, timezone: r.data.timezone }; })
+            .catch(e => { console.warn(e); return null; });
 
         if (conditions) {
             conditionsInfo = {
@@ -74,7 +46,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
                 temp: {
                     value: Math.round(conditions.temp),
                     unit: 'C',
-                    formatted: `${Math.round(conditions.temp)} °C` 
+                    formatted: `${Math.round(conditions.temp)} °C`
                 },
                 humidity: conditions.humidity,
                 feel: {
@@ -108,22 +80,23 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
                     value: null,
                     unit: null
                 },
-                sunset:  moment.utc(conditions.sunset, 'X', true),
+                sunset: moment.utc(conditions.sunset, 'X', true),
                 sunrise: moment.utc(conditions.sunrise, 'X', true),
-                
+
             };
             conditionsInfo.formattedSunset = moment.tz(conditionsInfo.sunset.utc(), conditions.timezone).format('hh:mm A');
             conditionsInfo.formattedSunrise = moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone).format('hh:mm A');
 
             conditionsInfo.dayLight = (conditionsInfo.sunset - conditionsInfo.sunrise);
-            
-            const sunrise =  moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone);
-            const sunset =  moment.tz(conditionsInfo.sunset.utc(), conditions.timezone); 
+
+            const sunrise = moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone);
+            const sunset = moment.tz(conditionsInfo.sunset.utc(), conditions.timezone);
 
             let dayLight = sunset.subtract(sunrise.hours(), 'hours');
             dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
             dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
             conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
+            conditionsInfo.dayLigthData = getDayLigthData(conditionsInfo.sunrise, conditionsInfo.sunset, conditions.timezone);
 
             setStorageValue(StorageKeys.currentConditions, conditionsInfo);
             setStorageValue(StorageKeys.lastUpdate.conditions, Date.now());
@@ -135,7 +108,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
 export async function getForecastHourly(latitude, longitude, translator, force = false) {
     moment.locale(GetConfigurations().language);
     let forecastInfo = getStorageValue(StorageKeys.forecastHourly);
-    if (forecastInfo && force === false){
+    if (forecastInfo && force === false) {
         return forecastInfo;
     }
     else if (latitude && longitude) {
@@ -144,20 +117,20 @@ export async function getForecastHourly(latitude, longitude, translator, force =
             method: 'GET',
             url: `${getBaseUrl(latitude, longitude)}&exclude=current,minutely,daily,alerts`
         }).then(r => { return r.data.hourly; })
-        .catch(e => { console.warn(e); return null; });
+            .catch(e => { console.warn(e); return null; });
         forecastInfo = [];
 
         if (forecast) {
             const limit = 5;
             const now = Date.now();
-            
+
             forecast.forEach(f => {
                 const dateTime = f.dt * 1000;
-                if (( moment(dateTime).hour() >= moment(now).hour() 
-                        || moment(dateTime).date() > moment(now).date()
-                        || moment(dateTime).month() > moment(now).month()
-                        || moment(dateTime).year() > moment(now).year() )
-                      && forecastInfo.length < limit) {
+                if ((moment(dateTime).hour() >= moment(now).hour()
+                    || moment(dateTime).date() > moment(now).date()
+                    || moment(dateTime).month() > moment(now).month()
+                    || moment(dateTime).year() > moment(now).year())
+                    && forecastInfo.length < limit) {
 
                     forecastInfo.push({
                         temp: {
@@ -177,7 +150,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
                         iconCode: `icon_${f.weather[0].icon}`,
-                        text:  capitalize(f.weather[0].description),
+                        text: capitalize(f.weather[0].description),
                         precipitationProbability: Math.round(f.pop * 100)
                     });
                 }
@@ -192,7 +165,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
 export async function getForecastDaily(latitude, longitude, localeLang, translator, force = false) {
     moment.locale(GetConfigurations().language);
     let forecastInfo = getStorageValue(StorageKeys.forecastDaily);
-    if (forecastInfo && force === false){
+    if (forecastInfo && force === false) {
         return forecastInfo;
     }
     else if (latitude && longitude) {
@@ -201,9 +174,9 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
             method: 'GET',
             url: `${getBaseUrl(latitude, longitude)}&exclude=current,minutely,hourly,alerts`
         }).then(r => { return r.data.daily; })
-        .catch(e => { console.warn(e); return null; });
+            .catch(e => { console.warn(e); return null; });
         forecastInfo = [];
-        
+
         if (forecast) {
             const limit = 6;
             const now = moment(Date.now()).format('YYYY-MM-DD');
@@ -259,31 +232,33 @@ function getBaseUrl(latitude, longitude) {
     return url;
 }
 
-function getPosition(options) {
-    return new Promise((resolve, reject) => 
-        navigator.geolocation.getCurrentPosition(resolve, reject, options)
-    );
-}
+function getDayLigthData(sunrise, sunset, timezone) {
+    let midNight = moment.tz(sunrise.utc(), timezone);
+    midNight = midNight.set('hour', 0);
+    midNight = midNight.set('minute', 0);
+    midNight = midNight.set('second', 0);
+    midNight = midNight.set('millisecond', 0);
 
-async function getipInfo(force) {
-    let ipInfo = getStorageValue(StorageKeys.ipInfo, StorageKeys.local);
-    if (!ipInfo || force === true) {
-        consoleDebug('Calling Ip Info');  
-        const ipinfoApiKey = GetConfigurations().IPINFO_API_KEY;
-        const url = `https://ipinfo.io?token=${ipinfoApiKey}`
-        consoleDebug('getipInfo', 'url', url);
-        ipInfo = await axios({
-            url: url,
-            method: 'GET',
-            headers: {
-                "Accept": "application/json"  
-            }
-        }).then(r => {
-            return r.data;
-        }).catch(e => { 
-            console.error(e); return null; 
-        });
-        setStorageValue(StorageKeys.ipInfo, ipInfo, StorageKeys.local);
-    }
-    return ipInfo
+    const midNightToSunrise = sunrise.diff(midNight, 'minute')
+
+    let midDay = moment.tz(sunrise.utc(), timezone);
+    midDay = midDay.set('hour', 12);
+    midDay = midDay.set('minute', 0);
+    midDay = midDay.set('second', 0);
+    midDay = midDay.set('millisecond', 0);
+
+    const sunriseToMidDay = midDay.diff(sunrise, 'minute');
+
+    const midDayToSunset = sunset.diff(midDay, 'minute');
+
+    let nextMidNight = moment.tz(sunset.utc(), timezone);
+    nextMidNight = nextMidNight.add(1, 'day');
+    nextMidNight = nextMidNight.set('hour', 0);
+    nextMidNight = nextMidNight.set('minute', 0);
+    nextMidNight = nextMidNight.set('second', 0);
+    nextMidNight = nextMidNight.set('millisecond', 0);
+
+    const sunsetToMidNight = nextMidNight.diff(sunset, 'minute');
+
+    return [midNightToSunrise, sunriseToMidDay, midDayToSunset, sunsetToMidNight];
 }
