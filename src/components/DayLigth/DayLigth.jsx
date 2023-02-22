@@ -36,7 +36,15 @@ function DayLigth({ sunrise, sunset, dayLigthData }) {
             borderColor: 'transparent',
             borderRadius: 1,
             borderWidth: 1,
-            color: 'white',
+            color: function(context) {
+              let color = 'transparent';
+              if (context.dataIndex === 0) {
+                color = dayBk;
+              } else if (context.dataIndex === 2) {
+                color = nightBK;
+              }
+              return color; 
+            },
             display: function (context) {
               return context.dataIndex % 2 === 0;
             },
