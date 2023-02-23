@@ -1,12 +1,13 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { consoleDebug } from "../../helpers";
 import './DayLigth.scss';
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels, annotationPlugin);
 
-function DayLigth({ sunrise, sunset, dayLigthData }) {
+function DayLigth({ sunrise, sunset, dayLigthData, dayLight }) {
   const dayBk = '#76A7E3';
   const nightBK = '#1F4371';
   const border = '#4B75AA';
@@ -69,6 +70,21 @@ function DayLigth({ sunrise, sunset, dayLigthData }) {
         align: 'center',
         rotation: 45,
         opacity: 0.75
+      },
+      annotation: {
+        annotations: {
+          label1: {
+            type: "label",
+            xValue: 0,
+            yValue: 0,
+            backgroundColor: "transparent",
+            color: white,
+            content: [dayLight],
+            font: {
+              size: () => Math.min(window.innerWidth, window.innerHeight) / 16
+            }
+          }
+        }
       }
     }
   };
