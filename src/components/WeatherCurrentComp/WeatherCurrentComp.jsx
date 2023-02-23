@@ -78,7 +78,7 @@ function WeatherCurrentComp(
 
     const dayLigth_item = ((sunrise || sunset || dayLight) &&
         <div className="weatherCurrentComp_item sunInfo borderAll">
-            <DayLigth sunrise={sunrise} sunset={sunset} dayLigthData={dayLigthData} />
+            <DayLigth sunrise={sunrise} sunset={sunset} dayLigthData={dayLigthData} dayLight={dayLight} />
         </div>);
 
     const moonInfo_item = (moon && <div className='weatherCurrentComp_item moonInfo borderAll'>

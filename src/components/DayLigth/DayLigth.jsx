@@ -1,73 +1,99 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { consoleDebug } from "../../helpers";
 import './DayLigth.scss';
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels, annotationPlugin);
 
-function DayLigth({ sunrise, sunset, dayLigthData }) {
-    const dayBk = '#76a7e3';
-    const nightBK = '#1f4371';
-    const border = '#4B75AA';
+function DayLigth({ sunrise, sunset, dayLigthData, dayLight }) {
+  const dayBk = '#76A7E3';
+  const nightBK = '#1F4371';
+  const border = '#4B75AA';
+  const white = '#FFFFFF';
+  const black = '#000000';
 
-    const data = {
-        datasets: [
-            {
-                data: [...dayLigthData],
-                backgroundColor: [nightBK, dayBk, dayBk, nightBK],
-                borderColor: [border, border, border, border],
-                borderWidth: 1,
-                rotation: 0,
-                datalabels: {
-                    anchor: 'center'
-                }
-            }
-        ]
-    };
+  const data = {
+    datasets: [
+      {
+        data: [...dayLigthData],
+        backgroundColor: [nightBK, dayBk, dayBk, nightBK],
+        borderColor: [border, border, border, border],
+        borderWidth: 1,
+        rotation: 0,
+        datalabels: {
+          anchor: 'center'
+        }
+      }
+    ]
+  };
 
-    const options = {
-        animation: false,
-        plugins: {
-          datalabels: {
-            backgroundColor: function (context) {
-              return context.dataset.backgroundColor;
-            },
-            borderColor: 'transparent',
-            borderRadius: 1,
-            borderWidth: 1,
-            color: 'white',
-            display: function (context) {
-              return context.dataIndex % 2 === 0;
-            },
+  const options = {
+    animation: false,
+    plugins: {
+      datalabels: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderRadius: 1,
+        borderWidth: 1,
+        color: function (context) {
+          let color = 'transparent';
+          if (context.dataIndex === 0 || context.dataIndex === 1) {
+            color = white;
+          } else if (context.dataIndex === 2 || context.dataIndex === 3) {
+            color = black;
+          }
+          return color;
+        },
+        display: (context) => (context.dataIndex >= 0),
+        font: {
+          weight: 'normal',
+          size: ((context) => Math.min(window.innerWidth, window.innerHeight) / 20)()
+        },
+        padding: 1,
+        formatter: (value, context) => {
+          let text = '';
+          if (context.dataIndex === 0) {
+            text = sunrise;
+          } else if (context.dataIndex === 1) {
+            text = '☀️';
+          } else if (context.dataIndex === 2) {
+            text = sunset;
+          } else if (context.dataIndex === 3) {
+            text = '🌜';
+          }
+          return text;
+        },
+        anchor: 'start',
+        clamp: true,
+        align: 'center',
+        rotation: 45,
+        opacity: 0.75
+      },
+      annotation: {
+        annotations: {
+          label1: {
+            type: "label",
+            xValue: 0,
+            yValue: 0,
+            backgroundColor: "transparent",
+            color: white,
+            content: [dayLight],
             font: {
-              weight: 'normal',
-              size: '32'
-            },
-            padding: 1,
-            formatter: function (value, context) {
-              let text = '';
-              if (context.dataIndex === 0) {
-                text = sunrise;
-              } else if (context.dataIndex === 2) {
-                text = sunset;
-              }
-              return text;
-            },
-            anchor: 'start',
-            clamp: false,
-            align: 'center',
-            rotation: 45,
-            opacity: 0.5
+              size: () => Math.min(window.innerWidth, window.innerHeight) / 16
+            }
           }
         }
-      };
+      }
+    }
+  };
 
-    return (
-        <div class="dayligth-wrapper">
-            <Doughnut options={options} data={data}></Doughnut>
-        </div>
-    );
+  return (
+    <div className="dayligth-wrapper">
+      <Doughnut options={options} data={data}></Doughnut>
+    </div>
+  );
 }
 
 export default DayLigth;
