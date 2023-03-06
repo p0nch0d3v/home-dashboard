@@ -90,7 +90,11 @@ function WeatherCurrentComp(
         <div>{moon.text}</div>
     </div>);
 
-    let items_array = [uv_item, humidity_item, pressure_item, wind_item, dayLigth_item, moonInfo_item];
+    const min = 0, max = 1;
+    const randIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+    const dayLigth = [sunInfo_item, dayLigth_item];
+
+    let items_array = [uv_item, humidity_item, pressure_item, wind_item, dayLigth[randIndex], moonInfo_item];
 
     return (
         <div className="weatherCurrentComp">
