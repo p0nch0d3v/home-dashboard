@@ -1,5 +1,5 @@
 import axios from 'axios';
-import moment from 'moment';
+import * as dayjs from 'dayjs'
 
 const apikey = import.meta.env.REACT_APP_ACCUWEATHER_API_KEY;
 const language = 'en-us';
@@ -95,7 +95,7 @@ export function getForecastHourly(forescastHourly, currentHour) {
     currentHour = new Date(currentHour);
     let forecast = [];
     forescastHourly.forEach(f => {
-        if (moment(f.EpochDateTime * 1000) > moment(currentHour) && forecast.length < 5) {
+        if (dayjs(f.EpochDateTime * 1000) > dayjs(currentHour) && forecast.length < 5) {
           forecast.push({
               temp: {
                   value: Math.round(f.Temperature.Value),
@@ -105,7 +105,7 @@ export function getForecastHourly(forescastHourly, currentHour) {
                   value: Math.round(f.RealFeelTemperature.Value),
                   unit: f.RealFeelTemperature.Unit
               },
-              dateTime: moment(f.DateTime).format("hh A"),
+              dateTime: dayjs(f.DateTime).format("hh A"),
               uv: {
                   index: f.UVIndex,
                   text: f.UVIndexText
@@ -135,15 +135,15 @@ export function getForecaseDaily(forescastResult) {
                     }
                 },
                 date: {
-                    date: moment(f.Date),
-                    month: moment(f.Date).format('MMM'),
-                    dayNumber: moment(f.Date).format('DD'),
-                    dayWeek: moment(f.Date).format('ddd')
+                    date: dayjs(f.Date),
+                    month: dayjs(f.Date).format('MMM'),
+                    dayNumber: dayjs(f.Date).format('DD'),
+                    dayWeek: dayjs(f.Date).format('ddd')
                 },
                 icon: `https://www.accuweather.com/images/weathericons/${f.Day.Icon}.svg`,
                 text: f.Day.IconPhrase,
-                sunrise: moment(f.Sun.Rise),
-                sunset: moment(f.Sun.Set),
+                sunrise: dayjs(f.Sun.Rise),
+                sunset: dayjs(f.Sun.Set),
                 precipitationProbability: f.Day.PrecipitationProbability
             });
         }

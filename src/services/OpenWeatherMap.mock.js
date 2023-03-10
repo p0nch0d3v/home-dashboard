@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import {
     getUvIndexDescription,
@@ -62,22 +62,24 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
             value: null,
             unit: null
         },
-        sunset: moment.utc(Date.now()),
-        sunrise: moment.utc(Date.now())
+        sunset: dayjs(Date.now()).utc(false),
+        sunrise: dayjs(Date.now()).utc(false)
     };
 
-    conditionsInfo.formattedSunset = moment.tz(conditionsInfo.sunset.utc(), 'UTC').format('hh:mm A');
-    conditionsInfo.formattedSunrise = moment.tz(conditionsInfo.sunrise.utc(), 'UTC').format('hh:mm A');
+    conditionsInfo.formattedSunset = conditionsInfo.sunset.tz('UTC').format('hh:mm A');
+    conditionsInfo.formattedSunrise = conditionsInfo.sunrise.tz('UTC').format('hh:mm A');
 
     conditionsInfo.dayLight = (conditionsInfo.sunset - conditionsInfo.sunrise);
 
-    const sunrise =  moment.tz(conditionsInfo.sunrise.utc(), 'UTC');
-    const sunset =  moment.tz(conditionsInfo.sunset.utc(), 'UTC'); 
+    const sunrise =  dayjs.tz(conditionsInfo.sunrise.utc(), 'UTC');
+    const sunset =  dayjs.tz(conditionsInfo.sunset.utc(), 'UTC'); 
 
-    let dayLight = sunset.subtract(sunrise.hours(), 'hours');
-    dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
-    dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
+    let dayLight = sunset.subtract(sunrise.hour(), 'hours');
+    dayLight = dayLight.subtract(sunrise.minute(), 'minutes');
+    dayLight = dayLight.subtract(sunrise.second(), 'seconds')
+    
     conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
+    // conditionsInfo.dayLigthData = getDayLigthData(conditionsInfo.sunrise, conditionsInfo.sunset, conditions.timezone);
 
     return conditionsInfo;
 }
@@ -96,7 +98,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
                 unit: 'C'
             },
             dateTime: Date.now(),
-            formattedDateTime: moment(Date.now()).format("hh A"),
+            formattedDateTime: dayjs(Date.now()).format("hh A"),
             uv: {
                 index: 12 || rand(0, 12),
                 text: getUvIndexDescription(rand(0, 12), translator),
@@ -128,10 +130,10 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                 }
             },
             date: {
-                date: moment(date),
-                month: moment(date).format('MMM'),
-                dayNumber: moment(date).format('DD'),
-                dayWeek: moment(date).format('ddd')
+                date: dayjs(date),
+                month: dayjs(date).format('MMM'),
+                dayNumber: dayjs(date).format('DD'),
+                dayWeek: dayjs(date).format('ddd')
             },
             icon: 'https://openweathermap.org/img/wn/041@4x.png',
             iconCode: 'icon_01d',
@@ -151,4 +153,3 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
     }
     return forecastInfo;
 }
-

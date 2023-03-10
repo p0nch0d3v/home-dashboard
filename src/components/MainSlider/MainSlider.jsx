@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import moment from 'moment';
-import 'moment/locale/es';
-import 'moment/dist/locale/es';
-import 'moment-timezone';
+import * as dayjs from 'dayjs';
+import 'dayjs/locale/es';
+import dayOfYear from 'dayjs/plugin/dayOfYear';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next'
 import { capitalize, useInterval } from '../../helpers';
 import { Times } from '../../constants';
@@ -35,6 +36,10 @@ import ExchangeRate from '../ExchangeRate/ExchangeRate';
 import Calendar from '../Calendar/Calendar';
 import MainHeader from '../MainHeader/MainHeader';
 import ModalConfig from '../ConfigModal/ConfigModal';
+
+dayjs.extend(dayOfYear);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function MainSlider(props) {
   const [configurations, set_configurations] = useState(GetConfigurations());
@@ -119,12 +124,12 @@ export default function MainSlider(props) {
   };
 
   const setBackgroundColor = () => {
-    const now = moment.utc().tz(location?.timezone);
+    const now = dayjs.utc().tz(location?.timezone);
     let newIsDay = isDay;
     let newIsNight = isNight;
 
     if (weather?.sunrise && weather?.sunset) {
-      if (now >= moment(weather?.sunrise) && now <= moment(weather?.sunset)) {
+      if (now >= dayjs(weather?.sunrise) && now <= dayjs(weather?.sunset)) {
         newIsDay = true;
         newIsNight = false;        
       }
@@ -143,7 +148,7 @@ export default function MainSlider(props) {
   };
 
   const setupSliderItems = () => {
-    moment().locale(configurations.language);
+    dayjs().locale(configurations.language);
     const newSliderItems = [];
     const newSliderTimes = [];
     const headerFormattedDate = date ? capitalize(date.format('dddd')).substr(0, 2) + ' ' + formattedDate : '';
@@ -312,9 +317,9 @@ export default function MainSlider(props) {
 
   const getWeatherConditions = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
-    const now = moment(Date.now());
+    const now = dayjs(Date.now());
     
-    force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherCurrent.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.WeatherCurrent.time.total) || !lastUpdate;
 
     let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
@@ -327,15 +332,15 @@ export default function MainSlider(props) {
 
   const getWeatherForecastHourly = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
-    const now = moment(Date.now());
+    const now = dayjs(Date.now());
     
-    force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherForecastHourly.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.WeatherForecastHourly.time.total) || !lastUpdate;
     
     if (forecastHourly && forecastHourly.length > 0) {
-      force = force || moment(now).hour() > moment(forecastHourly[0].dateTime).hour() 
-          || moment(now).date() > moment(forecastHourly[0].dateTime).date()
-          || moment(now).month() > moment(forecastHourly[0].dateTime).month()
-          || moment(now).year() > moment(forecastHourly[0].dateTime).year();
+      force = force || dayjs(now).hour() > dayjs(forecastHourly[0].dateTime).hour() 
+          || dayjs(now).date() > dayjs(forecastHourly[0].dateTime).date()
+          || dayjs(now).month() > dayjs(forecastHourly[0].dateTime).month()
+          || dayjs(now).year() > dayjs(forecastHourly[0].dateTime).year();
     }
     
     const forecast = await getForecastHourly(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
@@ -347,14 +352,14 @@ export default function MainSlider(props) {
   };
 
   const getWeatherForecastDaily = async (force = false) => {
-    moment().locale(configurations.language);
+    dayjs().locale(configurations.language);
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
-    const now = moment(Date.now());
+    const now = dayjs(Date.now());
     
-    force = force || ((now - moment(lastUpdate)) >= configurations.services.WeatherForecastDaily.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.WeatherForecastDaily.time.total) || !lastUpdate;
     
     if (forecastDaily && forecastDaily.length > 0) {
-      force = force || !(moment(Date.now()).format('YYYY-MM-DD') === moment(forecastDaily[0].dateTime).format('YYYY-MM-DD'));
+      force = force || !(dayjs(Date.now()).format('YYYY-MM-DD') === dayjs(forecastDaily[0].dateTime).format('YYYY-MM-DD'));
     }
     
     let forecast = await getForecastDaily(location?.coordinates?.latitude, location?.coordinates?.longitude, localeLang, t, force);
@@ -385,9 +390,9 @@ export default function MainSlider(props) {
 
   const getExchangeRates = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
-    const now = moment(Date.now());
+    const now = dayjs(Date.now());
     
-    force = force || ((now - moment(lastUpdate)) >= configurations.services.ExchangeRate.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.ExchangeRate.time.total) || !lastUpdate;
 
     let rates = await getExchangeRate(force);
     set(() => {
