@@ -1,20 +1,19 @@
 import React from 'react';
-import moment from 'moment';
-import 'moment/locale/es';
-import 'moment/dist/locale/es';
+import * as dayjs from 'dayjs'
+import 'dayjs/locale/es';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { capitalize } from '../../helpers';
 import './Calendar.scss';
 import { GetConfigurations } from '../../services/ConfigService';
 
 function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
-    moment.locale(GetConfigurations().language);
-    const startOfMonth = moment(date).startOf('month');
-    const endOfMonth = moment(date).endOf('month');
+    dayjs.locale(GetConfigurations().language);
+    const startOfMonth = dayjs(date).startOf('month');
+    const endOfMonth = dayjs(date).endOf('month');
     let rows = [];
     let pivotWeek = [null, null, null, null, null, null, null];
     let week = [...pivotWeek];
-    let pivotDate = moment(startOfMonth);
+    let pivotDate = dayjs(startOfMonth);
 
     // Set previous month days
     while(pivotDate.day() > 0)
@@ -22,7 +21,7 @@ function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
         pivotDate = pivotDate.add(-1, 'day');
         week[pivotDate.day()] = {year: pivotDate.year(), month: pivotDate.month(), day: pivotDate.date()};
     }
-    pivotDate = moment(startOfMonth);
+    pivotDate = dayjs(startOfMonth);
 
     // Set current month days
     do {
@@ -73,7 +72,7 @@ function Calendar({ date, dayOfYear, remainingDaysOfYear }) {
         if (day?.month > date.month() || day?.year > date.year()) {
             className += ' borderTop';
         }
-        if (day?.day === new moment(startOfMonth).add(-1, 'day').date() && day?.month < date.month()) {
+        if (day?.day === new dayjs(startOfMonth).add(-1, 'day').date() && day?.month < date.month()) {
             className += ' borderRight';
         }
         if (day?.day === 1 && day?.month > date.month()) {

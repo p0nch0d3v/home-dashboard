@@ -1,8 +1,9 @@
 import axios from 'axios';
-import moment from 'moment';
-import 'moment/locale/es';
-import 'moment/dist/locale/es';
-import 'moment-timezone';
+import * as dayjs from 'dayjs'
+import 'dayjs/locale/es';
+import timezone from 'dayjs/plugin/timezone';
+import duration from 'dayjs/plugin/duration';
+import utc from 'dayjs/plugin/utc';
 
 import {
     getUvIndexDescription,
@@ -21,12 +22,16 @@ import {
 
 import { GetConfigurations } from './ConfigService';
 
+dayjs.extend(timezone);
+dayjs.extend(duration);
+dayjs.extend(utc);
+
 const baseUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 const imageBaseUrl = 'https://openweathermap.org/img/wn/{icon}@4x.png'
 const units = 'metric';
 
 export async function getCurrentWeather(latitude, longitude, translator, force = false) {
-    moment.locale(GetConfigurations().language);
+    dayjs.locale(GetConfigurations().language);
     let conditionsInfo = getStorageValue(StorageKeys.currentConditions);
     if (conditionsInfo && force === false) {
         return conditionsInfo;
@@ -80,21 +85,22 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
                     value: null,
                     unit: null
                 },
-                sunset: moment.utc(conditions.sunset, 'X', true),
-                sunrise: moment.utc(conditions.sunrise, 'X', true),
-
+                sunset: dayjs(conditions.sunset * 1000).utc(false),
+                sunrise: dayjs(conditions.sunrise * 1000).utc(false),
             };
-            conditionsInfo.formattedSunset = moment.tz(conditionsInfo.sunset.utc(), conditions.timezone).format('hh:mm A');
-            conditionsInfo.formattedSunrise = moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone).format('hh:mm A');
+
+            conditionsInfo.formattedSunset = conditionsInfo.sunset.tz(conditions.timezone).format('hh:mm A');
+            conditionsInfo.formattedSunrise = conditionsInfo.sunrise.tz(conditions.timezone).format('hh:mm A');
 
             conditionsInfo.dayLight = (conditionsInfo.sunset - conditionsInfo.sunrise);
 
-            const sunrise = moment.tz(conditionsInfo.sunrise.utc(), conditions.timezone);
-            const sunset = moment.tz(conditionsInfo.sunset.utc(), conditions.timezone);
+            const sunrise = dayjs.tz(conditionsInfo.sunrise.utc(), conditions.timezone);
+            const sunset = dayjs.tz(conditionsInfo.sunset.utc(), conditions.timezone);
 
-            let dayLight = sunset.subtract(sunrise.hours(), 'hours');
-            dayLight = dayLight.subtract(sunrise.minutes(), 'minutes');
-            dayLight = dayLight.subtract(sunrise.seconds(), 'seconds')
+            let dayLight = sunset.subtract(sunrise.hour(), 'hours');
+            dayLight = dayLight.subtract(sunrise.minute(), 'minutes');
+            dayLight = dayLight.subtract(sunrise.second(), 'seconds');
+
             conditionsInfo.formattedDayLight = dayLight.format("HH:mm");
             conditionsInfo.dayLigthData = getDayLigthData(conditionsInfo.sunrise, conditionsInfo.sunset, conditions.timezone);
 
@@ -106,7 +112,7 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
 }
 
 export async function getForecastHourly(latitude, longitude, translator, force = false) {
-    moment.locale(GetConfigurations().language);
+    dayjs.locale(GetConfigurations().language);
     let forecastInfo = getStorageValue(StorageKeys.forecastHourly);
     if (forecastInfo && force === false) {
         return forecastInfo;
@@ -126,10 +132,10 @@ export async function getForecastHourly(latitude, longitude, translator, force =
 
             forecast.forEach(f => {
                 const dateTime = f.dt * 1000;
-                if ((moment(dateTime).hour() >= moment(now).hour()
-                    || moment(dateTime).date() > moment(now).date()
-                    || moment(dateTime).month() > moment(now).month()
-                    || moment(dateTime).year() > moment(now).year())
+                if ((dayjs(dateTime).hour() >= dayjs(now).hour()
+                    || dayjs(dateTime).date() > dayjs(now).date()
+                    || dayjs(dateTime).month() > dayjs(now).month()
+                    || dayjs(dateTime).year() > dayjs(now).year())
                     && forecastInfo.length < limit) {
 
                     forecastInfo.push({
@@ -142,7 +148,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
                             unit: 'C'
                         },
                         dateTime: dateTime,
-                        formattedDateTime: moment(dateTime).format("hh A"),
+                        formattedDateTime: dayjs(dateTime).format("hh A"),
                         uv: {
                             index: Math.round(f.uvi),
                             text: getUvIndexDescription(Math.round(f.uvi), translator),
@@ -163,7 +169,7 @@ export async function getForecastHourly(latitude, longitude, translator, force =
 }
 
 export async function getForecastDaily(latitude, longitude, localeLang, translator, force = false) {
-    moment.locale(GetConfigurations().language);
+    dayjs.locale(GetConfigurations().language);
     let forecastInfo = getStorageValue(StorageKeys.forecastDaily);
     if (forecastInfo && force === false) {
         return forecastInfo;
@@ -179,7 +185,7 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
 
         if (forecast) {
             const limit = 6;
-            const now = moment(Date.now()).format('YYYY-MM-DD');
+            const now = dayjs(Date.now()).format('YYYY-MM-DD');
 
             forecast.forEach(f => {
                 if (forecastInfo.length < limit) {
@@ -197,10 +203,10 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                             }
                         },
                         date: {
-                            date: moment(date),
-                            month: moment(date).format('MMM'),
-                            dayNumber: moment(date).format('DD'),
-                            dayWeek: moment(date).format('ddd')
+                            date: dayjs(date),
+                            month: dayjs(date).format('MMM'),
+                            dayNumber: dayjs(date).format('DD'),
+                            dayWeek: dayjs(date).format('ddd')
                         },
                         icon: imageBaseUrl.replace('{icon}', f.weather[0].icon),
                         iconCode: `icon_${f.weather[0].icon}`,
@@ -213,7 +219,7 @@ export async function getForecastDaily(latitude, longitude, localeLang, translat
                             text: getMoonPhaseTextAndClass(f.moon_phase, translator).text,
                             class: getMoonPhaseTextAndClass(f.moon_phase, translator).class
                         },
-                        isToday: now === moment(date).format('YYYY-MM-DD')
+                        isToday: now === dayjs(date).format('YYYY-MM-DD')
                     });
                 }
             });
@@ -233,7 +239,7 @@ function getBaseUrl(latitude, longitude) {
 }
 
 function getDayLigthData(sunrise, sunset, timezone) {
-    let midNight = moment.tz(sunrise.utc(), timezone);
+    let midNight = dayjs.tz(sunrise.utc(), timezone);
     midNight = midNight.set('hour', 0);
     midNight = midNight.set('minute', 0);
     midNight = midNight.set('second', 0);
@@ -241,7 +247,7 @@ function getDayLigthData(sunrise, sunset, timezone) {
 
     const midNightToSunrise = sunrise.diff(midNight, 'minute')
 
-    let midDay = moment.tz(sunrise.utc(), timezone);
+    let midDay = dayjs.tz(sunrise.utc(), timezone);
     midDay = midDay.set('hour', 12);
     midDay = midDay.set('minute', 0);
     midDay = midDay.set('second', 0);
@@ -251,7 +257,7 @@ function getDayLigthData(sunrise, sunset, timezone) {
 
     const midDayToSunset = sunset.diff(midDay, 'minute');
 
-    let nextMidNight = moment.tz(sunset.utc(), timezone);
+    let nextMidNight = dayjs.tz(sunset.utc(), timezone);
     nextMidNight = nextMidNight.add(1, 'day');
     nextMidNight = nextMidNight.set('hour', 0);
     nextMidNight = nextMidNight.set('minute', 0);

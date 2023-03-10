@@ -1,17 +1,22 @@
-import moment from 'moment';
-import 'moment/locale/es';
-import 'moment/dist/locale/es';
-import 'moment-timezone';
+import * as dayjs from 'dayjs'
+import dayOfYear from 'dayjs/plugin/dayOfYear';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import 'dayjs/locale/es';
 import { capitalize } from '../helpers';
 import { GetConfigurations } from './ConfigService';
 
+dayjs.extend(dayOfYear);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export function GetDate(timezone) {
-    moment.locale(GetConfigurations().language);
-    let newMomentDate = moment();
-    let dayOfYearMoment = moment();
+    dayjs.locale(GetConfigurations().language);
+    let newMomentDate = dayjs();
+    let dayOfYearMoment = dayjs();
     if (timezone) {
-        newMomentDate = moment.utc().tz(timezone);
-        dayOfYearMoment = moment.utc().tz(timezone);
+        newMomentDate = dayjs.utc().tz(timezone);
+        dayOfYearMoment = dayjs.utc().tz(timezone);
     }
 
     let formattedDate = newMomentDate.format('DD') + '/' + capitalize(newMomentDate.format('MMM')) + '/' + newMomentDate.format('YYYY');
@@ -31,10 +36,10 @@ export function GetDate(timezone) {
 }
 
 export function GetTime(timezone) {
-    moment.locale(GetConfigurations().language);
-    let now = moment();
+    dayjs.locale(GetConfigurations().language);
+    let now = dayjs();
     if (timezone) {
-        now = moment.utc().tz(timezone);
+        now = dayjs.utc().tz(timezone);
     }
     const newTime = now.format('hh:mm A');
     return newTime;
