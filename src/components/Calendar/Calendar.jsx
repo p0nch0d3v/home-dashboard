@@ -1,6 +1,6 @@
 import React from 'react';
-import * as dayjs from 'dayjs'
-import 'dayjs/locale/es';
+import dayjs from 'dayjs/esm/index.js'
+import 'dayjs/esm/locale/es'
 import { useTranslation, withTranslation } from 'react-i18next';
 import { capitalize } from '../../helpers';
 import './Calendar.scss';

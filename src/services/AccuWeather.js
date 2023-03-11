@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs/esm/index.js'
 
 const apikey = import.meta.env.REACT_APP_ACCUWEATHER_API_KEY;
 const language = 'en-us';

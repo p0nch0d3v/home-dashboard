@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import * as dayjs from 'dayjs';
-import 'dayjs/locale/es';
+import dayjs from 'dayjs/esm/index.js'
+import 'dayjs/esm/locale/es'
 import dayOfYear from 'dayjs/plugin/dayOfYear';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
