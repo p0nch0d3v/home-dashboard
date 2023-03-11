@@ -1,8 +1,8 @@
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs/esm/index.js'
 import dayOfYear from 'dayjs/plugin/dayOfYear';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import 'dayjs/locale/es';
+import 'dayjs/esm/locale/es'
 import { capitalize } from '../helpers';
 import { GetConfigurations } from './ConfigService';
 

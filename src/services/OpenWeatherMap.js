@@ -1,6 +1,6 @@
 import axios from 'axios';
-import * as dayjs from 'dayjs'
-import 'dayjs/locale/es';
+import dayjs from 'dayjs/esm/index.js'
+import 'dayjs/esm/locale/es'
 import timezone from 'dayjs/plugin/timezone';
 import duration from 'dayjs/plugin/duration';
 import utc from 'dayjs/plugin/utc';

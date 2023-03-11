@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs/esm/index.js'
 
 import {
     getUvIndexDescription,
