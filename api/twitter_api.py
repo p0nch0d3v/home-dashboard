@@ -63,6 +63,5 @@ def get_last_tweet_by(username):
         user = get_user(token, username)
         user_id = user['id']
         tweets = get_tweets(token, user_id)
-        print('tweets', tweets[0])
-        return { 'user': user, 'tweet': tweets[0] }
+        return { 'user': user, 'tweets': tweets }
     return None

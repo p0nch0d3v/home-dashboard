@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3-slim
 
 ARG TWITTER_API_KEY=''
 ARG TWITTER_API_KEY_SECRET=''
