@@ -52,10 +52,10 @@ def get_last_tweet_by(username):
     print(API_KEY, API_KEY_SECRET)
 
     if 'TWITTER_API_KEY' not in os.environ:
-        return { 'error': 'No API key found' }
+        return { 'error': 'No Twitter API key found' }
 
     if 'TWITTER_API_KEY_SECRET' not in os.environ:
-        return { 'error': 'No API key secreat found' }
+        return { 'error': 'No Twitter API key secreat found' }
 
     if 'TWITTER_API_KEY' in os.environ and 'TWITTER_API_KEY_SECRET' in os.environ:
         token = generate_token(API_KEY, API_KEY_SECRET)
