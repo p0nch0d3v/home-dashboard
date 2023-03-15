@@ -16,6 +16,9 @@ export function GetDefaultConfigurations () {
         IPINFO_API_KEY: "",
         OPENWEATHERMAP_API_KEY :"",
         EXCHANGERATE_API_KEY: "",
+        HOMEDASHBOARD_API_URL: "",
+        HOMEDASHBOARD_API_KEY : "",
+        TWITTER_USERNAME: "",
         widgets: {
             DateTime: { 
                 time: { value: 20, type: "second", total: (20 * Times.second) }, 
@@ -44,6 +47,10 @@ export function GetDefaultConfigurations () {
             ExchangeRate: { 
                 time: { value: 5, type: "second", total: (5 * Times.second) }, 
                 isActive: false 
+            },
+            Twitter: {
+                time: { value: 35, type: "second", total: (1 * Times.second) }, 
+                isActive: false 
             }
         },
         services: {
@@ -65,6 +72,10 @@ export function GetDefaultConfigurations () {
             },
             ExchangeRate: {
                 time: { value: 12, type: "hour", total: (12 * Times.hour) }, 
+                isActive: false
+            },
+            Twitter: {
+                time: { value: 1, type: "hour", total: (1 * Times.hour) }, 
                 isActive: false
             }
         }

@@ -14,6 +14,7 @@ import {
 } from "react-bootstrap";
 import { Times } from "../../constants"
 import { StorageKeys, getStorageValue, clearStorageValue } from '../../services/DataService';
+import { GetDefaultConfigurations } from '../../services/ConfigService';
 
 export default function ConfigModal ({ show, onClose, onSave, configurations, locationInfo }) {
   const localConfig  = {...configurations};
@@ -21,6 +22,9 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   const [ipInfoApiKey, set_ipInfoApiKey] = useState(localConfig.IPINFO_API_KEY || ''); 
   const [openWeatherMapApiKey, set_openWeatherMapApiKey] = useState(localConfig.OPENWEATHERMAP_API_KEY || ''); 
   const [exchangeRateApiKey, set_exchangeRateApiKey] = useState(localConfig.EXCHANGERATE_API_KEY || ''); 
+  const [homeDashboardApiKey, set_homeDashboardApiKey] = useState(localConfig.HOMEDASHBOARD_API_KEY);
+  const [homeDashboardApiUrl, set_homeDashboardApiUrl] = useState(localConfig.HOMEDASHBOARD_API_URL);
+  const [twitterUsername, set_twitterUsername] = useState(localConfig.TWITTER_USERNAME);
   const [widgets, set_widgets] = useState({...localConfig.widgets});
   const [services, set_services] = useState({...localConfig.services});
 
@@ -36,6 +40,9 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
       IPINFO_API_KEY: ipInfoApiKey,
       OPENWEATHERMAP_API_KEY: openWeatherMapApiKey,
       EXCHANGERATE_API_KEY: exchangeRateApiKey,
+      HOMEDASHBOARD_API_KEY: homeDashboardApiKey,
+      HOMEDASHBOARD_API_URL: homeDashboardApiUrl,
+      TWITTER_USERNAME: twitterUsername,
       widgets: {...widgets},
       services: {...services}
     };
@@ -43,12 +50,27 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
 
   const widgetSetIsActive = (widgetName, value) => {
     const _widgets = {...widgets};
+
+    if (!_widgets[widgetName]) {
+      _widgets[widgetName] = {
+        time: { value: 0, type: "second", total: (0 * Times.second) },
+        isActive: false
+      };
+    }
+
     _widgets[widgetName].isActive = value;
     set_widgets(_widgets);
   };
 
   const widgetSetTime = (widgetName, value) => {
     const _widgets = {...widgets};
+
+    if (!_widgets[widgetName]) {
+      _widgets[widgetName] = {
+        time: { value: 0, type: "second", total: (0 * Times.second) },
+        isActive: false
+      };
+    }
                           
     if (isNaN(parseInt(value))) {
       _widgets[widgetName].time.type = value;
@@ -82,15 +104,15 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
             <Col xs={12} sm={12} md={6}>
             <Form.Control type="text"
                     placeholder="Time"
-                    value={time.value} 
+                    value={time?.value} 
                     onChange={(e) => { setTime(e.target.value) }} />
             </Col>
             <Col xs={12} sm={12} md={6}>
               <Form.Select onChange={(e) => {setTime(e.target.value) }}>
-                <option>Select Time {time.type}</option>
-                <option value="second" selected={time.type === "second"}>Seconds</option>
-                <option value="minute" selected={time.type === "minute"}>Minutes</option>
-                <option value="hour" selected={time.type === "hour"}>Hours</option>
+                <option>Select Time {time?.type}</option>
+                <option value="second" selected={time?.type === "second"}>Seconds</option>
+                <option value="minute" selected={time?.type === "minute"}>Minutes</option>
+                <option value="hour" selected={time?.type === "hour"}>Hours</option>
               </Form.Select>
             </Col>
           </Row>
@@ -100,12 +122,27 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
 
   const serviceSetIsActive = (serviceName, value) => {
     const _services = {...services};
+
+    if (!_services[serviceName]) {
+      _services[serviceName] = {
+        time: { value: 0, type: "second", total: (0 * Times.second) },
+        isActive: false
+      };
+    }
+
     _services[serviceName].isActive = value;
     set_services(_services);
   };
 
   const serviceSetTime = (serviceName, value) => {
     const _services = {...services};
+
+    if (!_services[serviceName]) {
+      _services[serviceName] = {
+        time: { value: 0, type: "second", total: (0 * Times.second) },
+        isActive: false
+      };
+    }
                           
     if (isNaN(parseInt(value))) {
       _services[serviceName].time.type = value;
@@ -139,15 +176,15 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
             <Col xs={12} sm={12} md={6}>
             <Form.Control type="text"
                     placeholder="Time"
-                    value={time.value} 
+                    value={time?.value} 
                     onChange={(e) => { setTime(e.target.value) }} />
             </Col>
             <Col xs={12} sm={12} md={6}>
               <Form.Select onChange={(e) => {setTime(e.target.value) }}>
-                <option>Select Time {time.type}</option>
-                <option value="second" selected={time.type === "second"}>Seconds</option>
-                <option value="minute" selected={time.type === "minute"}>Minutes</option>
-                <option value="hour" selected={time.type === "hour"}>Hours</option>
+                <option>Select Time {time?.type}</option>
+                <option value="second" selected={time?.type === "second"}>Seconds</option>
+                <option value="minute" selected={time?.type === "minute"}>Minutes</option>
+                <option value="hour" selected={time?.type === "hour"}>Hours</option>
               </Form.Select>
             </Col>
           </Row>
@@ -247,6 +284,22 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                               value={exchangeRateApiKey} 
                               onChange={(e) => { set_exchangeRateApiKey(e.target.value); }} />
               </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroup.Text >Home Dashboard URL</InputGroup.Text>
+                <Form.Control type="text"
+                              placeholder="Home Dashboard URL"
+                              value={homeDashboardApiUrl}
+                              onChange={(e) => { set_homeDashboardApiUrl(e.target.value); }}>
+                </Form.Control>
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <InputGroup.Text >Home Dashboard API Key</InputGroup.Text>
+                <Form.Control type="text"
+                              placeholder="Home Dashboard API Key"
+                              value={homeDashboardApiKey}
+                              onChange={(e) => { set_homeDashboardApiKey(e.target.value); }}>
+                </Form.Control>
+              </InputGroup>
           </Tab>
           <Tab eventKey="widgets" title="Widgets" style={{ width: '100%' }}>
             <Table >
@@ -294,6 +347,12 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                         widgets.WeatherForecastDaily.time,
                         ((value) => { widgetSetTime('WeatherForecastDaily', value); })
                 )}
+                { widget('Twitter', 
+                        (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).isActive, 
+                        ((value) => { widgetSetIsActive('Twitter', value); }), 
+                        (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).time,
+                        ((value) => { widgetSetTime('Twitter', value); })
+                )}
                 { widget('Exchange Rates', 
                         widgets.ExchangeRate.isActive, 
                         ((value) => { widgetSetIsActive('ExchangeRate', value); }), 
@@ -337,6 +396,12 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                     services.WeatherForecastDaily.time,
                     ((value) => { serviceSetTime('WeatherForecastDaily', value); })
                 )}
+                { service('Twitter', 
+                    (services.Twitter || GetDefaultConfigurations().services.Twitter).isActive, 
+                    ((value) => { serviceSetIsActive('Twitter', value); }),
+                    (services.Twitter || GetDefaultConfigurations().services.Twitter).time,
+                    ((value) => { serviceSetTime('Twitter', value); })
+                )}
                 { service('Exchange Rates', 
                     services.ExchangeRate.isActive, 
                     ((value) => { serviceSetIsActive('ExchangeRate', value); }),
@@ -345,6 +410,16 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                 )}
               </tbody>
             </Table>
+          </Tab>
+          <Tab eventKey="twitter" title="Twitter">
+            <Form.Label style={{ fontWeight: '900' }}>Last Tweet by</Form.Label>
+            <InputGroup className="mb-3">
+                  <InputGroup.Text id="basic-addon3">Username</InputGroup.Text>
+                  <Form.Control type="text" 
+                                placeholder="Twitter username" 
+                                value={twitterUsername} 
+                                onChange={(e) => { set_twitterUsername(e.target.value); }} />
+            </InputGroup>
           </Tab>
           <Tab eventKey="storage" title="Storage">
             { storageElement(StorageKeys.configuration) }
