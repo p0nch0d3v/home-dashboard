@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'web/**'
+      - '.github/workflow/github-pages.yml'
 
 env:
   REPOSITORY: ${{ secrets.REPOSITORY }}
