@@ -1,9 +1,11 @@
 #from config import Settings, get_settings
-from dotenv import dotenv_values, load_dotenv
+from dotenv import load_dotenv
 from fastapi.security.api_key import APIKeyHeader
 from fastapi import Security, HTTPException, Depends
 from starlette.status import HTTP_403_FORBIDDEN
 import os
+
+load_dotenv()
 
 api_key_header = APIKeyHeader(name="access_token", auto_error=False)
 

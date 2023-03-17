@@ -4,6 +4,8 @@ import http.client
 import json
 import os
 
+load_dotenv()
+
 def basic_auth(username, password):
     token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
     return f'Basic {token}'
