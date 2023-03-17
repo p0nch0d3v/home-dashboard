@@ -49,7 +49,7 @@ export function GetDefaultConfigurations () {
                 isActive: false 
             },
             Twitter: {
-                time: { value: 35, type: "second", total: (1 * Times.second) }, 
+                time: { value: 45, type: "second", total: (45 * Times.second) }, 
                 isActive: false 
             }
         },

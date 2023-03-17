@@ -5,7 +5,7 @@ import dayOfYear from 'dayjs/plugin/dayOfYear';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next'
-import { capitalize, useInterval } from '../../helpers';
+import { capitalize, consoleDebug, useInterval } from '../../helpers';
 import { Times } from '../../constants';
 import './MainSlider.scss';
 
@@ -423,7 +423,6 @@ export default function MainSlider(props) {
     set(() => {
       set_lastTweetBy(lastTweetBy);
     })
-    
   }
 
   /* HANDLERS */
@@ -551,7 +550,7 @@ export default function MainSlider(props) {
 
   useEffect(() => { 
     setupSliderItems();
-  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates, configurations])
+  }, [location, time, date, weather, forecastHourly, forecastDaily, exchangeRates, lastTweetBy, configurations])
 
   useEffect(() => {
     getDate();

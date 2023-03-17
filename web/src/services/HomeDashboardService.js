@@ -5,6 +5,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import timezone from 'dayjs/plugin/timezone';
 
+import {consoleDebug} from '../helpers'
+
 import { GetConfigurations } from "./ConfigService";
 import { getStorageValue, setStorageValue, StorageKeys } from "./DataService";
 
@@ -52,7 +54,9 @@ export async function GetLastTweetBy(force = false) {
     if (lastTweetByInfo && lastTweetByInfo?.lastTweet) {
         lastTweetByInfo.lastTweet.since = dayjs(lastTweetByInfo?.lastTweet?.createdAt).fromNow(true);
     }
+    
     setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
+    setStorageValue(StorageKeys.lastUpdate.lastTweetBy, Date.now());
 
     return lastTweetByInfo;
 }
