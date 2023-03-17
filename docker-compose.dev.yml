@@ -1,14 +1,29 @@
 version: '3'
 
 services:
-  home-dashboard:
-    #restart: unless-stopped
+  web:
     image: node:lts-alpine
     command: >
       sh -c "cd /app &&
              npm install &&
              npm run dev"
     volumes:
-      - .:/app
+      - ./web/:/app
     ports:
-      - 2999:3000
+      - 3000:3000
+  api:
+    image: python:3-slim
+    command: >
+      sh -c "cd /app && 
+            pip install -r /app/requirements.txt && 
+            uvicorn main:app --host 0.0.0.0 --port 80 --reload"
+    volumes:
+      - ./api/:/app
+    ports:
+      - 5000:80
+    environment:
+      - TWITTER_API_KEY=${TWITTER_API_KEY}
+      - TWITTER_API_KEY_SECRET=${TWITTER_API_KEY_SECRET}
+      - API_KEY=${API_KEY}
+      - ALLOW_ORIGINS=${ALLOW_ORIGINS}
+      - ENABLE_DOCS=${ENABLE_DOCS}
