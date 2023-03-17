@@ -26,6 +26,7 @@ import {
 import { getExchangeRate } from '../../services/ExchangeRate';
 import { GetDate, GetTime } from '../../services/DateTimeService';
 import { GetConfigurations, SaveConfigurations } from '../../services/ConfigService';
+import { GetLastTweetBy } from '../../services/HomeDashboardService';
 
 import DateTime from '../DateTime/DateTime';
 import WeatherCurrent from '../WeatherCurrent/WeatherCurrent';
@@ -36,6 +37,7 @@ import ExchangeRate from '../ExchangeRate/ExchangeRate';
 import Calendar from '../Calendar/Calendar';
 import MainHeader from '../MainHeader/MainHeader';
 import ModalConfig from '../ConfigModal/ConfigModal';
+import LastTweetBy from '../LastTweetBy/LastTweetBy';
 
 dayjs.extend(dayOfYear);
 dayjs.extend(utc);
@@ -71,6 +73,7 @@ export default function MainSlider(props) {
   const [forecastHourly, set_forecastHourly] = useState([]);
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
+  const [lastTweetBy, set_lastTweetBy] = useState(null);
 
   const { t } = useTranslation();
 
@@ -191,7 +194,7 @@ export default function MainSlider(props) {
     );
 
     if (date && time && 
-        configurations.widgets.DateTime.isActive) {
+        configurations?.widgets?.DateTime?.isActive) {
       newSliderItems.push(
         <>
           {onlyWeatherHeader}
@@ -200,11 +203,11 @@ export default function MainSlider(props) {
                     weekDay={weekDay} /> 
         </>
       );
-      newSliderTimes.push(configurations.widgets.DateTime.time.total);
+      newSliderTimes.push(configurations?.widgets?.DateTime?.time?.total);
     }
 
     if (date && 
-        configurations.widgets.Calendar.isActive) {
+        configurations?.widgets?.Calendar?.isActive) {
       newSliderItems.push(
         <>
           {timeWeatherHeader}
@@ -213,12 +216,12 @@ export default function MainSlider(props) {
                     remainingDaysOfYear={remainingDaysOfYear} />
         </>
       )
-      newSliderTimes.push(configurations.widgets.Calendar.time.total);
+      newSliderTimes.push(configurations?.widgets?.Calendar?.time?.total);
     }
 
     if (weather && 
-          configurations.widgets.WeatherCurrent.isActive &&
-          configurations.services.WeatherCurrent.isActive) {
+          configurations?.widgets?.WeatherCurrent?.isActive &&
+          configurations?.services?.WeatherCurrent?.isActive) {
       newSliderItems.push(
         <>
           {dateTimeHeader}
@@ -226,12 +229,12 @@ export default function MainSlider(props) {
                           currentForecast={currentForecast} />
         </>
       );
-      newSliderTimes.push(configurations.widgets.WeatherCurrent.time.total);
+      newSliderTimes.push(configurations?.widgets?.WeatherCurrent?.time?.total);
     }
     
     if (weather && 
-          configurations.widgets.WeatherCurrentComp.isActive &&
-          configurations.services.WeatherCurrent.isActive) {
+          configurations?.widgets?.WeatherCurrentComp?.isActive &&
+          configurations?.services?.WeatherCurrent?.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
@@ -246,45 +249,55 @@ export default function MainSlider(props) {
                               moon={currentMoon} />
         </>
       );
-      newSliderTimes.push(configurations.widgets.WeatherCurrentComp.time.total);
+      newSliderTimes.push(configurations?.widgets?.WeatherCurrentComp?.time?.total);
     }
 
     if (forecastHourly && forecastHourly.length > 0 && 
-        configurations.widgets.WeatherForecastHourly.isActive &&
-        configurations.services.WeatherForecastHourly.isActive) {
+        configurations?.widgets?.WeatherForecastHourly?.isActive &&
+        configurations?.services?.WeatherForecastHourly?.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
           <WeatherForecastHourly forecast={forecastHourly} />
         </>
       );
-      newSliderTimes.push(configurations.widgets.WeatherForecastHourly.time.total);
+      newSliderTimes.push(configurations?.widgets?.WeatherForecastHourly?.time?.total);
     }
     
     if (forecastDaily && forecastDaily.length > 0 && 
-        configurations.widgets.WeatherForecastDaily.isActive &&
-        configurations.services.WeatherForecastDaily.isActive) {
+        configurations?.widgets?.WeatherForecastDaily?.isActive &&
+        configurations?.services?.WeatherForecastDaily?.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
           <WeatherForecastDaily forecast={forecastDaily}/>
         </>
       );
-      newSliderTimes.push(configurations.widgets.WeatherForecastDaily.time.total);
+      newSliderTimes.push(configurations?.widgets?.WeatherForecastDaily?.time?.total);
     }
     
     if (exchangeRates && exchangeRates.length > 0 && 
-          configurations.widgets.ExchangeRate.isActive &&
-          configurations.services.ExchangeRate.isActive) {
+          configurations?.widgets?.ExchangeRate?.isActive &&
+          configurations?.services?.ExchangeRate?.isActive) {
       newSliderItems.push(
         <>
           {fullHeader}
           <ExchangeRate rates={exchangeRates} />
         </>
       );
-      newSliderTimes.push(configurations.widgets.ExchangeRate.time.total);
+      newSliderTimes.push(configurations?.widgets?.ExchangeRate?.time?.total);
     }
     
+    if (configurations?.widgets?.Twitter?.isActive && lastTweetBy) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <LastTweetBy tweetInfo={lastTweetBy} />
+        </>
+      );
+      newSliderTimes.push(configurations?.widgets?.Twitter?.time?.total);
+    }
+
     set(() => {
       set_sliderItems(newSliderItems);
       set_sliderTimes(newSliderTimes);
@@ -319,7 +332,7 @@ export default function MainSlider(props) {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.conditions);
     const now = dayjs(Date.now());
     
-    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.WeatherCurrent.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.WeatherCurrent?.time?.total) || !lastUpdate;
 
     let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
@@ -334,7 +347,7 @@ export default function MainSlider(props) {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastHourly);
     const now = dayjs(Date.now());
     
-    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.WeatherForecastHourly.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.WeatherForecastHourly?.time?.total) || !lastUpdate;
     
     if (forecastHourly && forecastHourly.length > 0) {
       force = force || dayjs(now).hour() > dayjs(forecastHourly[0].dateTime).hour() 
@@ -352,11 +365,11 @@ export default function MainSlider(props) {
   };
 
   const getWeatherForecastDaily = async (force = false) => {
-    dayjs().locale(configurations.language);
+    dayjs().locale(configurations?.language);
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.forecastDaily);
     const now = dayjs(Date.now());
     
-    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.WeatherForecastDaily.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.WeatherForecastDaily?.time?.total) || !lastUpdate;
     
     if (forecastDaily && forecastDaily.length > 0) {
       force = force || !(dayjs(Date.now()).format('YYYY-MM-DD') === dayjs(forecastDaily[0].dateTime).format('YYYY-MM-DD'));
@@ -385,19 +398,32 @@ export default function MainSlider(props) {
         });
       }
     }
-    
   };
 
   const getExchangeRates = async (force = false) => {
     const lastUpdate = getStorageValue(StorageKeys.lastUpdate.exchangeRate);
     const now = dayjs(Date.now());
     
-    force = force || ((now - dayjs(lastUpdate)) >= configurations.services.ExchangeRate.time.total) || !lastUpdate;
+    force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.ExchangeRate?.time?.total) || !lastUpdate;
 
     let rates = await getExchangeRate(force);
     set(() => {
       set_exchangeRates(rates);
     });
+  }
+
+  const getLastTweetBy = async (force = false) => {
+    const lastUpdate = getStorageValue(StorageKeys.lastUpdate.lastTweetBy);
+    const now = dayjs(Date.now());
+
+    force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.Twitter?.time?.total) || !lastUpdate;
+
+    let lastTweetBy = await GetLastTweetBy(force);
+
+    set(() => {
+      set_lastTweetBy(lastTweetBy);
+    })
+    
   }
 
   /* HANDLERS */
@@ -482,25 +508,28 @@ export default function MainSlider(props) {
   }, sliderTime);
 
   const mainAction = async () => {
-    if (!location && configurations.services.GeoLocation.isActive) {
+    if (!location && configurations?.services?.GeoLocation?.isActive) {
       await getLocation();
     }
 
-    if (configurations.widgets.DateTime.isActive || configurations.widgets.Calendar.isActive) {
+    if (configurations?.widgets?.DateTime?.isActive || configurations?.widgets?.Calendar?.isActive) {
       getDate();
       getTime();
     }
-    if (configurations.services.WeatherCurrent.isActive) {
+    if (configurations?.services?.WeatherCurrent?.isActive) {
       await getWeatherConditions();
     }
-    if (configurations.services.WeatherForecastHourly.isActive) {
+    if (configurations?.services?.WeatherForecastHourly?.isActive) {
       await getWeatherForecastHourly();
     }
-    if (configurations.services.WeatherForecastDaily.isActive) {
+    if (configurations?.services?.WeatherForecastDaily?.isActive) {
       await getWeatherForecastDaily();
     }
-    if (configurations.services.ExchangeRate.isActive) {
+    if (configurations?.services?.ExchangeRate?.isActive) {
       await getExchangeRates();
+    }
+    if (configurations?.services?.Twitter?.isActive) {
+      await getLastTweetBy();
     }
   };
 
@@ -511,7 +540,7 @@ export default function MainSlider(props) {
 
   useEffect(() => { // On load 
     (async () => {
-      if (configurations.services.GeoLocation.isActive) {
+      if (configurations?.services?.GeoLocation?.isActive) {
         await getLocation();
       }
       await mainAction();
@@ -527,7 +556,7 @@ export default function MainSlider(props) {
   useEffect(() => {
     getDate();
     getTime();
-    if (configurations.services.WeatherCurrent.isActive) {
+    if (configurations?.services?.WeatherCurrent?.isActive) {
       getWeatherConditions();
     }
   }, [location]);
