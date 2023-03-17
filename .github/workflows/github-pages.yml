@@ -1,9 +1,12 @@
-name: Github Pages Deploy
+name: Github Pages Web Deploy
 
 on:
   push:
     branches:
       - master
+    paths:
+      - 'web/**'
+
 env:
   REPOSITORY: ${{ secrets.REPOSITORY }}
   USER_NAME: ${{ secrets.USER_NAME }}
@@ -22,6 +25,7 @@ jobs:
           node-version: lts/*
       - name: NPM Instal and Build
         run: |
+          cd web
           npm install
           npm run build
       - name: Deploy 

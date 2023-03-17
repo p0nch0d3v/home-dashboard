@@ -1,0 +1,32 @@
+@import '../../styles/common.scss';
+
+.tweetInfo {
+    font-size: 1.5rem;
+    padding: 0 1rem;
+
+    .user {
+        text-align: left;
+        margin-bottom: 1rem;
+
+        .user_name {
+            font-weight: 900;
+            margin-right: 1rem;
+        }
+
+        .username {
+            font-style: italic;
+        }
+    }
+
+    .content {
+        font-size: 2rem;
+        word-wrap: break-word;
+        text-justify: inter-word;
+        text-align: justify;
+        margin-bottom: 1rem;
+    }
+
+    .dateTime {
+        text-align: right;
+    }
+}
