@@ -14,8 +14,6 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY . /app
 
-RUN ls -la /app
-
 ENV TWITTER_API_KEY=${TWITTER_API_KEY}
 ENV TWITTER_API_KEY_SECRET=${TWITTER_API_KEY_SECRET}
 ENV API_KEY=${API_KEY}

@@ -32,7 +32,7 @@ export async function GetLastTweetBy(force = false) {
                 'accept': 'application/json',
                 'Access-Control-Request-Method': 'GET'
             },
-            url: `${apiUrl}/last_tweet_by?username=${username}`
+            url: `${apiUrl}/last_tweet_by?username=${username}&access_token=${apiKey}`
         }).then(r => r.data);
 
         lastTweetByInfo = {
