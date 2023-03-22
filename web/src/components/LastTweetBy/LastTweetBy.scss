@@ -3,10 +3,13 @@
 .tweetInfo {
     font-size: 4.5vh;
     padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 85vh;
+    justify-content: space-between;
 
     .user {
         text-align: left;
-        margin-bottom: 1rem;
 
         .user_name {
             font-weight: 900;
@@ -23,7 +26,6 @@
         word-wrap: break-word;
         text-justify: inter-word;
         text-align: justify;
-        margin-bottom: 1rem;
         flex-wrap: wrap;
         display: flex;
         overflow-wrap: break-word;
