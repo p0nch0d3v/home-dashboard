@@ -1,7 +1,7 @@
 @import '../../styles/common.scss';
 
 .tweetInfo {
-    font-size: 1.5rem;
+    font-size: 4.5vh;
     padding: 0 1rem;
 
     .user {
@@ -19,11 +19,15 @@
     }
 
     .content {
-        font-size: 2rem;
+        font-size: 5.25vh;
         word-wrap: break-word;
         text-justify: inter-word;
         text-align: justify;
         margin-bottom: 1rem;
+        flex-wrap: wrap;
+        display: flex;
+        overflow-wrap: break-word;
+        white-space: break-spaces;
     }
 
     .dateTime {
