@@ -1,4 +1,4 @@
-name: Github Pages Web Deploy
+name: Web Deploy on Github Pages
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - 'web/**'
-      - '.github/workflow/github-pages.yml'
+      - '.github/workflows/web-github-pages.yml'
 
 env:
   REPOSITORY: ${{ secrets.REPOSITORY }}
