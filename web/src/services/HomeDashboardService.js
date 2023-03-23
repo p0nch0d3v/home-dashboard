@@ -50,6 +50,7 @@ export async function GetLastTweetBy(force = false) {
         };
 
         setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
+        setStorageValue(StorageKeys.lastUpdate.lastTweetBy, Date.now());
     }
 
     if (lastTweetByInfo && lastTweetByInfo?.lastTweet) {
@@ -57,10 +58,9 @@ export async function GetLastTweetBy(force = false) {
         lastTweetByInfo.lastTweet.text = lastTweetByInfo.lastTweet.text.replaceAll(/(https\:\/\/t\.co\/\w+)/gmi, "")
         lastTweetByInfo.lastTweet.text = lastTweetByInfo.lastTweet.text.trim();
         lastTweetByInfo.lastTweet.textCount = lastTweetByInfo.lastTweet.text.length;
-    }
 
-    setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
-    setStorageValue(StorageKeys.lastUpdate.lastTweetBy, Date.now());
+        setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
+    }
 
     return lastTweetByInfo;
 }
