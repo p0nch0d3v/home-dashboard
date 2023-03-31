@@ -40,27 +40,32 @@ export async function GetLastTweetBy(force = false) {
                 name: lastTweetBy.user.name,
                 username: lastTweetBy.user.username
             },
-            lastTweet: {
-                text: lastTweetBy.tweets[0].text.trim(),
-                textCount: lastTweetBy.tweets[0].text.trim().length,
-                createdAt: lastTweetBy.tweets[0].created_at,
-                createdAtFormatted: dayjs(lastTweetBy.tweets[0].created_at).format('LLLL'),
-                since: dayjs(lastTweetBy.tweets[0].created_at).fromNow(true)
-            }
+            lastTweets: []
         };
+
+        for (let i = 0; i < 2; i++) {
+            lastTweetByInfo.lastTweets.push({
+                text: lastTweetBy.tweets[i].text.trim(),
+                textCount: lastTweetBy.tweets[i].text.trim().length,
+                createdAt: lastTweetBy.tweets[i].created_at,
+                createdAtFormatted: dayjs(lastTweetBy.tweets[i].created_at).format('LLLL'),
+                since: dayjs(lastTweetBy.tweets[i].created_at).fromNow(true)
+            });
+        }
 
         setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
         setStorageValue(StorageKeys.lastUpdate.lastTweetBy, Date.now());
     }
 
-    if (lastTweetByInfo && lastTweetByInfo?.lastTweet) {
-        lastTweetByInfo.lastTweet.since = dayjs(lastTweetByInfo?.lastTweet?.createdAt).fromNow(true);
-        lastTweetByInfo.lastTweet.text = lastTweetByInfo.lastTweet.text.replaceAll(/(https\:\/\/t\.co\/\w+)/gmi, "")
-        lastTweetByInfo.lastTweet.text = lastTweetByInfo.lastTweet.text.trim();
-        lastTweetByInfo.lastTweet.textCount = lastTweetByInfo.lastTweet.text.length;
+    lastTweetByInfo?.lastTweets.forEach(tweet => {
+        tweet.since = dayjs(tweet.createdAt).fromNow(true);
+        tweet.text = tweet.text.replaceAll(/(https\:\/\/t\.co\/\w+)/gmi, "")
+        tweet.text = tweet.text.trim();
+        tweet.textCount = tweet.text.length;
 
-        setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
-    }
+    });
+
+    setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
 
     return lastTweetByInfo;
 }

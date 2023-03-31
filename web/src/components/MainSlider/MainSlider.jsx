@@ -288,15 +288,27 @@ export default function MainSlider(props) {
       newSliderTimes.push(configurations?.widgets?.ExchangeRate?.time?.total);
     }
     
-    if (configurations?.widgets?.Twitter?.isActive && lastTweetBy) {
+    if (configurations?.widgets?.Twitter?.isActive && lastTweetBy && lastTweetBy.lastTweets.length > 0) {
       newSliderItems.push(
         <>
           {fullHeader}
-          <LastTweetBy tweetInfo={lastTweetBy} />
+          <LastTweetBy tweetUser={lastTweetBy.user} tweetData={lastTweetBy.lastTweets[0]} />
         </>
       );
       newSliderTimes.push(configurations?.widgets?.Twitter?.time?.total);
     }
+
+    if (configurations?.widgets?.Twitter?.isActive && lastTweetBy && lastTweetBy.lastTweets.length > 1) {
+      newSliderItems.push(
+        <>
+          {fullHeader}
+          <LastTweetBy tweetUser={lastTweetBy.user} tweetData={lastTweetBy.lastTweets[1]} />
+        </>
+      );
+      newSliderTimes.push(configurations?.widgets?.Twitter?.time?.total);
+    }
+
+    console.debug(newSliderTimes);
 
     set(() => {
       set_sliderItems(newSliderItems);

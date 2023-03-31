@@ -1,7 +1,7 @@
 import React from 'react';
 import './LastTweetBy.scss';
 
-function LastTweetBy({ tweetInfo }) {
+function LastTweetBy({ tweetUser, tweetData }) {
     const fontSizes = [
         { minChar: 271, maxChar: 281, fontSize: 5.5 },
         { minChar: 261, maxChar: 270, fontSize: 5.75 },
@@ -27,16 +27,16 @@ function LastTweetBy({ tweetInfo }) {
         { minChar: 1, maxChar: 10, fontSize: 21 },
     ]
 
-    const fontSize = fontSizes.find((v) => { return tweetInfo?.lastTweet?.textCount >= v.minChar && tweetInfo?.lastTweet?.textCount <= v.maxChar })
+    const fontSize = fontSizes.find((v) => { return tweetData.textCount >= v.minChar && tweetData.textCount <= v.maxChar })
 
     return (
         <div className='tweetInfo'>
             <div className='user'>
-                <span className='user_name'>{tweetInfo?.user.name}</span>
-                <span className='username'>(@{tweetInfo?.user.username})</span>
+                <span className='user_name'>{tweetUser.name}</span>
+                <span className='username'>(@{tweetUser.username})</span>
             </div>
-            <div className='content' style={{ fontSize: `${fontSize?.fontSize}vh` }}>{tweetInfo?.lastTweet?.text}</div>
-            <div className='dateTime'>{tweetInfo?.lastTweet?.createdAtFormatted} ({tweetInfo?.lastTweet?.since})</div>
+            <div className='content' style={{ fontSize: `${fontSize?.fontSize}vh` }}>{tweetData.text}</div>
+            <div className='dateTime'>{tweetData.createdAtFormatted} ({tweetData.since})</div>
         </div>
     );
 }
