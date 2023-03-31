@@ -195,7 +195,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
 
   const storageElement = (storageKey) => {
     return (
-      <section className="mb-2">
+      <section className="mb-1">
           <button className="btn btn-secondary btn-sm" 
                   onClick={ () => { onStorageLabelClick(storageKey) } }>
                     {storageDisplay[storageKey] === true ? 'Close' : 'Open'}
@@ -430,6 +430,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
             { storageElement(StorageKeys.forecastHourly) }
             { storageElement(StorageKeys.forecastDaily) }
             { storageElement(StorageKeys.exchangeRate) }
+            { storageElement(StorageKeys.lastTweetBy) }
           </Tab>
         </Tabs>
       </Modal.Body>
