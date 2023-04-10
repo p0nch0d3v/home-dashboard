@@ -63,16 +63,15 @@ function WeatherCurrentComp(
         <div className="weatherCurrentComp_item sunInfo borderAll">
             <div>{t("DayLigth")}</div>
             <div className="sunrise">
-                <span><FontAwesomeIcon icon={faSun} /> { }</span>
+                <span>🌞</span>
                 <span>{sunrise}</span>
             </div>
-            <span className="sunset">
-                <span><FontAwesomeIcon icon={faMoon} /> { }</span>
-                <span>{sunset}</span>
-            </span>
             <span className="dayLight">
-                <span><FontAwesomeIcon icon={faClock} /> { }</span>
                 <span>{dayLight} Hrs</span>
+            </span>
+            <span className="sunset">
+                <span>{sunset}</span>
+                <span>🌙</span>
             </span>
         </div>);
 
@@ -91,10 +90,10 @@ function WeatherCurrentComp(
     </div>);
 
     const min = 0, max = 1;
-    const randIndex = Math.floor(Math.random() * (max - min + 1)) + min;
-    const dayLigth = [sunInfo_item, dayLigth_item];
+    // const randIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+    // const dayLigth = [sunInfo_item, dayLigth_item];
 
-    let items_array = [uv_item, humidity_item, pressure_item, wind_item, dayLigth[randIndex], moonInfo_item];
+    let items_array = [uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item];
 
     return (
         <div className="weatherCurrentComp">

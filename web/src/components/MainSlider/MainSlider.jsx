@@ -308,8 +308,6 @@ export default function MainSlider(props) {
       newSliderTimes.push(configurations?.widgets?.Twitter?.time?.total);
     }
 
-    console.debug(newSliderTimes);
-
     set(() => {
       set_sliderItems(newSliderItems);
       set_sliderTimes(newSliderTimes);

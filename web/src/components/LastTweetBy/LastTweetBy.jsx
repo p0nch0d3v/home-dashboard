@@ -36,7 +36,10 @@ function LastTweetBy({ tweetUser, tweetData }) {
                 <span className='username'>(@{tweetUser.username})</span>
             </div>
             <div className='content' style={{ fontSize: `${fontSize?.fontSize}vh` }}>{tweetData.text}</div>
-            <div className='dateTime'>{tweetData.createdAtFormatted} ({tweetData.since})</div>
+            <div className='dateTime'>
+                <span>{tweetData.createdAtFormatted}</span>
+                <span>{tweetData.since}</span>
+            </div>
         </div>
     );
 }
