@@ -8,15 +8,16 @@ import {
   ButtonGroup,
   ToggleButton,
   Table,
-  InputGroup,
-  Row,
-  Col
+  InputGroup
 } from "react-bootstrap";
 import { Times } from "../../constants"
-import { StorageKeys, getStorageValue, clearStorageValue } from '../../services/DataService';
-import { GetDefaultConfigurations } from '../../services/ConfigService';
+import { StorageKeys, clearStorageValue } from '../../services/DataService';
+import Interval from "./Interval";
+import Widget from "./Widget";
+import Service from "./Service";
+import StorageItem from "./StorageItem";
 
-export default function ConfigModal({ show, onClose, onSave, configurations, locationInfo }) {
+export default function ConfigModal({ show, onClose, onSave, configurations }) {
   const localConfig = { ...configurations };
   const [language, set_language] = useState(localConfig.language || '');
   const [ipInfoApiKey, set_ipInfoApiKey] = useState(localConfig.IPINFO_API_KEY || '');
@@ -27,8 +28,6 @@ export default function ConfigModal({ show, onClose, onSave, configurations, loc
   const [widgets, set_widgets] = useState({ ...localConfig.widgets });
   const [services, set_services] = useState({ ...localConfig.services });
   const [twitter, set_twitter] = useState({ ...localConfig.twitter });
-
-  const [storageDisplay, set_storageDisplay] = useState({});
 
   const isSettingsValid = () => {
     return true;
@@ -84,43 +83,6 @@ export default function ConfigModal({ show, onClose, onSave, configurations, loc
     set_widgets(_widgets);
   };
 
-  const widget = (name, isActive, setIsActive, time, setTime) => {
-    return (
-      <tr>
-        <td>{name}</td>
-        <td>
-          <ButtonGroup>
-            <ToggleButton id={'widget_' + name + '_isActive'}
-              type="checkbox"
-              variant="outline-primary"
-              checked={isActive}
-              value="1"
-              onChange={(e) => { setIsActive(e.target.checked) }}>
-              {isActive ? 'Yes' : 'No'}
-            </ToggleButton>
-          </ButtonGroup>
-        </td>
-        <td>
-          <Row>
-            <Col xs={12} sm={12} md={6}>
-              <Form.Control type="text"
-                placeholder="Time"
-                value={time?.value}
-                onChange={(e) => { setTime(e.target.value) }} />
-            </Col>
-            <Col xs={12} sm={12} md={6}>
-              <Form.Select onChange={(e) => { setTime(e.target.value) }}>
-                <option>Select Time {time?.type}</option>
-                <option value="second" selected={time?.type === "second"}>Seconds</option>
-                <option value="minute" selected={time?.type === "minute"}>Minutes</option>
-                <option value="hour" selected={time?.type === "hour"}>Hours</option>
-              </Form.Select>
-            </Col>
-          </Row>
-        </td>
-      </tr>);
-  }
-
   const serviceSetIsActive = (serviceName, value) => {
     const _services = { ...services };
 
@@ -156,80 +118,11 @@ export default function ConfigModal({ show, onClose, onSave, configurations, loc
     set_services(_services);
   };
 
-  const service = (name, isActive, setIsActive, time, setTime) => {
-    return (
-      <tr>
-        <td>{name}</td>
-        <td>
-          <ButtonGroup>
-            <ToggleButton id={'service_' + name + '_isActive'}
-              type="checkbox"
-              variant="outline-primary"
-              checked={isActive}
-              value="1"
-              onChange={(e) => { setIsActive(e.target.checked) }}>
-              {isActive ? 'Yes' : 'No'}
-            </ToggleButton>
-          </ButtonGroup>
-        </td>
-        <td>
-          <Row>
-            <Col xs={12} sm={12} md={6}>
-              <Form.Control type="text"
-                placeholder="Time"
-                value={time?.value}
-                onChange={(e) => { setTime(e.target.value) }} />
-            </Col>
-            <Col xs={12} sm={12} md={6}>
-              <Form.Select onChange={(e) => { setTime(e.target.value) }}>
-                <option>Select Time {time?.type}</option>
-                <option value="second" selected={time?.type === "second"}>Seconds</option>
-                <option value="minute" selected={time?.type === "minute"}>Minutes</option>
-                <option value="hour" selected={time?.type === "hour"}>Hours</option>
-              </Form.Select>
-            </Col>
-          </Row>
-        </td>
-      </tr>
-    );
-  };
-
-  const storageElement = (storageKey) => {
-    return (
-      <section className="mb-1">
-        <button className="btn btn-secondary btn-sm"
-          onClick={() => { onStorageLabelClick(storageKey) }}>
-          {storageDisplay[storageKey] === true ? 'Close' : 'Open'}
-        </button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <label>
-          <strong>{storageKey}</strong>
-        </label>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <button className="btn btn-danger btn-sm"
-          onClick={() => { onStorageClearClick(storageKey) }}>Clear</button>
-        {storageDisplay[storageKey] === true && <pre className="mb-1 mt-1 storageValue" id={'storage_' + storageKey} >
-          {JSON.stringify(getStorageValue(StorageKeys[storageKey]), null, 2)}
-        </pre>}
-      </section>
-    );
-  };
-
-  const onStorageLabelClick = (key) => {
-    const _storageDisplay = { ...storageDisplay };
-    _storageDisplay[key] = !_storageDisplay[key];
-    set_storageDisplay(_storageDisplay);
-  };
-
-  const onStorageClearClick = (key) => {
-    clearStorageValue(key);
-  };
-
   const setTwitterTime = (value) => {
-    let newTwitter = {...twitter};
+    let newTwitter = { ...twitter };
 
-    if(!newTwitter.maxDateToShow) {
-      newTwitter.maxDateToShow = {value: 0, type: "second", total: (0 * Times.second)};
+    if (!newTwitter.maxDateToShow) {
+      newTwitter.maxDateToShow = { value: 0, type: "second", total: (0 * Times.second) };
     }
 
     if (isNaN(parseInt(value))) {
@@ -330,54 +223,62 @@ export default function ConfigModal({ show, onClose, onSave, configurations, loc
                 </tr>
               </thead>
               <tbody>
-                {widget('Date & Time',
-                  widgets.DateTime.isActive,
-                  ((value) => { widgetSetIsActive('DateTime', value); }),
-                  widgets.DateTime.time,
-                  ((value) => { widgetSetTime('DateTime', value); })
-                )}
-                {widget('Calendar',
-                  widgets.Calendar.isActive,
-                  ((value) => { widgetSetIsActive('Calendar', value); }),
-                  widgets.Calendar.time,
-                  ((value) => { widgetSetTime('Calendar', value); })
-                )}
-                {widget('Current Weather',
-                  widgets.WeatherCurrent.isActive,
-                  ((value) => { widgetSetIsActive('WeatherCurrent', value); }),
-                  widgets.WeatherCurrent.time,
-                  ((value) => { widgetSetTime('WeatherCurrent', value); })
-                )}
-                {widget('Current Weather Comp',
-                  widgets.WeatherCurrentComp.isActive,
-                  ((value) => { widgetSetIsActive('WeatherCurrentComp', value); }),
-                  widgets.WeatherCurrentComp.time,
-                  ((value) => { widgetSetTime('WeatherCurrentComp', value); })
-                )}
-                {widget('Hourly Forecast',
-                  widgets.WeatherForecastHourly.isActive,
-                  ((value) => { widgetSetIsActive('WeatherForecastHourly', value); }),
-                  widgets.WeatherForecastHourly.time,
-                  ((value) => { widgetSetTime('WeatherForecastHourly', value); })
-                )}
-                {widget('Daily Forecast',
-                  widgets.WeatherForecastDaily.isActive,
-                  ((value) => { widgetSetIsActive('WeatherForecastDaily', value); }),
-                  widgets.WeatherForecastDaily.time,
-                  ((value) => { widgetSetTime('WeatherForecastDaily', value); })
-                )}
-                {widget('Twitter',
-                  (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).isActive,
-                  ((value) => { widgetSetIsActive('Twitter', value); }),
-                  (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).time,
-                  ((value) => { widgetSetTime('Twitter', value); })
-                )}
-                {widget('Exchange Rates',
-                  widgets.ExchangeRate.isActive,
-                  ((value) => { widgetSetIsActive('ExchangeRate', value); }),
-                  widgets.ExchangeRate.time,
-                  ((value) => { widgetSetTime('ExchangeRate', value); })
-                )}
+                <Widget
+                  name={'Date & Time'}
+                  isActive={widgets.DateTime.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('DateTime', value); }}
+                  time={widgets.DateTime.time}
+                  setTime={(value) => { widgetSetTime('DateTime', value); }} 
+                />
+                <Widget
+                  name={'Calendar'}
+                  isActive={widgets.Calendar.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('Calendar', value); }}
+                  time={widgets.Calendar.time}
+                  setTime={(value) => { widgetSetTime('Calendar', value); }} 
+                />
+                <Widget
+                  name={'Current Weather'}
+                  isActive={widgets.WeatherCurrent.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('WeatherCurrent', value); }}
+                  time={widgets.WeatherCurrent.time}
+                  setTime={(value) => { widgetSetTime('WeatherCurrent', value); }} 
+                />
+                <Widget
+                  name={'Current Weather Comp'}
+                  isActive={widgets.WeatherCurrentComp.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('WeatherCurrentComp', value); }}
+                  time={widgets.WeatherCurrentComp.time}
+                  setTime={(value) => { widgetSetTime('WeatherCurrentComp', value); }} 
+                />
+                <Widget
+                  name={'Hourly Forecast'}
+                  isActive={widgets.WeatherForecastHourly.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('WeatherForecastHourly', value); }}
+                  time={widgets.WeatherForecastHourly.time}
+                  setTime={(value) => { widgetSetTime('WeatherForecastHourly', value); }} 
+                />
+                <Widget
+                  name={'Daily Forecast'}
+                  isActive={widgets.WeatherForecastDaily.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('WeatherForecastDaily', value); }}
+                  time={widgets.WeatherForecastDaily.time}
+                  setTime={(value) => { widgetSetTime('WeatherForecastDaily', value); }} 
+                />
+                <Widget
+                  name={'Twitter'}
+                  isActive={widgets.Twitter.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('Twitter', value); }}
+                  time={widgets.Twitter.time}
+                  setTime={(value) => { widgetSetTime('Twitter', value); }} 
+                />
+                <Widget
+                  name={'Exchange Rates'}
+                  isActive={widgets.ExchangeRate.isActive}
+                  setIsActive={(value) => { widgetSetIsActive('ExchangeRate', value); }}
+                  time={widgets.ExchangeRate.time}
+                  setTime={(value) => { widgetSetTime('ExchangeRate', value); }} 
+                />
               </tbody>
             </Table>
           </Tab>
@@ -391,42 +292,48 @@ export default function ConfigModal({ show, onClose, onSave, configurations, loc
                 </tr>
               </thead>
               <tbody>
-                {service('GeoLocation',
-                  services.GeoLocation.isActive,
-                  ((value) => { serviceSetIsActive('GeoLocation', value); }),
-                  services.GeoLocation.time,
-                  ((value) => { serviceSetTime('GeoLocation', value); })
-                )}
-                {service('Current Weather',
-                  services.WeatherCurrent.isActive,
-                  ((value) => { serviceSetIsActive('WeatherCurrent', value); }),
-                  services.WeatherCurrent.time,
-                  ((value) => { serviceSetTime('WeatherCurrent', value); })
-                )}
-                {service('Hourly Forecast',
-                  services.WeatherForecastHourly.isActive,
-                  ((value) => { serviceSetIsActive('WeatherForecastHourly', value); }),
-                  services.WeatherForecastHourly.time,
-                  ((value) => { serviceSetTime('WeatherForecastHourly', value); })
-                )}
-                {service('Daily Forecast',
-                  services.WeatherForecastDaily.isActive,
-                  ((value) => { serviceSetIsActive('WeatherForecastDaily', value); }),
-                  services.WeatherForecastDaily.time,
-                  ((value) => { serviceSetTime('WeatherForecastDaily', value); })
-                )}
-                {service('Twitter',
-                  (services.Twitter || GetDefaultConfigurations().services.Twitter).isActive,
-                  ((value) => { serviceSetIsActive('Twitter', value); }),
-                  (services.Twitter || GetDefaultConfigurations().services.Twitter).time,
-                  ((value) => { serviceSetTime('Twitter', value); })
-                )}
-                {service('Exchange Rates',
-                  services.ExchangeRate.isActive,
-                  ((value) => { serviceSetIsActive('ExchangeRate', value); }),
-                  services.ExchangeRate.time,
-                  ((value) => { serviceSetTime('ExchangeRate', value); })
-                )}
+                <Service 
+                  name={'GeoLocation'}
+                  isActive={services.GeoLocation.isActive} 
+                  setIsActive={(value) => { serviceSetIsActive('GeoLocation', value)}}
+                  time={services.GeoLocation.time} 
+                  setTime={(value) => { serviceSetTime('GeoLocation', value); }} 
+                />
+                <Service 
+                  name={'Current Weather'}
+                  isActive={services.WeatherCurrent.isActive} 
+                  setIsActive={(value) => { serviceSetIsActive('WeatherCurrent', value)}}
+                  time={services.WeatherCurrent.time} 
+                  setTime={(value) => { serviceSetTime('WeatherCurrent', value); }} 
+                />
+                <Service 
+                  name={'Hourly Forecast'}
+                  isActive={services.WeatherForecastHourly.isActive} 
+                  setIsActive={(value) => { serviceSetIsActive('WeatherForecastHourly', value)}}
+                  time={services.WeatherForecastHourly.time} 
+                  setTime={(value) => { serviceSetTime('WeatherForecastHourly', value); }} 
+                />
+                <Service 
+                  name={'Daily Forecast'}
+                  isActive={services.WeatherForecastDaily.isActive} 
+                  setIsActive={(value) => { serviceSetIsActive('WeatherForecastDaily', value)}}
+                  time={services.WeatherForecastDaily.time} 
+                  setTime={(value) => { serviceSetTime('WeatherForecastDaily', value); }} 
+                />
+                <Service 
+                  name={'Twitter'}
+                  isActive={services.Twitter.isActive} 
+                  setIsActive={(value) => { serviceSetIsActive('Twitter', value)}}
+                  time={services.Twitter.time} 
+                  setTime={(value) => { serviceSetTime('Twitter', value); }} 
+                />
+                <Service 
+                  name={'Exchange Rates'}
+                  isActive={services.ExchangeRate.isActive} 
+                  setIsActive={(value) => { serviceSetIsActive('ExchangeRate', value)}}
+                  time={services.ExchangeRate.time} 
+                  setTime={(value) => { serviceSetTime('ExchangeRate', value); }} 
+                />
               </tbody>
             </Table>
           </Tab>
@@ -455,34 +362,27 @@ export default function ConfigModal({ show, onClose, onSave, configurations, loc
                   set_twitter(newT);
                 }} />
             </InputGroup>
-            <InputGroup>
+            <InputGroup className="mb-3">
               <InputGroup.Text id="">Max Date To Show</InputGroup.Text>
-                  <Form.Control type="text"
-                    placeholder="Time"
-                    value={twitter?.maxDateToShow?.value}
-                    onChange={(e) => {
-                      setTwitterTime(e.target.value);
-                    }} />
-
-                  <Form.Select onChange={(e) => { setTwitterTime(e.target.value); }}>
-                    <option>Select Time { twitter?.maxDateToShow?.type}</option>
-                    <option value="second" selected={twitter?.maxDateToShow?.type === "second"}>Seconds</option>
-                    <option value="minute" selected={twitter?.maxDateToShow?.type === "minute"}>Minutes</option>
-                    <option value="hour" selected={twitter?.maxDateToShow?.type === "hour"}>Hours</option>
-                    <option value="day" selected={twitter?.maxDateToShow?.type === "day"}>Days</option>
-                  </Form.Select>
+              <Interval
+                value={twitter?.maxDateToShow?.value}
+                type={twitter?.maxDateToShow?.type}
+                onValueChange={(e) => setTwitterTime(e.target.value)}
+                onTypeChange={(e) => setTwitterTime(e.target.value)}
+                style={{ maxWidth: '66%' }}
+              />
             </InputGroup>
           </Tab>
           <Tab eventKey="storage" title="Storage">
-            {storageElement(StorageKeys.configuration)}
-            {storageElement(StorageKeys.ipInfo)}
-            {storageElement(StorageKeys.cityInfo)}
-            {storageElement(StorageKeys.locationInfo)}
-            {storageElement(StorageKeys.currentConditions)}
-            {storageElement(StorageKeys.forecastHourly)}
-            {storageElement(StorageKeys.forecastDaily)}
-            {storageElement(StorageKeys.exchangeRate)}
-            {storageElement(StorageKeys.lastTweetBy)}
+            <StorageItem storageKey={StorageKeys.configuration} />
+            <StorageItem storageKey={StorageKeys.ipInfo} />
+            <StorageItem storageKey={StorageKeys.cityInfo} />
+            <StorageItem storageKey={StorageKeys.locationInfo} />
+            <StorageItem storageKey={StorageKeys.currentConditions} />
+            <StorageItem storageKey={StorageKeys.forecastHourly} />
+            <StorageItem storageKey={StorageKeys.forecastDaily} />
+            <StorageItem storageKey={StorageKeys.exchangeRate} />
+            <StorageItem storageKey={StorageKeys.lastTweetBy} />
           </Tab>
         </Tabs>
       </Modal.Body>
