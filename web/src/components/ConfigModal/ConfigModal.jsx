@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { 
-  Modal, 
-  Button, 
-  Tabs, 
+import {
+  Modal,
+  Button,
+  Tabs,
   Tab,
   Form,
   ButtonGroup,
@@ -16,20 +16,20 @@ import { Times } from "../../constants"
 import { StorageKeys, getStorageValue, clearStorageValue } from '../../services/DataService';
 import { GetDefaultConfigurations } from '../../services/ConfigService';
 
-export default function ConfigModal ({ show, onClose, onSave, configurations, locationInfo }) {
-  const localConfig  = {...configurations};
+export default function ConfigModal({ show, onClose, onSave, configurations, locationInfo }) {
+  const localConfig = { ...configurations };
   const [language, set_language] = useState(localConfig.language || '');
-  const [ipInfoApiKey, set_ipInfoApiKey] = useState(localConfig.IPINFO_API_KEY || ''); 
-  const [openWeatherMapApiKey, set_openWeatherMapApiKey] = useState(localConfig.OPENWEATHERMAP_API_KEY || ''); 
-  const [exchangeRateApiKey, set_exchangeRateApiKey] = useState(localConfig.EXCHANGERATE_API_KEY || ''); 
+  const [ipInfoApiKey, set_ipInfoApiKey] = useState(localConfig.IPINFO_API_KEY || '');
+  const [openWeatherMapApiKey, set_openWeatherMapApiKey] = useState(localConfig.OPENWEATHERMAP_API_KEY || '');
+  const [exchangeRateApiKey, set_exchangeRateApiKey] = useState(localConfig.EXCHANGERATE_API_KEY || '');
   const [homeDashboardApiKey, set_homeDashboardApiKey] = useState(localConfig.HOMEDASHBOARD_API_KEY);
   const [homeDashboardApiUrl, set_homeDashboardApiUrl] = useState(localConfig.HOMEDASHBOARD_API_URL);
-  const [twitterUsername, set_twitterUsername] = useState(localConfig.TWITTER_USERNAME);
-  const [widgets, set_widgets] = useState({...localConfig.widgets});
-  const [services, set_services] = useState({...localConfig.services});
+  const [widgets, set_widgets] = useState({ ...localConfig.widgets });
+  const [services, set_services] = useState({ ...localConfig.services });
+  const [twitter, set_twitter] = useState({ ...localConfig.twitter });
 
   const [storageDisplay, set_storageDisplay] = useState({});
-  
+
   const isSettingsValid = () => {
     return true;
   };
@@ -42,14 +42,15 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
       EXCHANGERATE_API_KEY: exchangeRateApiKey,
       HOMEDASHBOARD_API_KEY: homeDashboardApiKey,
       HOMEDASHBOARD_API_URL: homeDashboardApiUrl,
-      TWITTER_USERNAME: twitterUsername,
-      widgets: {...widgets},
-      services: {...services}
+      TWITTER_USERNAME: { ...twitter }.username,
+      widgets: { ...widgets },
+      services: { ...services },
+      twitter: { ...twitter }
     };
   };
 
   const widgetSetIsActive = (widgetName, value) => {
-    const _widgets = {...widgets};
+    const _widgets = { ...widgets };
 
     if (!_widgets[widgetName]) {
       _widgets[widgetName] = {
@@ -63,7 +64,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   };
 
   const widgetSetTime = (widgetName, value) => {
-    const _widgets = {...widgets};
+    const _widgets = { ...widgets };
 
     if (!_widgets[widgetName]) {
       _widgets[widgetName] = {
@@ -71,7 +72,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
         isActive: false
       };
     }
-                          
+
     if (isNaN(parseInt(value))) {
       _widgets[widgetName].time.type = value;
     }
@@ -90,25 +91,25 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
         <td>
           <ButtonGroup>
             <ToggleButton id={'widget_' + name + '_isActive'}
-                          type="checkbox"
-                          variant="outline-primary"
-                          checked={isActive}
-                          value="1"
-                          onChange={(e) => { setIsActive(e.target.checked) }}>
-            {isActive ? 'Yes': 'No'}
+              type="checkbox"
+              variant="outline-primary"
+              checked={isActive}
+              value="1"
+              onChange={(e) => { setIsActive(e.target.checked) }}>
+              {isActive ? 'Yes' : 'No'}
             </ToggleButton>
           </ButtonGroup>
         </td>
         <td>
           <Row>
             <Col xs={12} sm={12} md={6}>
-            <Form.Control type="text"
-                    placeholder="Time"
-                    value={time?.value} 
-                    onChange={(e) => { setTime(e.target.value) }} />
+              <Form.Control type="text"
+                placeholder="Time"
+                value={time?.value}
+                onChange={(e) => { setTime(e.target.value) }} />
             </Col>
             <Col xs={12} sm={12} md={6}>
-              <Form.Select onChange={(e) => {setTime(e.target.value) }}>
+              <Form.Select onChange={(e) => { setTime(e.target.value) }}>
                 <option>Select Time {time?.type}</option>
                 <option value="second" selected={time?.type === "second"}>Seconds</option>
                 <option value="minute" selected={time?.type === "minute"}>Minutes</option>
@@ -121,7 +122,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   }
 
   const serviceSetIsActive = (serviceName, value) => {
-    const _services = {...services};
+    const _services = { ...services };
 
     if (!_services[serviceName]) {
       _services[serviceName] = {
@@ -135,7 +136,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   };
 
   const serviceSetTime = (serviceName, value) => {
-    const _services = {...services};
+    const _services = { ...services };
 
     if (!_services[serviceName]) {
       _services[serviceName] = {
@@ -143,7 +144,7 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
         isActive: false
       };
     }
-                          
+
     if (isNaN(parseInt(value))) {
       _services[serviceName].time.type = value;
     }
@@ -162,25 +163,25 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
         <td>
           <ButtonGroup>
             <ToggleButton id={'service_' + name + '_isActive'}
-                          type="checkbox"
-                          variant="outline-primary"
-                          checked={isActive}
-                          value="1"
-                          onChange={(e) => { setIsActive(e.target.checked) }}>
-            {isActive ? 'Yes': 'No'}
+              type="checkbox"
+              variant="outline-primary"
+              checked={isActive}
+              value="1"
+              onChange={(e) => { setIsActive(e.target.checked) }}>
+              {isActive ? 'Yes' : 'No'}
             </ToggleButton>
           </ButtonGroup>
         </td>
         <td>
           <Row>
             <Col xs={12} sm={12} md={6}>
-            <Form.Control type="text"
-                    placeholder="Time"
-                    value={time?.value} 
-                    onChange={(e) => { setTime(e.target.value) }} />
+              <Form.Control type="text"
+                placeholder="Time"
+                value={time?.value}
+                onChange={(e) => { setTime(e.target.value) }} />
             </Col>
             <Col xs={12} sm={12} md={6}>
-              <Form.Select onChange={(e) => {setTime(e.target.value) }}>
+              <Form.Select onChange={(e) => { setTime(e.target.value) }}>
                 <option>Select Time {time?.type}</option>
                 <option value="second" selected={time?.type === "second"}>Seconds</option>
                 <option value="minute" selected={time?.type === "minute"}>Minutes</option>
@@ -196,26 +197,26 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
   const storageElement = (storageKey) => {
     return (
       <section className="mb-1">
-          <button className="btn btn-secondary btn-sm" 
-                  onClick={ () => { onStorageLabelClick(storageKey) } }>
-                    {storageDisplay[storageKey] === true ? 'Close' : 'Open'}
-          </button>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <label>
-            <strong>{storageKey}</strong>
-          </label>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <button className="btn btn-danger btn-sm"
-          onClick={ () => { onStorageClearClick(storageKey) }}>Clear</button>
-          { storageDisplay[storageKey] === true && <pre className="mb-1 mt-1 storageValue" id={'storage_' + storageKey} >
-            { JSON.stringify(getStorageValue(StorageKeys[storageKey]), null, 2) }
-          </pre> }
-        </section>
-      );
+        <button className="btn btn-secondary btn-sm"
+          onClick={() => { onStorageLabelClick(storageKey) }}>
+          {storageDisplay[storageKey] === true ? 'Close' : 'Open'}
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <strong>{storageKey}</strong>
+        </label>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button className="btn btn-danger btn-sm"
+          onClick={() => { onStorageClearClick(storageKey) }}>Clear</button>
+        {storageDisplay[storageKey] === true && <pre className="mb-1 mt-1 storageValue" id={'storage_' + storageKey} >
+          {JSON.stringify(getStorageValue(StorageKeys[storageKey]), null, 2)}
+        </pre>}
+      </section>
+    );
   };
 
   const onStorageLabelClick = (key) => {
-    const _storageDisplay = {...storageDisplay};
+    const _storageDisplay = { ...storageDisplay };
     _storageDisplay[key] = !_storageDisplay[key];
     set_storageDisplay(_storageDisplay);
   };
@@ -224,14 +225,32 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
     clearStorageValue(key);
   };
 
+  const setTwitterTime = (value) => {
+    let newTwitter = {...twitter};
+
+    if(!newTwitter.maxDateToShow) {
+      newTwitter.maxDateToShow = {value: 0, type: "second", total: (0 * Times.second)};
+    }
+
+    if (isNaN(parseInt(value))) {
+      newTwitter.maxDateToShow.type = value;
+    }
+    else {
+      newTwitter.maxDateToShow.value = parseInt(value);
+    }
+
+    newTwitter.maxDateToShow.total = newTwitter?.maxDateToShow?.value * Times[newTwitter?.maxDateToShow?.type];
+    set_twitter(newTwitter);
+  };
+
   return (
-    <Modal show={show} 
-           size="xl" 
-           animation={false} 
-           centered={true} 
-           scrollable={true} 
-           className="modalConfig"
-           style={{ overflow: 'scroll', width: '100%' }}>
+    <Modal show={show}
+      size="xl"
+      animation={false}
+      centered={true}
+      scrollable={true}
+      className="modalConfig"
+      style={{ overflow: 'scroll', width: '100%' }}>
       <Modal.Header>
         <Modal.Title>Configuration</Modal.Title>
       </Modal.Header>
@@ -242,64 +261,64 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
             <br />
             <ButtonGroup>
               <ToggleButton type="radio"
-                            id="language-en" 
-                            name="language" 
-                            value="en"
-                            checked={language === 'en'}
-                            onChange={ (e) => { if(e.target.checked) set_language(e.target.value); } }
-                            variant="outline-primary" >
+                id="language-en"
+                name="language"
+                value="en"
+                checked={language === 'en'}
+                onChange={(e) => { if (e.target.checked) set_language(e.target.value); }}
+                variant="outline-primary" >
                 EN
               </ToggleButton>
               <ToggleButton type="radio"
-                            id="language-es"
-                            name="language" 
-                            value="es"
-                            checked={language === 'es'}
-                            onChange={ (e) => { if(e.target.checked) set_language(e.target.value); } }
-                            variant="outline-primary" >
+                id="language-es"
+                name="language"
+                value="es"
+                checked={language === 'es'}
+                onChange={(e) => { if (e.target.checked) set_language(e.target.value); }}
+                variant="outline-primary" >
                 ES
               </ToggleButton>
             </ButtonGroup>
             <br /><br />
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon3">
-                  IpInfo ApI Key
-                </InputGroup.Text>
-                <Form.Control type="text"
-                              placeholder="IpInfo ApI Key"
-                              value={ipInfoApiKey} 
-                              onChange={(e) => { set_ipInfoApiKey(e.target.value); }} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon3">OpenWeatherMap API Key</InputGroup.Text>
-                <Form.Control type="text" 
-                              placeholder="OpenWeatherMap API Key" 
-                              value={openWeatherMapApiKey} 
-                              onChange={(e) => { set_openWeatherMapApiKey(e.target.value); }} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon3">ExchangeRate API Key</InputGroup.Text>
-                <Form.Control type="text"
-                              placeholder="ExchangeRate API Key"
-                              value={exchangeRateApiKey} 
-                              onChange={(e) => { set_exchangeRateApiKey(e.target.value); }} />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text >Home Dashboard URL</InputGroup.Text>
-                <Form.Control type="text"
-                              placeholder="Home Dashboard URL"
-                              value={homeDashboardApiUrl}
-                              onChange={(e) => { set_homeDashboardApiUrl(e.target.value); }}>
-                </Form.Control>
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text >Home Dashboard API Key</InputGroup.Text>
-                <Form.Control type="text"
-                              placeholder="Home Dashboard API Key"
-                              value={homeDashboardApiKey}
-                              onChange={(e) => { set_homeDashboardApiKey(e.target.value); }}>
-                </Form.Control>
-              </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text id="basic-addon3">
+                IpInfo ApI Key
+              </InputGroup.Text>
+              <Form.Control type="text"
+                placeholder="IpInfo ApI Key"
+                value={ipInfoApiKey}
+                onChange={(e) => { set_ipInfoApiKey(e.target.value); }} />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text id="basic-addon3">OpenWeatherMap API Key</InputGroup.Text>
+              <Form.Control type="text"
+                placeholder="OpenWeatherMap API Key"
+                value={openWeatherMapApiKey}
+                onChange={(e) => { set_openWeatherMapApiKey(e.target.value); }} />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text id="basic-addon3">ExchangeRate API Key</InputGroup.Text>
+              <Form.Control type="text"
+                placeholder="ExchangeRate API Key"
+                value={exchangeRateApiKey}
+                onChange={(e) => { set_exchangeRateApiKey(e.target.value); }} />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text >Home Dashboard URL</InputGroup.Text>
+              <Form.Control type="text"
+                placeholder="Home Dashboard URL"
+                value={homeDashboardApiUrl}
+                onChange={(e) => { set_homeDashboardApiUrl(e.target.value); }}>
+              </Form.Control>
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text >Home Dashboard API Key</InputGroup.Text>
+              <Form.Control type="text"
+                placeholder="Home Dashboard API Key"
+                value={homeDashboardApiKey}
+                onChange={(e) => { set_homeDashboardApiKey(e.target.value); }}>
+              </Form.Control>
+            </InputGroup>
           </Tab>
           <Tab eventKey="widgets" title="Widgets" style={{ width: '100%' }}>
             <Table >
@@ -310,54 +329,54 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                   <td>Time</td>
                 </tr>
               </thead>
-              <tbody> 
-                { widget('Date & Time', 
-                          widgets.DateTime.isActive, 
-                          ((value) => { widgetSetIsActive('DateTime', value); }), 
-                          widgets.DateTime.time,
-                          ((value) => { widgetSetTime('DateTime', value); })
+              <tbody>
+                {widget('Date & Time',
+                  widgets.DateTime.isActive,
+                  ((value) => { widgetSetIsActive('DateTime', value); }),
+                  widgets.DateTime.time,
+                  ((value) => { widgetSetTime('DateTime', value); })
                 )}
-                { widget('Calendar', 
-                        widgets.Calendar.isActive, 
-                        ((value) => { widgetSetIsActive('Calendar', value); }), 
-                        widgets.Calendar.time,
-                        ((value) => { widgetSetTime('Calendar', value); })
+                {widget('Calendar',
+                  widgets.Calendar.isActive,
+                  ((value) => { widgetSetIsActive('Calendar', value); }),
+                  widgets.Calendar.time,
+                  ((value) => { widgetSetTime('Calendar', value); })
                 )}
-                { widget('Current Weather', 
-                        widgets.WeatherCurrent.isActive, 
-                        ((value) => { widgetSetIsActive('WeatherCurrent', value); }), 
-                        widgets.WeatherCurrent.time,
-                        ((value) => { widgetSetTime('WeatherCurrent', value); })
+                {widget('Current Weather',
+                  widgets.WeatherCurrent.isActive,
+                  ((value) => { widgetSetIsActive('WeatherCurrent', value); }),
+                  widgets.WeatherCurrent.time,
+                  ((value) => { widgetSetTime('WeatherCurrent', value); })
                 )}
-                { widget('Current Weather Comp', 
-                        widgets.WeatherCurrentComp.isActive, 
-                        ((value) => { widgetSetIsActive('WeatherCurrentComp', value); }), 
-                        widgets.WeatherCurrentComp.time,
-                        ((value) => { widgetSetTime('WeatherCurrentComp', value); })
+                {widget('Current Weather Comp',
+                  widgets.WeatherCurrentComp.isActive,
+                  ((value) => { widgetSetIsActive('WeatherCurrentComp', value); }),
+                  widgets.WeatherCurrentComp.time,
+                  ((value) => { widgetSetTime('WeatherCurrentComp', value); })
                 )}
-                { widget('Hourly Forecast', 
-                        widgets.WeatherForecastHourly.isActive, 
-                        ((value) => { widgetSetIsActive('WeatherForecastHourly', value); }), 
-                        widgets.WeatherForecastHourly.time,
-                        ((value) => { widgetSetTime('WeatherForecastHourly', value); })
+                {widget('Hourly Forecast',
+                  widgets.WeatherForecastHourly.isActive,
+                  ((value) => { widgetSetIsActive('WeatherForecastHourly', value); }),
+                  widgets.WeatherForecastHourly.time,
+                  ((value) => { widgetSetTime('WeatherForecastHourly', value); })
                 )}
-                { widget('Daily Forecast', 
-                        widgets.WeatherForecastDaily.isActive, 
-                        ((value) => { widgetSetIsActive('WeatherForecastDaily', value); }), 
-                        widgets.WeatherForecastDaily.time,
-                        ((value) => { widgetSetTime('WeatherForecastDaily', value); })
+                {widget('Daily Forecast',
+                  widgets.WeatherForecastDaily.isActive,
+                  ((value) => { widgetSetIsActive('WeatherForecastDaily', value); }),
+                  widgets.WeatherForecastDaily.time,
+                  ((value) => { widgetSetTime('WeatherForecastDaily', value); })
                 )}
-                { widget('Twitter', 
-                        (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).isActive, 
-                        ((value) => { widgetSetIsActive('Twitter', value); }), 
-                        (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).time,
-                        ((value) => { widgetSetTime('Twitter', value); })
+                {widget('Twitter',
+                  (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).isActive,
+                  ((value) => { widgetSetIsActive('Twitter', value); }),
+                  (widgets.Twitter || GetDefaultConfigurations().widgets.Twitter).time,
+                  ((value) => { widgetSetTime('Twitter', value); })
                 )}
-                { widget('Exchange Rates', 
-                        widgets.ExchangeRate.isActive, 
-                        ((value) => { widgetSetIsActive('ExchangeRate', value); }), 
-                        widgets.ExchangeRate.time,
-                        ((value) => { widgetSetTime('ExchangeRate', value); })
+                {widget('Exchange Rates',
+                  widgets.ExchangeRate.isActive,
+                  ((value) => { widgetSetIsActive('ExchangeRate', value); }),
+                  widgets.ExchangeRate.time,
+                  ((value) => { widgetSetTime('ExchangeRate', value); })
                 )}
               </tbody>
             </Table>
@@ -371,42 +390,42 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
                   <td>Time</td>
                 </tr>
               </thead>
-              <tbody> 
-                { service('GeoLocation',
-                    services.GeoLocation.isActive,
-                    ((value) => { serviceSetIsActive('GeoLocation', value); }),
-                    services.GeoLocation.time,
-                    ((value) => { serviceSetTime('GeoLocation', value); })
+              <tbody>
+                {service('GeoLocation',
+                  services.GeoLocation.isActive,
+                  ((value) => { serviceSetIsActive('GeoLocation', value); }),
+                  services.GeoLocation.time,
+                  ((value) => { serviceSetTime('GeoLocation', value); })
                 )}
-                { service('Current Weather', 
-                    services.WeatherCurrent.isActive, 
-                    ((value) => { serviceSetIsActive('WeatherCurrent', value); }),
-                    services.WeatherCurrent.time,
-                    ((value) => { serviceSetTime('WeatherCurrent', value); })
+                {service('Current Weather',
+                  services.WeatherCurrent.isActive,
+                  ((value) => { serviceSetIsActive('WeatherCurrent', value); }),
+                  services.WeatherCurrent.time,
+                  ((value) => { serviceSetTime('WeatherCurrent', value); })
                 )}
-                { service('Hourly Forecast', 
-                    services.WeatherForecastHourly.isActive, 
-                    ((value) => { serviceSetIsActive('WeatherForecastHourly', value); }),
-                    services.WeatherForecastHourly.time,
-                    ((value) => { serviceSetTime('WeatherForecastHourly', value); })
+                {service('Hourly Forecast',
+                  services.WeatherForecastHourly.isActive,
+                  ((value) => { serviceSetIsActive('WeatherForecastHourly', value); }),
+                  services.WeatherForecastHourly.time,
+                  ((value) => { serviceSetTime('WeatherForecastHourly', value); })
                 )}
-                { service('Daily Forecast', 
-                    services.WeatherForecastDaily.isActive, 
-                    ((value) => { serviceSetIsActive('WeatherForecastDaily', value); }),
-                    services.WeatherForecastDaily.time,
-                    ((value) => { serviceSetTime('WeatherForecastDaily', value); })
+                {service('Daily Forecast',
+                  services.WeatherForecastDaily.isActive,
+                  ((value) => { serviceSetIsActive('WeatherForecastDaily', value); }),
+                  services.WeatherForecastDaily.time,
+                  ((value) => { serviceSetTime('WeatherForecastDaily', value); })
                 )}
-                { service('Twitter', 
-                    (services.Twitter || GetDefaultConfigurations().services.Twitter).isActive, 
-                    ((value) => { serviceSetIsActive('Twitter', value); }),
-                    (services.Twitter || GetDefaultConfigurations().services.Twitter).time,
-                    ((value) => { serviceSetTime('Twitter', value); })
+                {service('Twitter',
+                  (services.Twitter || GetDefaultConfigurations().services.Twitter).isActive,
+                  ((value) => { serviceSetIsActive('Twitter', value); }),
+                  (services.Twitter || GetDefaultConfigurations().services.Twitter).time,
+                  ((value) => { serviceSetTime('Twitter', value); })
                 )}
-                { service('Exchange Rates', 
-                    services.ExchangeRate.isActive, 
-                    ((value) => { serviceSetIsActive('ExchangeRate', value); }),
-                    services.ExchangeRate.time,
-                    ((value) => { serviceSetTime('ExchangeRate', value); })
+                {service('Exchange Rates',
+                  services.ExchangeRate.isActive,
+                  ((value) => { serviceSetIsActive('ExchangeRate', value); }),
+                  services.ExchangeRate.time,
+                  ((value) => { serviceSetTime('ExchangeRate', value); })
                 )}
               </tbody>
             </Table>
@@ -414,37 +433,70 @@ export default function ConfigModal ({ show, onClose, onSave, configurations, lo
           <Tab eventKey="twitter" title="Twitter">
             <Form.Label style={{ fontWeight: '900' }}>Last Tweet by</Form.Label>
             <InputGroup className="mb-3">
-                  <InputGroup.Text id="basic-addon3">Username</InputGroup.Text>
-                  <Form.Control type="text" 
-                                placeholder="Twitter username" 
-                                value={twitterUsername} 
-                                onChange={(e) => { set_twitterUsername(e.target.value); }} />
+              <InputGroup.Text id="basic-addon3">Username</InputGroup.Text>
+              <Form.Control type="text"
+                placeholder="Twitter username"
+                value={twitter.username}
+                onChange={(e) => {
+                  let newT = { ...twitter };
+                  newT.username = e.target.value;
+                  set_twitter(newT);
+                }} />
+            </InputGroup>
+            <InputGroup className="mb-3">
+              <InputGroup.Text id="">Tweets To Show</InputGroup.Text>
+              <Form.Control type="number"
+                placeholder="Tweets To Show"
+                min="2"
+                value={twitter.tweetsToShow}
+                onChange={(e) => {
+                  let newT = { ...twitter };
+                  newT.tweetsToShow = e.target.value;
+                  set_twitter(newT);
+                }} />
+            </InputGroup>
+            <InputGroup>
+              <InputGroup.Text id="">Max Date To Show</InputGroup.Text>
+                  <Form.Control type="text"
+                    placeholder="Time"
+                    value={twitter?.maxDateToShow?.value}
+                    onChange={(e) => {
+                      setTwitterTime(e.target.value);
+                    }} />
+
+                  <Form.Select onChange={(e) => { setTwitterTime(e.target.value); }}>
+                    <option>Select Time { twitter?.maxDateToShow?.type}</option>
+                    <option value="second" selected={twitter?.maxDateToShow?.type === "second"}>Seconds</option>
+                    <option value="minute" selected={twitter?.maxDateToShow?.type === "minute"}>Minutes</option>
+                    <option value="hour" selected={twitter?.maxDateToShow?.type === "hour"}>Hours</option>
+                    <option value="day" selected={twitter?.maxDateToShow?.type === "day"}>Days</option>
+                  </Form.Select>
             </InputGroup>
           </Tab>
           <Tab eventKey="storage" title="Storage">
-            { storageElement(StorageKeys.configuration) }
-            { storageElement(StorageKeys.ipInfo) }
-            { storageElement(StorageKeys.cityInfo) }
-            { storageElement(StorageKeys.locationInfo) }
-            { storageElement(StorageKeys.currentConditions) }
-            { storageElement(StorageKeys.forecastHourly) }
-            { storageElement(StorageKeys.forecastDaily) }
-            { storageElement(StorageKeys.exchangeRate) }
-            { storageElement(StorageKeys.lastTweetBy) }
+            {storageElement(StorageKeys.configuration)}
+            {storageElement(StorageKeys.ipInfo)}
+            {storageElement(StorageKeys.cityInfo)}
+            {storageElement(StorageKeys.locationInfo)}
+            {storageElement(StorageKeys.currentConditions)}
+            {storageElement(StorageKeys.forecastHourly)}
+            {storageElement(StorageKeys.forecastDaily)}
+            {storageElement(StorageKeys.exchangeRate)}
+            {storageElement(StorageKeys.lastTweetBy)}
           </Tab>
         </Tabs>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" 
-                size="lg" 
-                onClick={onClose} >
-            Close
+        <Button variant="secondary"
+          size="lg"
+          onClick={onClose} >
+          Close
         </Button>
         <Button variant="primary"
-                size="lg"
-                disabled={!isSettingsValid()}
-                onClick={() => { onSave(getObject()); }} >
-            Save Config
+          size="lg"
+          disabled={!isSettingsValid()}
+          onClick={() => { onSave(getObject()); }} >
+          Save Config
         </Button>
       </Modal.Footer>
     </Modal>

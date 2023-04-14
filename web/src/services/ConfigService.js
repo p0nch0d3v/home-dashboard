@@ -19,6 +19,11 @@ export function GetDefaultConfigurations () {
         HOMEDASHBOARD_API_URL: "",
         HOMEDASHBOARD_API_KEY : "",
         TWITTER_USERNAME: "",
+        twitter: {
+            username: "",
+            tweetsToShow: 1,
+            maxDateToShow: { value: 7, type: "day", total: (7 * Times.day) }
+        },
         widgets: {
             DateTime: { 
                 time: { value: 20, type: "second", total: (20 * Times.second) }, 
