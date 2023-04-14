@@ -79,7 +79,7 @@ export async function GetLastTweetBy(force = false) {
         }
     }
 
-    lastTweetByInfo?.lastTweets = [...lastTweets];
+    lastTweetByInfo.lastTweets = [...lastTweets];
 
     setStorageValue(StorageKeys.lastTweetBy, lastTweetByInfo);
 
