@@ -23,19 +23,19 @@ export function getUvIndexDescription(uv, t) {
 
 export function getUvIndexColor(uv) {
   if (uv >=1 && uv <= 2){
-    return "#00800080"; //Green
+    return "rgba(0, 128, 0, 0.6)"; //Green
   }
   else if (uv >= 3 && uv <= 5){
-      return "#FFFF0080"; // Yellow
+      return "rgba(255, 255, 0, 0.6)"; // Yellow
   }
   else if (uv >= 6 && uv <= 7){
-      return "#FFA50080"; // Orange
+      return "rgba(255, 165, 0, 0.6)"; // Orange
   }
   else if (uv >= 8 && uv <= 10){
-      return "#FF000080"; // Red
+      return "#rgba(255, 0, 0, 0.6)"; // Red
   }
   else if (uv >= 11 ){
-      return "#FF00FF80"; // Magenta;
+      return "rgba(255, 0, 255, 0.6)"; // Magenta;
   }
   else {
       return "";
