@@ -1,15 +1,15 @@
 import React from 'react';
 import './MainHeader.scss';
 
-export default function MainHeader({ date, time, temp, feelTemp, iconCode, onTouchEnd, className }){
+export default function MainHeader({ date, time, temp, feelTemp, iconCode, uvColor, onTouchEnd, className }) {
     const separator = <span className='v-separator'></span>;
     let items = [];
     if (time) {
         items.push(<div className="time">{time}</div>);
     }
-    if (temp && feelTemp && iconCode) {
+    if (temp && feelTemp) {
         items.push( 
-            <div className="temp">
+            <div className="temp" style={{ backgroundColor: uvColor }}>
             {
                 iconCode ? <span style={{marginRight: '0.5rem'}} className={'icon ' + iconCode}></span>
                 : <></>
