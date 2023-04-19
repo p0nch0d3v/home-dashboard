@@ -160,7 +160,8 @@ export default function MainSlider(props) {
       <MainHeader className="only-weather" 
                   temp={weather?.temp?.formatted}
                   feelTemp={weather?.feel?.formatted} 
-                  iconCode={weather?.iconCode} 
+                  iconCode={weather?.iconCode}
+                  uvColor={weather?.uv?.color}
                   onTouchEnd={fullscreenHandler} /> 
       ) : <></>
     );
@@ -178,6 +179,7 @@ export default function MainSlider(props) {
                   feelTemp={weather?.feel?.formatted}
                   time={time} 
                   iconCode={weather?.iconCode} 
+                  uvColor={weather?.uv?.color}
                   onTouchEnd={fullscreenHandler} />
       ) : <></>
     );
@@ -189,6 +191,7 @@ export default function MainSlider(props) {
                   date={headerFormattedDate}
                   time={time} 
                   iconCode={weather?.iconCode} 
+                  uvColor={weather?.uv?.color}
                   onTouchEnd={fullscreenHandler} />
       ) : <></>
     );

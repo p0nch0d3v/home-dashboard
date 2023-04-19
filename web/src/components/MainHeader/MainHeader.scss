@@ -21,6 +21,7 @@
     align-items: center;
     display: flex;
     height: 100%;
+    padding: 0 0.25rem 0 0.25rem;
 
     @include icon(8vh, 8vh, 8vh, 8vh);
   }

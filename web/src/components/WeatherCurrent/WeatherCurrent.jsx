@@ -17,7 +17,8 @@ export default function WeatherCurrent({ weather, currentForecast }) {
                 <div className="weatherCurrent_item weather-icon borderRight col-6 m-0 p-0">
                     <span className={'icon ' + weather?.iconCode}></span>
                 </div>
-                <div className="weatherCurrent_item weather-temp col-6 m-0 p-0">
+                <div className="weatherCurrent_item weather-temp col-6 m-0 p-0"
+                     style={{ backgroundColor: weather?.uv?.color }}    >
                     <>{temp}{feelTemp}</>
                 </div>
             </div>
