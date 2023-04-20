@@ -32,7 +32,7 @@ export function getUvIndexColor(uv) {
       return "rgba(255, 165, 0, 0.6)"; // Orange
   }
   else if (uv >= 8 && uv <= 10){
-      return "#rgba(255, 0, 0, 0.6)"; // Red
+      return "rgba(255, 0, 0, 0.6)"; // Red
   }
   else if (uv >= 11 ){
       return "rgba(255, 0, 255, 0.6)"; // Magenta;
