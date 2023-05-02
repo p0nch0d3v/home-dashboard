@@ -11,12 +11,14 @@ export const StorageKeys = {
         forecastHourly: 'lastforecastHourlyUpdate',
         forecastDaily: 'lastforecastDailyUpdate',
         exchangeRate: 'lastExchangeRateUpdate',
-        lastTweetBy: 'lastLastTweetByUpdate'
+        lastTweetBy: 'lastLastTweetByUpdate',
+        airQuality: 'lastAirQualityUpdate'
     },
     session: 'session',
     local: 'local',
     configuration: 'configuration',
-    lastTweetBy: 'lastTweetBy'
+    lastTweetBy: 'lastTweetBy',
+    airQuality: 'airQuality'
 };
 
 export function getStorageValue(key, storage = StorageKeys.local) {

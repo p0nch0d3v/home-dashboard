@@ -11,7 +11,8 @@ import {
     consoleDebug,
     capitalize,
     getMoonPhaseTextAndClass,
-    getUvIndexColor
+    getUvIndexColor,
+    getAitQualityDescription
 } from '../helpers';
 
 import {
@@ -109,6 +110,37 @@ export async function getCurrentWeather(latitude, longitude, translator, force =
         }
     }
     return conditionsInfo;
+}
+
+export async function getCurrentAirQuality(latitude, longitude, translator, force = false) {
+    
+    dayjs.locale(GetConfigurations().language);
+    let airQualityInfo = getStorageValue(StorageKeys.airQuality);
+    if (airQualityInfo && force === false) {
+        return airQualityInfo;
+    }
+    else if (latitude && longitude) {
+        consoleDebug('Calling Air Quality');
+        const url =`https://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${GetConfigurations().OPENWEATHERMAP_API_KEY}`
+
+        let airQuality = await axios({
+            method: 'GET',
+            url: url
+        }).then(r => r.data.list[0] )
+        .catch(e => { console.warn(e); return null; });
+
+        if (airQuality) {
+            airQualityInfo = {
+                aqi: airQuality.main.aqi,
+                aqiText: getAitQualityDescription(airQuality.main.aqi, translator),
+                components: airQuality.components
+            }
+
+            setStorageValue(StorageKeys.airQuality, airQualityInfo);
+            setStorageValue(StorageKeys.lastUpdate.airQuality, Date.now());
+        }
+    }
+    return airQualityInfo;
 }
 
 export async function getForecastHourly(latitude, longitude, translator, force = false) {

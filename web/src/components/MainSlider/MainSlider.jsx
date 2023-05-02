@@ -12,7 +12,8 @@ import './MainSlider.scss';
 import {
   getCurrentWeather,
   getForecastHourly,
-  getForecastDaily
+  getForecastDaily,
+  getCurrentAirQuality
 } from '../../services/OpenWeatherMap';
 
 import { getLocationInfo } from '../../services/LocationService'
@@ -74,6 +75,7 @@ export default function MainSlider(props) {
   const [forecastDaily, set_forecastDaily] = useState([]);
   const [exchangeRates, set_exchangeRates] = useState([]);
   const [lastTweetBy, set_lastTweetBy] = useState(null);
+  const [airQuality, set_airQuality] = useState(null);
 
   const { t } = useTranslation();
 
@@ -249,7 +251,9 @@ export default function MainSlider(props) {
                               sunset={weather.formattedSunset} 
                               dayLigthData={weather.dayLigthData}
                               dayLight={weather?.formattedDayLight}
-                              moon={currentMoon} />
+                              moon={currentMoon} 
+                              airQuality={airQuality}
+                              />
         </>
       );
       newSliderTimes.push(configurations?.widgets?.WeatherCurrentComp?.time?.total);
@@ -348,10 +352,17 @@ export default function MainSlider(props) {
     force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.WeatherCurrent?.time?.total) || !lastUpdate;
 
     let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
+    let currentAirQuality = await getCurrentAirQuality(location?.coordinates?.latitude, location?.coordinates?.longitude, t, false);
 
     if (currentWeather) {
       set(() => {
         set_weather(currentWeather);
+      });
+    }
+    
+    if (currentAirQuality) {
+      set(() => {
+        set_airQuality(currentAirQuality)
       });
     }
   };
