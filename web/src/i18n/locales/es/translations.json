@@ -35,5 +35,12 @@
     "WaningCrescent": "Luna Menguante",
 
     "Day": "Dia",
-    "Remaining": "quedan"
+    "Remaining": "quedan",
+
+    "AirQuality": "Calidad del Aire",
+    "AQ_Good": "Buena",
+    "AQ_Fair": "Regular",
+    "AQ_Moderate": "Moderada",
+    "AQ_Poor": "Deficiente",
+    "AQ_VeryPoor": "Muy Deficiente"
 }

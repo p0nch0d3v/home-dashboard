@@ -8,6 +8,7 @@ import Pressure from './Pressure';
 import Wind from './Wind';
 import SunInfo from './SunInfo';
 import MoonInfo from './MoonInfo';
+import AirQuality from './AirQuality';
 
 function WeatherCurrentComp(
     { uv,
@@ -18,7 +19,8 @@ function WeatherCurrentComp(
         sunset,
         dayLight,
         moon,
-        dayLigthData
+        dayLigthData,
+        airQuality
     }) {
     const { t } = useTranslation();
 
@@ -39,7 +41,9 @@ function WeatherCurrentComp(
 
     const moonInfo_item = (moon && <MoonInfo moon={moon} />);
 
-    let items_array = [uv_item, humidity_item, pressure_item, wind_item, sunInfo_item, moonInfo_item];
+    const airQuality_item = (airQuality && <AirQuality aqi={airQuality.aqi} text={airQuality.aqiText} />)
+
+    let items_array = [uv_item, humidity_item, airQuality_item, wind_item, sunInfo_item, moonInfo_item];
 
     return (
         <div className="weatherCurrentComp">

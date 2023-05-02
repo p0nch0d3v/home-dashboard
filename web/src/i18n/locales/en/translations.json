@@ -31,7 +31,13 @@
     "WaningGibbous": "Waning Gibbous",
     "LastQuarterMoon": "Last Quarter Moon",
     "WaningCrescent": "Waning Crescent",
-    
     "Day": "Day",
-    "Remaining": "remaining"
+    "Remaining": "remaining",
+
+    "AirQuality": "Air Quality",
+    "AQ_Good": "Good",
+    "AQ_Fair": "Fair",
+    "AQ_Moderate": "Moderate",
+    "AQ_Poor": "Poor",
+    "AQ_VeryPoor": "Very Poor"
 }

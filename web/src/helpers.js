@@ -185,3 +185,24 @@ export const shuffle_array = (array) => {
   }
   return array;
 }
+
+export function getAitQualityDescription(aqi, t) {
+  if (aqi === 1) {
+    return t("AQ_Good");
+  }
+  else if (aqi === 2) {
+    return t("AQ_Fair");
+  }
+  else if (aqi === 3) {
+    return t("AQ_Moderate");
+  }
+  else if (aqi === 4) {
+    return t("AQ_Poor");
+  }
+  else if (aqi === 5) {
+    return t("AQ_VeryPoor");
+  }
+  else {
+    return "";
+  }
+}
