@@ -41,7 +41,7 @@ function WeatherCurrentComp(
 
     const moonInfo_item = (moon && <MoonInfo moon={moon} />);
 
-    const airQuality_item = (airQuality && <AirQuality aqi={airQuality.aqi} text={airQuality.aqiText} />)
+    const airQuality_item = (airQuality && <AirQuality aqi={airQuality.aqi} text={airQuality.aqiText} aqiColor={airQuality.aqiColor} />)
 
     let items_array = [uv_item, humidity_item, airQuality_item, wind_item, sunInfo_item, moonInfo_item];
 

@@ -5,7 +5,7 @@ function Humidity({ humidity }) {
 
     return (
         <div className="weatherCurrentComp_item borderAll">
-            <div>
+            <div className='uppercase'>
                 <span>💧</span> 
                 {' '}
                 {t("Humidity")}

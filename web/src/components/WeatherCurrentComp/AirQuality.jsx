@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
-function AirQuality({ aqi, text }) {
+function AirQuality({ aqi, text, aqiColor }) {
     const { t } = useTranslation();
 
     return (
         <div className="airQuality weatherCurrentComp_item borderAll">
-            <div>
+            <div className='uppercase'>
                 <span>🍃</span>
                 {' '}
-                {t("AirQuality")}:
+                {t("AirQuality")}
             </div>
-            <div>{text}</div>
+            <div style={{ backgroundColor: aqiColor }}>{text}</div>
         </div>
     );
 }

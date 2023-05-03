@@ -206,3 +206,22 @@ export function getAitQualityDescription(aqi, t) {
     return "";
   }
 }
+
+export function getAirQualityColor(aqi) {
+  if (aqi === 1) {
+    return "rgba(0, 128, 0, 0.6)"; //Green
+  } 
+  else if (aqi === 2) {
+    return "rgba(255, 255, 0, 0.6)"; // Yellow
+  } 
+  else if (aqi === 3) {
+    return "rgba(255, 165, 0, 0.6)"; // Orange
+  } 
+  else if (aqi === 4) {
+    return "rgba(255, 0, 0, 0.6)"; // Red
+  }
+  else if (aqi === 5) {
+    return "rgba(255, 0, 255, 0.6)"; // Magenta;
+  }
+  else return "";
+}
