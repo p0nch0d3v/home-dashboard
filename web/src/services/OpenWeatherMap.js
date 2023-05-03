@@ -12,7 +12,8 @@ import {
     capitalize,
     getMoonPhaseTextAndClass,
     getUvIndexColor,
-    getAitQualityDescription
+    getAitQualityDescription,
+    getAirQualityColor
 } from '../helpers';
 
 import {
@@ -133,7 +134,8 @@ export async function getCurrentAirQuality(latitude, longitude, translator, forc
             airQualityInfo = {
                 aqi: airQuality.main.aqi,
                 aqiText: getAitQualityDescription(airQuality.main.aqi, translator),
-                components: airQuality.components
+                components: airQuality.components,
+                aqiColor: getAirQualityColor(airQuality.main.aqi)
             }
 
             setStorageValue(StorageKeys.airQuality, airQualityInfo);

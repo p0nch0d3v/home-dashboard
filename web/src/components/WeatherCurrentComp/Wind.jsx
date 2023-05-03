@@ -5,7 +5,7 @@ function Wind({ wind }) {
 
     return (
         <div className="weatherCurrentComp_item borderAll">
-            <div>
+            <div className='uppercase'>
                 <span>💨</span>
                 {' '}
                 {t("Wind")}

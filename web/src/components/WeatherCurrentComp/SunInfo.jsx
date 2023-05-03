@@ -5,7 +5,7 @@ function SunInfo({ sunrise, dayLight, sunset }) {
     
     return (
         <div className="weatherCurrentComp_item sunInfo borderAll">
-            <div>{t("DayLigth")}</div>
+            <div className='uppercase'>{t("DayLigth")}</div>
             <div className="sunrise">
                 <span>🌞</span>
                 <span>{sunrise}</span>
