@@ -352,7 +352,7 @@ export default function MainSlider(props) {
     force = force || ((now - dayjs(lastUpdate)) >= configurations?.services?.WeatherCurrent?.time?.total) || !lastUpdate;
 
     let currentWeather = await getCurrentWeather(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
-    let currentAirQuality = await getCurrentAirQuality(location?.coordinates?.latitude, location?.coordinates?.longitude, t, false);
+    let currentAirQuality = await getCurrentAirQuality(location?.coordinates?.latitude, location?.coordinates?.longitude, t, force);
 
     if (currentWeather) {
       set(() => {
