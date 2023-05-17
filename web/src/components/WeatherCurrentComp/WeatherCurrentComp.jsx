@@ -9,7 +9,6 @@ import Wind from './Wind';
 import SunInfo from './SunInfo';
 import MoonInfo from './MoonInfo';
 import AirQuality from './AirQuality';
-import { shuffle_array } from '../../helpers';
 
 function WeatherCurrentComp(
     { uv,
@@ -25,7 +24,7 @@ function WeatherCurrentComp(
     }) {
     const { t } = useTranslation();
 
-    const uv_item = (uv && uv?.index > 0 && <UVIndex uv={uv} />);
+    const uv_item = (<UVIndex uv={uv} />);
 
     const humidity_item = (<Humidity humidity={humidity} />)
 
@@ -45,7 +44,6 @@ function WeatherCurrentComp(
     const airQuality_item = (airQuality && <AirQuality aqi={airQuality.aqi} text={airQuality.aqiText} aqiColor={airQuality.aqiColor} />)
 
     let items_array = [uv_item, humidity_item, airQuality_item, wind_item, sunInfo_item, moonInfo_item];
-    items_array = shuffle_array(items_array);
 
     return (
         <div className="weatherCurrentComp">
