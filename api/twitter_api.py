@@ -3,67 +3,43 @@ from dotenv import dotenv_values, load_dotenv
 import http.client
 import json
 import os
+import tweepy
 
 load_dotenv()
 
-def basic_auth(username, password):
-    token = b64encode(f"{username}:{password}".encode('utf-8')).decode("ascii")
-    return f'Basic {token}'
+def get_auth():
+    consumer_key = os.getenv('TWITTER_CONSUMER_KEY')
+    consumer_secret = os.getenv('TWITTER_CONSUMER_SECRET')
+    access_token = os.getenv('TWITTER_ACCESS_TOKEN')
+    access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+    auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret, access_token, access_token_secret)
+    return auth
 
-def generate_token(api_key, api_secret_key):
-    conn = http.client.HTTPSConnection("api.twitter.com")
-    headers = {'Authorization': basic_auth(api_key, api_secret_key)}
-    conn.request("POST", "/oauth2/token?grant_type=client_credentials",
-                 '', headers)
+def get_tweepy_api(auth):
+    api = tweepy.API(auth, wait_on_rate_limit=True)
+    return api
 
-    response = conn.getresponse()
-    data = response.read()
-    decoded_data = data.decode("utf-8")
-    token = json.loads(decoded_data)
-    return token['access_token']
+def get_user(api, username):
+    user = api.get_user(screen_name=username)
+    return {'id': user.id, 'screen_name': user.screen_name, 'name': user.name}
 
-def get_user(bearer_token, username):
-    url = f"/2/users/by/username/{username}"
-
-    conn = http.client.HTTPSConnection("api.twitter.com")
-    headers = {"Authorization": f"Bearer {bearer_token}"}
-    conn.request("GET", url, '', headers)
-
-    response = conn.getresponse()
-    data = response.read()
-    decoded_data = data.decode("utf-8")
-    user = json.loads(decoded_data)
-    return user['data']
-
-def get_tweets(bearer_token, user_id):
-    url = f"https://api.twitter.com/2/users/{user_id}/tweets?max_results=5&exclude=retweets,replies&tweet.fields=created_at"
-
-    conn = http.client.HTTPSConnection("api.twitter.com")
-    headers = {"Authorization": f"Bearer {bearer_token}"}
-    conn.request("GET", url, '', headers)
-
-    response = conn.getresponse()
-    data = response.read()
-    decoded_data = data.decode("utf-8")
-    tweets = json.loads(decoded_data)
-    return tweets['data']
+def get_tweets(api, username, count):
+    tweets = api.user_timeline(screen_name=username, count=100, exclude_replies=True)
+    simple_tweets = []
+    for tweet in tweets:
+        tweet_extended = api.get_status(tweet.id, tweet_mode='extended')
+        simple_tweets.append({ 'text': tweet_extended.full_text, 'created_at': tweet.created_at })
+        if len(simple_tweets) >= count:
+            break
+    return simple_tweets
 
 def get_last_tweet_by(username):
-    API_KEY = os.getenv('TWITTER_API_KEY')
-    API_KEY_SECRET = os.getenv('TWITTER_API_KEY_SECRET')
-    print(API_KEY, API_KEY_SECRET)
-
-    if 'TWITTER_API_KEY' not in os.environ:
-        return { 'error': 'No Twitter API key found' }
-
-    if 'TWITTER_API_KEY_SECRET' not in os.environ:
-        return { 'error': 'No Twitter API key secreat found' }
-
-    if 'TWITTER_API_KEY' in os.environ and 'TWITTER_API_KEY_SECRET' in os.environ:
-        token = generate_token(API_KEY, API_KEY_SECRET)
-
-        user = get_user(token, username)
-        user_id = user['id']
-        tweets = get_tweets(token, user_id)
+    try:
+        auth = get_auth()
+        api = get_tweepy_api(auth)
+        user = get_user(api, username)
+        tweets = get_tweets(api, username, 5)
         return { 'user': user, 'tweets': tweets }
+    except:
+        return None
     return None
