@@ -21,7 +21,7 @@ def get_tweepy_api(auth):
 
 def get_user(api, username):
     user = api.get_user(screen_name=username)
-    return {'id': user.id, 'screen_name': user.screen_name, 'name': user.name}
+    return {'id': user.id, 'username': user.screen_name, 'name': user.name}
 
 def get_tweets(api, username, count):
     tweets = api.user_timeline(screen_name=username, count=100, exclude_replies=True)
