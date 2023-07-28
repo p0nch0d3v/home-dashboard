@@ -24,9 +24,12 @@ def get_user(api, username):
     return {'id': user.id, 'username': user.screen_name, 'name': user.name}
 
 def get_tweets(api, username, count):
-    tweets = api.user_timeline(screen_name=username, count=100, exclude_replies=True)
+    tweets = api.user_timeline(screen_name=username, count=count*2, exclude_replies=True)
     simple_tweets = []
     for tweet in tweets:
+        # Exclude retweet 
+        if hasattr(tweet, 'retweeted_status'):
+            continue
         tweet_extended = api.get_status(tweet.id, tweet_mode='extended')
         simple_tweets.append({ 'text': tweet_extended.full_text, 'created_at': tweet.created_at })
         if len(simple_tweets) >= count:
