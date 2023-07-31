@@ -6,12 +6,14 @@
     "Th": "Ju",
     "Fr": "Vi",
     "Sa": "Sa",
+
     "Humidity": "Humedad",
     "Pressure": "Presion",
     "Wind": "Viento",
     "Sunrise": "Amanecer",
     "Sunset": "Atardecer",
     "DayLigth": "Luz de Dia",
+
     "North": "Norte",
     "East": "Este",
     "South": "Sur",
@@ -36,6 +38,7 @@
 
     "Day": "Dia",
     "Remaining": "quedan",
+    "Since": "Hace",
 
     "AirQuality": "Calidad del Aire",
     "AQ_Good": "Buena",

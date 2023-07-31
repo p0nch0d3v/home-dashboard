@@ -6,23 +6,27 @@
     "Th": "Th",
     "Fr": "Fr",
     "Sa": "Sa",
+
     "Humidity": "Humidity",
     "Pressure": "Pressure",
     "Wind": "Wind",
     "Sunrise": "Sunrise",
     "Sunset": "Sunset",
     "DayLigth": "Day Ligth",
+ 
     "North": "North",
     "East": "East",
     "South": "South",
     "West": "West",
     "SW": "SW",
     "NW": "NW",
+
     "Low": "Low",
     "Moderate": "Moderate",
     "High": "High",
     "VeryHigh": "Very High",
     "Extreme": "Extreme",
+
     "NewMoon": "New Moon",
     "WaxingCrescent": "Waxing Crescent",
     "FirstQuarterMoon": "First Quarter Moon",
@@ -31,8 +35,10 @@
     "WaningGibbous": "Waning Gibbous",
     "LastQuarterMoon": "Last Quarter Moon",
     "WaningCrescent": "Waning Crescent",
+
     "Day": "Day",
     "Remaining": "remaining",
+    "Since": "Since",
 
     "AirQuality": "Air Quality",
     "AQ_Good": "Good",
