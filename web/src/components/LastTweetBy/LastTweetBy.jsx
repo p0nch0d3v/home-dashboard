@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation, withTranslation } from 'react-i18next';
 import './LastTweetBy.scss';
 
 function LastTweetBy({ tweetUser, tweetData }) {
@@ -28,20 +29,25 @@ function LastTweetBy({ tweetUser, tweetData }) {
     ]
 
     const fontSize = fontSizes.find((v) => { return tweetData.textCount >= v.minChar && tweetData.textCount <= v.maxChar })
+    const fontSizeStyle = { fontSize: `${fontSize?.fontSize}vh` }
+
+    const { t } = useTranslation();
 
     return (
         <div className='tweetInfo'>
             <div className='user'>
-                <span className='user_name'>{tweetUser.name}</span>
-                <span className='username'>(@{tweetUser.username})</span>
+                <span>
+                    <span className='user_name'>{tweetUser.name}</span>
+                    <span className='username'>(@{tweetUser.username})</span>
+                </span>
+                <span style={fontSizeStyle}>{t('Since')}{' '}{tweetData.since}</span>
             </div>
-            <div className='content' style={{ fontSize: `${fontSize?.fontSize}vh` }}>{tweetData.text}</div>
+            <div className='content' style={fontSizeStyle}>{tweetData.text}</div>
             <div className='dateTime'>
                 <span>{tweetData.createdAtFormatted}</span>
-                <span>{tweetData.since}</span>
             </div>
         </div>
     );
 }
 
-export default LastTweetBy;
+export default withTranslation()(LastTweetBy); 

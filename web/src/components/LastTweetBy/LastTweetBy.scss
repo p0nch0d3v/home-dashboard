@@ -10,6 +10,8 @@
 
     .user {
         text-align: left;
+        display: flex;
+        justify-content: space-between;
 
         .user_name {
             font-weight: 900;
