@@ -24,9 +24,12 @@ def get_user(api, username):
     return {'id': user.id, 'username': user.screen_name, 'name': user.name}
 
 def get_tweets(api, username, count):
-    tweets = api.user_timeline(screen_name=username, count=count*2, exclude_replies=True)
+    print('get_tweets')
+    tweets = api.user_timeline(screen_name=username, count=count*5, exclude_replies=True)
+    print(type(tweets))
     simple_tweets = []
     for tweet in tweets:
+
         # Exclude retweet 
         if hasattr(tweet, 'retweeted_status'):
             continue

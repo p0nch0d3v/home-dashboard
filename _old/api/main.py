@@ -6,6 +6,7 @@ import os
 
 from auth import get_api_key
 from twitter_api import get_last_tweet_by
+from openweathermap_api import get_current_weather
 
 load_dotenv()
 
@@ -41,3 +42,7 @@ async def main_index():
 async def last_tweet_by(api_key: APIKey = Depends(get_api_key), username: str = ""):
     last_tweet = get_last_tweet_by(username)
     return last_tweet
+
+@app.get('/weather_current')
+async def weather_current(api_key: APIKey = Depends(get_api_key), latitude: str = "", longitude: str = ""):
+    return get_current_weather(latitude, longitude)
