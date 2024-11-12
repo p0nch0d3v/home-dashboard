@@ -1,0 +1,21 @@
+{
+  "name": "home-dashboard",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev"
+  },
+  "devDependencies": {
+    "prettier": "3.2.5",
+    "turbo": "2.2.3",
+    "typescript": "5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@10.7.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
